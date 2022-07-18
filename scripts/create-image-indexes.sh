@@ -7,4 +7,4 @@ CONTAINER_INDEX_FILE=${CONTAINER_INDEX_FILE:-container.index.json}
 
 GHCR_TOKEN=$(echo "$GITHUB_TOKEN" | base64)
 
-curl --silent -H "Authorization: Bearer $GHCR_TOKEN" https://ghcr.io/v2/"${CONTAINER_PACKAGE}"/tags/list | jq -r '.tags' > "$CONTAINER_INDEX_FILE" && cat "$CONTAINER_INDEX_FILE"
+curl --silent -H "Authorization: Bearer $GHCR_TOKEN" https://ghcr.io/v2/"${CONTAINER_PACKAGE}"/tags/list | jq -r '.tags | map(select(.| test("^v(.*)")))' > "$CONTAINER_INDEX_FILE" && cat "$CONTAINER_INDEX_FILE"
