@@ -1,0 +1,16 @@
+[
+    {
+        "ImageId": "ami-081851696915543b1",
+        "Name": "gold-calyptia-core-20220718125959",
+        "Tags": [
+            {
+                "Key": "calyptia-core-release",
+                "Value": "0.2.6"
+            },
+            {
+                "Key": "source-image",
+                "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20220706"
+            }
+        ]
+    }
+]
