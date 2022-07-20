@@ -1,4 +1,4 @@
-module github.com/calyptoia/cores-images-index/index
+module github.com/calyptia/core-images-index/go-index
 
 go 1.18
 
