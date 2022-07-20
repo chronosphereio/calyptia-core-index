@@ -1,12 +1,13 @@
-package versions
+package index
 
 import (
 	"encoding/json"
 	"fmt"
-	semver "github.com/hashicorp/go-version"
 	"io"
 	"net/http"
 	"sort"
+
+	semver "github.com/hashicorp/go-version"
 )
 
 const (
@@ -23,12 +24,13 @@ type (
 
 	//go:generate moq -out container_index_mock.go . ContainerIndex
 	ContainerIndex interface {
-		Match(version string) (string, error)
+		All() ([]string, error)
+		Last() (string, error)
 	}
 
 	Container struct {
 		ContainerIndex
-		Fetcher ContainerIndexFetcher
+		Fetcher ContainerIndexFetch
 	}
 
 	ContainerIndexFetcher struct {
@@ -67,6 +69,7 @@ func (c *Container) All() ([]string, error) {
 	}
 
 	var images semver.Collection
+
 	for _, image := range containerImages {
 		ver, err := semver.NewSemver(image)
 		if err != nil {
@@ -78,7 +81,7 @@ func (c *Container) All() ([]string, error) {
 	sort.Sort(images)
 
 	for _, image := range images {
-		out = append(out, image.String())
+		out = append(out, image.Original())
 	}
 
 	return out, nil
@@ -94,6 +97,6 @@ func (c *Container) Last() (string, error) {
 
 func NewContainer() (*Container, error) {
 	return &Container{
-		Fetcher: ContainerIndexFetcher{},
+		Fetcher: &ContainerIndexFetcher{},
 	}, nil
 }

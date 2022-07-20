@@ -1,0 +1,118 @@
+run:
+  # timeout for analysis, e.g. 30s, 5m, default is 1m
+  timeout: 5m
+  # default is true. Enables skipping of directories:
+  #   vendor$, third_party$, testdata$, examples$, Godeps$, builtin$
+  skip-dirs-use-default: true
+linters-settings:
+  gomnd:
+    ignored-numbers:
+      - "2"
+      - "10" #base
+      - "32" #bitsize
+      - "64" #bitsize
+  goimports:
+    local-prefixes: github.com/calyptia/core-images-index/go-index
+  revive:
+    min-confidence: 0.8
+  gocyclo:
+    min-complexity: 15
+  govet:
+    check-shadowing: true
+  gocognit:
+    min-complexity: 40
+  goconst:
+    min-occurrences: 15
+  #TODO: lower these numbers into actual good targets 60/40 or alike.
+  funlen:
+    lines: 75
+    statements: 50
+  misspell:
+    locale: US
+  nolintlint:
+    allow-leading-space: false # require machine-readable nolint directives (with no leading space)
+    allow-unused: false # report any unused nolint directives
+    require-explanation: true # require an explanation for nolint directives
+    require-specific: false # don't require nolint directives to be specific about which linter is being skipped
+
+linters:
+  # please, do not use `enable-all`: it's deprecated and will be removed soon.
+  # inverted configuration with `enable-all` and `disable` is not scalable during updates of golangci-lint
+  disable-all: true
+  enable:
+    - deadcode
+    - errcheck
+    - gosimple
+    - govet
+    - ineffassign
+    - staticcheck
+    - structcheck
+    - typecheck
+    - unused
+    - varcheck
+    - bodyclose
+    - depguard
+    - dupl
+    - exportloopref
+    - forcetypeassert
+    - funlen
+    - gocognit
+    - goconst
+    - gocritic
+    - gocyclo
+    - godot
+    - gofumpt
+    - gomnd
+    - goprintffuncname
+    - gosec
+    - ifshort
+    - misspell
+    - noctx
+    - nolintlint
+    - rowserrcheck
+    - sqlclosecheck
+    - stylecheck
+    - tparallel
+    - unconvert
+    - unparam
+    - whitespace
+issues:
+  exclude-use-default: false
+  exclude:
+    - 'declaration of "(err|ctx)" shadows declaration at'
+  exclude-rules:
+    - linters:
+        - bodyclose
+      text: ".*defer [rows|resp|r]+.Close().*"
+    - linters:
+        - funlen
+        - gocognit
+        - gocyclo
+        - dupl
+        - godot
+      path: transport/.*/*.go
+    #TODO: refactor service layer into its own package.
+    - linters:
+        - dupl
+      path: ^[a-z\_]+\.go
+    - linters:
+        - dupl
+        - funlen
+      path: repo/.*/*.go
+    #TODO: unit tests are inducting a lot of complexity for the sake of a low coverage. revisit.
+    - linters:
+        - funlen
+        - stylecheck
+        - gocyclo
+        - gocognit
+        - revive
+        - dupl
+        - goconst
+        - errcheck
+        - bodyclose
+        - gomnd
+      path: '.*test.*.go'
+    #TODO: revisit revive exported items, at the moment its just too much to be written on exported members and methods.
+    - linters:
+        - revive
+      text: "exported: exported .* should have comment .*"

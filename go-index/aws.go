@@ -1,11 +1,12 @@
-package versions
+package index
 
 import (
 	"encoding/json"
 	"fmt"
-	semver "github.com/hashicorp/go-version"
 	"io"
 	"net/http"
+
+	semver "github.com/hashicorp/go-version"
 )
 
 const (
@@ -37,7 +38,7 @@ type (
 
 	AWS struct {
 		AWSIndex
-		Fetcher AWSIndexFetcher
+		Fetcher AWSIndexFetch
 	}
 
 	AWSIndexFetcher struct {

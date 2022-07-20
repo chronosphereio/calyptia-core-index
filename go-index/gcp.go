@@ -1,12 +1,16 @@
-package versions
+// Package index this packages allows to consume the container and public cloud providers
+// images index from Go. This is oriented to be used as a helper to determine the latest version
+// as well as a matching release. See [./full_test.go](./full_test.go) for a working example.
+package index
 
 import (
 	"encoding/json"
 	"fmt"
-	semver "github.com/hashicorp/go-version"
 	"io"
 	"net/http"
 	"strings"
+
+	semver "github.com/hashicorp/go-version"
 )
 
 const (
@@ -77,7 +81,7 @@ func (g GCP) Match(version string) (string, error) {
 
 	images, err = g.Fetcher.GetImages()
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("error fetching images: %w", err)
 	}
 
 	for _, image := range images {
