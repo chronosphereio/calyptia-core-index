@@ -29,3 +29,13 @@ jobs:
     steps:
       - name: Run markdownlint
         uses: actionshub/markdownlint@2.0.2
+
+  golint-pr:
+    runs-on: ubuntu-latest
+    name: PR - GO lint
+    steps:
+      - uses: actions/checkout@v3
+      - name: golangci-lint
+        uses: reviewdog/action-golangci-lint@v2
+        with:
+          workdir: go-index
