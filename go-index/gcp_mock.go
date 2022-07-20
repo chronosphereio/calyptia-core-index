@@ -33,7 +33,8 @@ type GCPIndexFetchMock struct {
 	// calls tracks calls to the methods.
 	calls struct {
 		// GetImages holds details about calls to the GetImages method.
-		GetImages []struct{}
+		GetImages []struct {
+		}
 	}
 	lockGetImages sync.RWMutex
 }
@@ -43,7 +44,8 @@ func (mock *GCPIndexFetchMock) GetImages() (GCPImages, error) {
 	if mock.GetImagesFunc == nil {
 		panic("GCPIndexFetchMock.GetImagesFunc: method is nil but GCPIndexFetch.GetImages was just called")
 	}
-	callInfo := struct{}{}
+	callInfo := struct {
+	}{}
 	mock.lockGetImages.Lock()
 	mock.calls.GetImages = append(mock.calls.GetImages, callInfo)
 	mock.lockGetImages.Unlock()
@@ -53,8 +55,10 @@ func (mock *GCPIndexFetchMock) GetImages() (GCPImages, error) {
 // GetImagesCalls gets all the calls that were made to GetImages.
 // Check the length with:
 //     len(mockedGCPIndexFetch.GetImagesCalls())
-func (mock *GCPIndexFetchMock) GetImagesCalls() []struct{} {
-	var calls []struct{}
+func (mock *GCPIndexFetchMock) GetImagesCalls() []struct {
+} {
+	var calls []struct {
+	}
 	mock.lockGetImages.RLock()
 	calls = mock.calls.GetImages
 	mock.lockGetImages.RUnlock()
