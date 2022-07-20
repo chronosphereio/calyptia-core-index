@@ -33,7 +33,8 @@ type AWSIndexFetchMock struct {
 	// calls tracks calls to the methods.
 	calls struct {
 		// GetImages holds details about calls to the GetImages method.
-		GetImages []struct{}
+		GetImages []struct {
+		}
 	}
 	lockGetImages sync.RWMutex
 }
@@ -43,7 +44,8 @@ func (mock *AWSIndexFetchMock) GetImages() (AWSImages, error) {
 	if mock.GetImagesFunc == nil {
 		panic("AWSIndexFetchMock.GetImagesFunc: method is nil but AWSIndexFetch.GetImages was just called")
 	}
-	callInfo := struct{}{}
+	callInfo := struct {
+	}{}
 	mock.lockGetImages.Lock()
 	mock.calls.GetImages = append(mock.calls.GetImages, callInfo)
 	mock.lockGetImages.Unlock()
@@ -53,8 +55,10 @@ func (mock *AWSIndexFetchMock) GetImages() (AWSImages, error) {
 // GetImagesCalls gets all the calls that were made to GetImages.
 // Check the length with:
 //     len(mockedAWSIndexFetch.GetImagesCalls())
-func (mock *AWSIndexFetchMock) GetImagesCalls() []struct{} {
-	var calls []struct{}
+func (mock *AWSIndexFetchMock) GetImagesCalls() []struct {
+} {
+	var calls []struct {
+	}
 	mock.lockGetImages.RLock()
 	calls = mock.calls.GetImages
 	mock.lockGetImages.RUnlock()

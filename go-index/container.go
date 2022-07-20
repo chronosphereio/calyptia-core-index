@@ -26,6 +26,7 @@ type (
 	ContainerIndex interface {
 		All() ([]string, error)
 		Last() (string, error)
+		Match(version string) (string, error)
 	}
 
 	Container struct {
@@ -85,6 +86,30 @@ func (c *Container) All() ([]string, error) {
 	}
 
 	return out, nil
+}
+
+func (c *Container) Match(version string) (string, error) {
+	orig, err := semver.NewVersion(version)
+	if err != nil {
+		return "", err
+	}
+
+	containerImages, err := c.Fetcher.GetImages()
+	if err != nil {
+		return "", fmt.Errorf("cannot get images from container index: %w", err)
+	}
+
+	for _, imageTag := range containerImages {
+		release, err := semver.NewVersion(imageTag)
+		if err != nil {
+			return "", err
+		}
+		if release.Equal(orig) {
+			return imageTag, nil
+		}
+	}
+
+	return "", ErrNoMatchingImage
 }
 
 func (c *Container) Last() (string, error) {

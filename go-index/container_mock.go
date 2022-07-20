@@ -33,7 +33,8 @@ type ContainerIndexFetchMock struct {
 	// calls tracks calls to the methods.
 	calls struct {
 		// GetImages holds details about calls to the GetImages method.
-		GetImages []struct{}
+		GetImages []struct {
+		}
 	}
 	lockGetImages sync.RWMutex
 }
@@ -43,7 +44,8 @@ func (mock *ContainerIndexFetchMock) GetImages() (ContainerImages, error) {
 	if mock.GetImagesFunc == nil {
 		panic("ContainerIndexFetchMock.GetImagesFunc: method is nil but ContainerIndexFetch.GetImages was just called")
 	}
-	callInfo := struct{}{}
+	callInfo := struct {
+	}{}
 	mock.lockGetImages.Lock()
 	mock.calls.GetImages = append(mock.calls.GetImages, callInfo)
 	mock.lockGetImages.Unlock()
@@ -53,8 +55,10 @@ func (mock *ContainerIndexFetchMock) GetImages() (ContainerImages, error) {
 // GetImagesCalls gets all the calls that were made to GetImages.
 // Check the length with:
 //     len(mockedContainerIndexFetch.GetImagesCalls())
-func (mock *ContainerIndexFetchMock) GetImagesCalls() []struct{} {
-	var calls []struct{}
+func (mock *ContainerIndexFetchMock) GetImagesCalls() []struct {
+} {
+	var calls []struct {
+	}
 	mock.lockGetImages.RLock()
 	calls = mock.calls.GetImages
 	mock.lockGetImages.RUnlock()
@@ -77,6 +81,9 @@ var _ ContainerIndex = &ContainerIndexMock{}
 // 			LastFunc: func() (string, error) {
 // 				panic("mock out the Last method")
 // 			},
+// 			MatchFunc: func(version string) (string, error) {
+// 				panic("mock out the Match method")
+// 			},
 // 		}
 //
 // 		// use mockedContainerIndex in code that requires ContainerIndex
@@ -90,15 +97,26 @@ type ContainerIndexMock struct {
 	// LastFunc mocks the Last method.
 	LastFunc func() (string, error)
 
+	// MatchFunc mocks the Match method.
+	MatchFunc func(version string) (string, error)
+
 	// calls tracks calls to the methods.
 	calls struct {
 		// All holds details about calls to the All method.
-		All []struct{}
+		All []struct {
+		}
 		// Last holds details about calls to the Last method.
-		Last []struct{}
+		Last []struct {
+		}
+		// Match holds details about calls to the Match method.
+		Match []struct {
+			// Version is the version argument value.
+			Version string
+		}
 	}
-	lockAll  sync.RWMutex
-	lockLast sync.RWMutex
+	lockAll   sync.RWMutex
+	lockLast  sync.RWMutex
+	lockMatch sync.RWMutex
 }
 
 // All calls AllFunc.
@@ -106,7 +124,8 @@ func (mock *ContainerIndexMock) All() ([]string, error) {
 	if mock.AllFunc == nil {
 		panic("ContainerIndexMock.AllFunc: method is nil but ContainerIndex.All was just called")
 	}
-	callInfo := struct{}{}
+	callInfo := struct {
+	}{}
 	mock.lockAll.Lock()
 	mock.calls.All = append(mock.calls.All, callInfo)
 	mock.lockAll.Unlock()
@@ -116,8 +135,10 @@ func (mock *ContainerIndexMock) All() ([]string, error) {
 // AllCalls gets all the calls that were made to All.
 // Check the length with:
 //     len(mockedContainerIndex.AllCalls())
-func (mock *ContainerIndexMock) AllCalls() []struct{} {
-	var calls []struct{}
+func (mock *ContainerIndexMock) AllCalls() []struct {
+} {
+	var calls []struct {
+	}
 	mock.lockAll.RLock()
 	calls = mock.calls.All
 	mock.lockAll.RUnlock()
@@ -129,7 +150,8 @@ func (mock *ContainerIndexMock) Last() (string, error) {
 	if mock.LastFunc == nil {
 		panic("ContainerIndexMock.LastFunc: method is nil but ContainerIndex.Last was just called")
 	}
-	callInfo := struct{}{}
+	callInfo := struct {
+	}{}
 	mock.lockLast.Lock()
 	mock.calls.Last = append(mock.calls.Last, callInfo)
 	mock.lockLast.Unlock()
@@ -139,10 +161,43 @@ func (mock *ContainerIndexMock) Last() (string, error) {
 // LastCalls gets all the calls that were made to Last.
 // Check the length with:
 //     len(mockedContainerIndex.LastCalls())
-func (mock *ContainerIndexMock) LastCalls() []struct{} {
-	var calls []struct{}
+func (mock *ContainerIndexMock) LastCalls() []struct {
+} {
+	var calls []struct {
+	}
 	mock.lockLast.RLock()
 	calls = mock.calls.Last
 	mock.lockLast.RUnlock()
+	return calls
+}
+
+// Match calls MatchFunc.
+func (mock *ContainerIndexMock) Match(version string) (string, error) {
+	if mock.MatchFunc == nil {
+		panic("ContainerIndexMock.MatchFunc: method is nil but ContainerIndex.Match was just called")
+	}
+	callInfo := struct {
+		Version string
+	}{
+		Version: version,
+	}
+	mock.lockMatch.Lock()
+	mock.calls.Match = append(mock.calls.Match, callInfo)
+	mock.lockMatch.Unlock()
+	return mock.MatchFunc(version)
+}
+
+// MatchCalls gets all the calls that were made to Match.
+// Check the length with:
+//     len(mockedContainerIndex.MatchCalls())
+func (mock *ContainerIndexMock) MatchCalls() []struct {
+	Version string
+} {
+	var calls []struct {
+		Version string
+	}
+	mock.lockMatch.RLock()
+	calls = mock.calls.Match
+	mock.lockMatch.RUnlock()
 	return calls
 }
