@@ -104,9 +104,9 @@ func (a AWS) Match(version string) (string, error) {
 		return "", ErrNoMatchingImage
 	}
 
-	sort.Slice(imagesFromIndex[:], func(i, j int) bool {
-		current, _ := time.Parse("2015-10-21T14:39:24.000Z", imagesFromIndex[i].CreationDate)
-		next, _ := time.Parse("2015-10-21T14:39:24.000Z", imagesFromIndex[j].CreationDate)
+	sort.Slice(imagesFromIndex, func(i, j int) bool {
+		current, _ := time.Parse(time.RFC3339, imagesFromIndex[i].CreationDate)
+		next, _ := time.Parse(time.RFC3339, imagesFromIndex[j].CreationDate)
 		return current.Unix() < next.Unix()
 	})
 
