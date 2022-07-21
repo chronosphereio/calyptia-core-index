@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"sort"
+	"time"
 
 	semver "github.com/hashicorp/go-version"
 )
@@ -82,6 +84,8 @@ func (a AWS) Match(version string) (string, error) {
 		return "", err
 	}
 
+	var imagesFromIndex []AWSImage
+
 	for _, image := range images {
 		for _, tag := range image.Tags {
 			if tag.Key == awsCoreReleaseTag {
@@ -90,13 +94,24 @@ func (a AWS) Match(version string) (string, error) {
 					return "", err
 				}
 				if release.Equal(orig) {
-					return image.ImageID, nil
+					imagesFromIndex = append(imagesFromIndex, image)
 				}
 			}
 		}
 	}
 
-	return "", ErrNoMatchingImage
+	if len(imagesFromIndex) == 0 {
+		return "", ErrNoMatchingImage
+	}
+
+	sort.Slice(imagesFromIndex[:], func(i, j int) bool {
+		current, _ := time.Parse("2015-10-21T14:39:24.000Z", imagesFromIndex[i].CreationDate)
+		next, _ := time.Parse("2015-10-21T14:39:24.000Z", imagesFromIndex[j].CreationDate)
+		return current.Unix() < next.Unix()
+	})
+
+	// return the AMI ID from the last image on the sorted list
+	return imagesFromIndex[len(imagesFromIndex)-1].ImageID, nil
 }
 
 func NewAWS() (*AWS, error) {
