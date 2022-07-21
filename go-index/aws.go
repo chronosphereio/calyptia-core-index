@@ -16,9 +16,10 @@ const (
 
 type (
 	AWSImage struct {
-		ImageID string `json:"ImageId"`
-		Name    string `json:"Name"`
-		Tags    []struct {
+		CreationDate string `json:"CreationDate"`
+		ImageID      string `json:"ImageId"`
+		Name         string `json:"Name"`
+		Tags         []struct {
 			Key   string `json:"Key"`
 			Value string `json:"Value"`
 		} `json:"Tags"`
