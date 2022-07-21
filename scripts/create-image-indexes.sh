@@ -20,7 +20,7 @@ curl --silent -H "Authorization: Bearer $GHCR_TOKEN" https://ghcr.io/v2/"${CONTA
 
 # For the query make sure to match the current
 aws ec2 describe-images --owners self --filters "Name=tag-key,Values=$IMAGE_KEY" \
-    --query 'Images[] | sort_by(@, &CreationDate)[].{ImageId: ImageId, Name: Name, Tags: Tags}' --output=json | tee "$AWS_INDEX_FILE"
+    --query 'Images[] | sort_by(@, &CreationDate)[].{CreationDate: CreationDate, ImageId: ImageId, Name: Name, Tags: Tags}' --output=json | tee "$AWS_INDEX_FILE"
 
 # Sort by most recent any images with an appropriate label specified
 gcloud compute images list --no-standard-images --sort-by='~creationTimestamp' \
