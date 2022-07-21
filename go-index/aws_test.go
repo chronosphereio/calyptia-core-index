@@ -5,6 +5,7 @@ import (
 	_ "errors"
 	"net/http"
 	"testing"
+	"time"
 )
 
 func TestAWS_Match(t *testing.T) {
@@ -40,6 +41,47 @@ func TestAWS_Match(t *testing.T) {
 			},
 			version:    "v0.2.6",
 			wantedName: "test",
+		},
+		{
+			name: "valid with multiple matching, get last one",
+			aws: AWS{
+				Fetcher: &AWSIndexFetchMock{
+					GetImagesFunc: func() (AWSImages, error) {
+						return AWSImages{
+							AWSImage{
+								CreationDate: time.Now().String(),
+								ImageID:      "first",
+								Name:         "first",
+								Tags: []struct {
+									Key   string `json:"Key"`
+									Value string `json:"Value"`
+								}{
+									{
+										Key:   awsCoreReleaseTag,
+										Value: "0.2.6",
+									},
+								},
+							},
+							AWSImage{
+								CreationDate: time.Now().Add(time.Minute).String(),
+								ImageID:      "last-image",
+								Name:         "last-image",
+								Tags: []struct {
+									Key   string `json:"Key"`
+									Value string `json:"Value"`
+								}{
+									{
+										Key:   awsCoreReleaseTag,
+										Value: "0.2.6",
+									},
+								},
+							},
+						}, nil
+					},
+				},
+			},
+			version:    "v0.2.6",
+			wantedName: "last-image",
 		},
 		{
 			name: "not found in index",
