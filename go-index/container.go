@@ -1,6 +1,7 @@
 package index
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -19,14 +20,14 @@ type (
 
 	//go:generate moq -out container_index_fetch_mock.go . ContainerIndexFetch
 	ContainerIndexFetch interface {
-		GetImages() (ContainerImages, error)
+		GetImages(ctx context.Context) (ContainerImages, error)
 	}
 
 	//go:generate moq -out container_index_mock.go . ContainerIndex
 	ContainerIndex interface {
-		All() ([]string, error)
-		Last() (string, error)
-		Match(version string) (string, error)
+		All(ctx context.Context) ([]string, error)
+		Last(ctx context.Context) (string, error)
+		Match(ctx context.Context, version string) (string, error)
 	}
 
 	Container struct {
@@ -39,32 +40,37 @@ type (
 	}
 )
 
-func (c *ContainerIndexFetcher) GetImages() (ContainerImages, error) {
+func (c *ContainerIndexFetcher) GetImages(ctx context.Context) (ContainerImages, error) {
 	var out ContainerImages
+	request, err := http.NewRequestWithContext(ctx, http.MethodGet, containerIndexURL, nil)
+	if err != nil {
+		return out, fmt.Errorf("cannot create a request to index %s: %w", containerIndexURL, err)
+	}
 
-	get, err := http.Get(containerIndexURL)
+	client := http.DefaultClient
+	res, err := client.Do(request)
 	if err != nil {
 		return out, fmt.Errorf("could not fetch index %s: %w", containerIndexURL, err)
 	}
+
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
 			return
 		}
-	}(get.Body)
+	}(res.Body)
 
-	err = json.NewDecoder(get.Body).Decode(&out)
+	err = json.NewDecoder(res.Body).Decode(&out)
 	if err != nil {
 		return out, fmt.Errorf("could not decode index response: %w", err)
 	}
-
 	return out, nil
 }
 
-func (c *Container) All() ([]string, error) {
+func (c *Container) All(ctx context.Context) ([]string, error) {
 	var out []string
 
-	containerImages, err := c.Fetcher.GetImages()
+	containerImages, err := c.Fetcher.GetImages(ctx)
 	if err != nil {
 		return out, fmt.Errorf("cannot get container index: %w", err)
 	}
@@ -88,13 +94,13 @@ func (c *Container) All() ([]string, error) {
 	return out, nil
 }
 
-func (c *Container) Match(version string) (string, error) {
+func (c *Container) Match(ctx context.Context, version string) (string, error) {
 	orig, err := semver.NewVersion(version)
 	if err != nil {
 		return "", err
 	}
 
-	containerImages, err := c.Fetcher.GetImages()
+	containerImages, err := c.Fetcher.GetImages(ctx)
 	if err != nil {
 		return "", fmt.Errorf("cannot get images from container index: %w", err)
 	}
@@ -112,8 +118,8 @@ func (c *Container) Match(version string) (string, error) {
 	return "", ErrNoMatchingImage
 }
 
-func (c *Container) Last() (string, error) {
-	versions, err := c.All()
+func (c *Container) Last(ctx context.Context) (string, error) {
+	versions, err := c.All(ctx)
 	if err != nil {
 		return "", err
 	}

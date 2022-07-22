@@ -1,6 +1,7 @@
 package index
 
 import (
+	"context"
 	"errors"
 	_ "errors"
 	"net/http"
@@ -20,7 +21,7 @@ func TestAWS_Match(t *testing.T) {
 			name: "valid",
 			aws: AWS{
 				Fetcher: &AWSIndexFetchMock{
-					GetImagesFunc: func() (AWSImages, error) {
+					GetImagesFunc: func(ctx context.Context) (AWSImages, error) {
 						return AWSImages{
 							AWSImage{
 								ImageID: "test",
@@ -46,7 +47,7 @@ func TestAWS_Match(t *testing.T) {
 			name: "valid with multiple matching, get last one",
 			aws: AWS{
 				Fetcher: &AWSIndexFetchMock{
-					GetImagesFunc: func() (AWSImages, error) {
+					GetImagesFunc: func(ctx context.Context) (AWSImages, error) {
 						return AWSImages{
 							AWSImage{
 								CreationDate: time.Now().String(),
@@ -87,7 +88,7 @@ func TestAWS_Match(t *testing.T) {
 			name: "not found in index",
 			aws: AWS{
 				Fetcher: &AWSIndexFetchMock{
-					GetImagesFunc: func() (AWSImages, error) {
+					GetImagesFunc: func(ctx context.Context) (AWSImages, error) {
 						return AWSImages{
 							AWSImage{
 								ImageID: "test",
@@ -113,7 +114,7 @@ func TestAWS_Match(t *testing.T) {
 			name: "error getting images",
 			aws: AWS{
 				Fetcher: &AWSIndexFetchMock{
-					GetImagesFunc: func() (AWSImages, error) {
+					GetImagesFunc: func(ctx context.Context) (AWSImages, error) {
 						return nil, http.ErrHijacked
 					},
 				},
@@ -123,9 +124,10 @@ func TestAWS_Match(t *testing.T) {
 		},
 	}
 
+	ctx := context.Background()
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			version, err := tc.aws.Match(tc.version)
+			version, err := tc.aws.Match(ctx, tc.version)
 			if err != nil && tc.wantError != nil && !errors.Is(err, tc.wantError) {
 				t.Errorf("error: %v != %v", err, tc.wantError)
 				return
