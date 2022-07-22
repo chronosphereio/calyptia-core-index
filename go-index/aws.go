@@ -1,6 +1,7 @@
 package index
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -31,12 +32,12 @@ type (
 
 	//go:generate moq -out aws_index_fetch_mock.go . AWSIndexFetch
 	AWSIndexFetch interface {
-		GetImages() (AWSImages, error)
+		GetImages(ctx context.Context) (AWSImages, error)
 	}
 
 	//go:generate moq -out aws_index_mock.go . AWSIndex
 	AWSIndex interface {
-		Match(version string) (string, error)
+		Match(ctx context.Context, version string) (string, error)
 	}
 
 	AWS struct {
@@ -49,21 +50,28 @@ type (
 	}
 )
 
-func (f AWSIndexFetcher) GetImages() (AWSImages, error) {
+func (f AWSIndexFetcher) GetImages(ctx context.Context) (AWSImages, error) {
 	var out AWSImages
 
-	get, err := http.Get(awsIndexURL)
+	request, err := http.NewRequestWithContext(ctx, http.MethodGet, awsIndexURL, nil)
+	if err != nil {
+		return out, fmt.Errorf("cannot create a request to index %s: %w", awsIndexURL, err)
+	}
+
+	client := http.DefaultClient
+	res, err := client.Do(request)
 	if err != nil {
 		return out, fmt.Errorf("could not fetch index %s: %w", awsIndexURL, err)
 	}
+
 	defer func(Body io.ReadCloser) {
 		err := Body.Close()
 		if err != nil {
 			return
 		}
-	}(get.Body)
+	}(res.Body)
 
-	err = json.NewDecoder(get.Body).Decode(&out)
+	err = json.NewDecoder(res.Body).Decode(&out)
 	if err != nil {
 		return out, fmt.Errorf("could not decode index response: %w", err)
 	}
@@ -71,7 +79,7 @@ func (f AWSIndexFetcher) GetImages() (AWSImages, error) {
 	return out, nil
 }
 
-func (a AWS) Match(version string) (string, error) {
+func (a AWS) Match(ctx context.Context, version string) (string, error) {
 	var images AWSImages
 
 	orig, err := semver.NewVersion(version)
@@ -79,7 +87,7 @@ func (a AWS) Match(version string) (string, error) {
 		return "", err
 	}
 
-	images, err = a.Fetcher.GetImages()
+	images, err = a.Fetcher.GetImages(ctx)
 	if err != nil {
 		return "", err
 	}

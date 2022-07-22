@@ -1,6 +1,7 @@
 package index
 
 import (
+	"context"
 	"errors"
 	"net/http"
 	"testing"
@@ -19,7 +20,7 @@ func TestGCP_Match(t *testing.T) {
 			gcp: GCP{
 				GCPIndex: nil,
 				Fetcher: &GCPIndexFetchMock{
-					GetImagesFunc: func() (GCPImages, error) {
+					GetImagesFunc: func(ctx context.Context) (GCPImages, error) {
 						return GCPImages{
 							GCPImage{
 								Labels: struct {
@@ -42,7 +43,7 @@ func TestGCP_Match(t *testing.T) {
 			gcp: GCP{
 				GCPIndex: nil,
 				Fetcher: &GCPIndexFetchMock{
-					GetImagesFunc: func() (GCPImages, error) {
+					GetImagesFunc: func(ctx context.Context) (GCPImages, error) {
 						return GCPImages{
 							GCPImage{
 								Labels: struct {
@@ -64,7 +65,7 @@ func TestGCP_Match(t *testing.T) {
 			gcp: GCP{
 				GCPIndex: nil,
 				Fetcher: &GCPIndexFetchMock{
-					GetImagesFunc: func() (GCPImages, error) {
+					GetImagesFunc: func(ctx context.Context) (GCPImages, error) {
 						return nil, http.ErrHijacked
 					},
 				},
@@ -74,9 +75,11 @@ func TestGCP_Match(t *testing.T) {
 		},
 	}
 
+	ctx := context.Background()
+
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			version, err := tc.gcp.Match(tc.version)
+			version, err := tc.gcp.Match(ctx, tc.version)
 			if err != nil && tc.wantError != nil && !errors.Is(err, tc.wantError) {
 				t.Errorf("error: %v != %v", err, tc.wantError)
 				return

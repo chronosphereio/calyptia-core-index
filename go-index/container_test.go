@@ -1,6 +1,7 @@
 package index
 
 import (
+	"context"
 	"errors"
 	"net/http"
 	"reflect"
@@ -19,7 +20,7 @@ func TestContainer_Match(t *testing.T) {
 			name: "valid",
 			container: Container{
 				Fetcher: &ContainerIndexFetchMock{
-					GetImagesFunc: func() (ContainerImages, error) {
+					GetImagesFunc: func(ctx context.Context) (ContainerImages, error) {
 						return ContainerImages{
 							"v0.2.6",
 							"v0.2.4",
@@ -38,7 +39,7 @@ func TestContainer_Match(t *testing.T) {
 			name: "not found in index",
 			container: Container{
 				Fetcher: &ContainerIndexFetchMock{
-					GetImagesFunc: func() (ContainerImages, error) {
+					GetImagesFunc: func(ctx context.Context) (ContainerImages, error) {
 						return ContainerImages{
 							"v0.2.6",
 							"v0.2.4",
@@ -57,7 +58,7 @@ func TestContainer_Match(t *testing.T) {
 			name: "error getting images",
 			container: Container{
 				Fetcher: &ContainerIndexFetchMock{
-					GetImagesFunc: func() (ContainerImages, error) {
+					GetImagesFunc: func(ctx context.Context) (ContainerImages, error) {
 						return nil, http.ErrHijacked
 					},
 				},
@@ -67,9 +68,10 @@ func TestContainer_Match(t *testing.T) {
 		},
 	}
 
+	ctx := context.Background()
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			version, err := tc.container.Match(tc.version)
+			version, err := tc.container.Match(ctx, tc.version)
 			if err != nil && tc.wantError != nil && !errors.Is(err, tc.wantError) {
 				t.Errorf("error: %v != %v", err, tc.wantError)
 				return
@@ -94,7 +96,7 @@ func TestContainer_All(t *testing.T) {
 			container: Container{
 				ContainerIndex: nil,
 				Fetcher: &ContainerIndexFetchMock{
-					GetImagesFunc: func() (ContainerImages, error) {
+					GetImagesFunc: func(ctx context.Context) (ContainerImages, error) {
 						return ContainerImages{
 							"v0.2.6",
 							"v0.2.4",
@@ -121,7 +123,7 @@ func TestContainer_All(t *testing.T) {
 			container: Container{
 				ContainerIndex: nil,
 				Fetcher: &ContainerIndexFetchMock{
-					GetImagesFunc: func() (ContainerImages, error) {
+					GetImagesFunc: func(ctx context.Context) (ContainerImages, error) {
 						return nil, http.ErrHijacked
 					},
 				},
@@ -131,9 +133,10 @@ func TestContainer_All(t *testing.T) {
 		},
 	}
 
+	ctx := context.Background()
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			versions, err := tc.container.All()
+			versions, err := tc.container.All(ctx)
 			if err != nil && tc.wantError != nil && !errors.Is(err, tc.wantError) {
 				t.Errorf("error: %v != %v", err, tc.wantError)
 				return
@@ -159,7 +162,7 @@ func TestContainer_Last(t *testing.T) {
 			container: Container{
 				ContainerIndex: nil,
 				Fetcher: &ContainerIndexFetchMock{
-					GetImagesFunc: func() (ContainerImages, error) {
+					GetImagesFunc: func(ctx context.Context) (ContainerImages, error) {
 						return ContainerImages{
 							"v0.2.6",
 							"v0.2.4",
@@ -179,7 +182,7 @@ func TestContainer_Last(t *testing.T) {
 			container: Container{
 				ContainerIndex: nil,
 				Fetcher: &ContainerIndexFetchMock{
-					GetImagesFunc: func() (ContainerImages, error) {
+					GetImagesFunc: func(ctx context.Context) (ContainerImages, error) {
 						return nil, http.ErrHijacked
 					},
 				},
@@ -188,9 +191,10 @@ func TestContainer_Last(t *testing.T) {
 		},
 	}
 
+	ctx := context.Background()
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			version, err := tc.container.Last()
+			version, err := tc.container.Last(ctx)
 			if err != nil && tc.wantError != nil && !errors.Is(err, tc.wantError) {
 				t.Errorf("error: %v != %v", err, tc.wantError)
 				return

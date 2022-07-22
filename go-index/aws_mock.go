@@ -4,6 +4,7 @@
 package index
 
 import (
+	"context"
 	"sync"
 )
 
@@ -17,7 +18,7 @@ var _ AWSIndexFetch = &AWSIndexFetchMock{}
 //
 // 		// make and configure a mocked AWSIndexFetch
 // 		mockedAWSIndexFetch := &AWSIndexFetchMock{
-// 			GetImagesFunc: func() (AWSImages, error) {
+// 			GetImagesFunc: func(ctx context.Context) (AWSImages, error) {
 // 				panic("mock out the GetImages method")
 // 			},
 // 		}
@@ -28,36 +29,43 @@ var _ AWSIndexFetch = &AWSIndexFetchMock{}
 // 	}
 type AWSIndexFetchMock struct {
 	// GetImagesFunc mocks the GetImages method.
-	GetImagesFunc func() (AWSImages, error)
+	GetImagesFunc func(ctx context.Context) (AWSImages, error)
 
 	// calls tracks calls to the methods.
 	calls struct {
 		// GetImages holds details about calls to the GetImages method.
 		GetImages []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
 		}
 	}
 	lockGetImages sync.RWMutex
 }
 
 // GetImages calls GetImagesFunc.
-func (mock *AWSIndexFetchMock) GetImages() (AWSImages, error) {
+func (mock *AWSIndexFetchMock) GetImages(ctx context.Context) (AWSImages, error) {
 	if mock.GetImagesFunc == nil {
 		panic("AWSIndexFetchMock.GetImagesFunc: method is nil but AWSIndexFetch.GetImages was just called")
 	}
 	callInfo := struct {
-	}{}
+		Ctx context.Context
+	}{
+		Ctx: ctx,
+	}
 	mock.lockGetImages.Lock()
 	mock.calls.GetImages = append(mock.calls.GetImages, callInfo)
 	mock.lockGetImages.Unlock()
-	return mock.GetImagesFunc()
+	return mock.GetImagesFunc(ctx)
 }
 
 // GetImagesCalls gets all the calls that were made to GetImages.
 // Check the length with:
 //     len(mockedAWSIndexFetch.GetImagesCalls())
 func (mock *AWSIndexFetchMock) GetImagesCalls() []struct {
+	Ctx context.Context
 } {
 	var calls []struct {
+		Ctx context.Context
 	}
 	mock.lockGetImages.RLock()
 	calls = mock.calls.GetImages
@@ -75,7 +83,7 @@ var _ AWSIndex = &AWSIndexMock{}
 //
 // 		// make and configure a mocked AWSIndex
 // 		mockedAWSIndex := &AWSIndexMock{
-// 			MatchFunc: func(version string) (string, error) {
+// 			MatchFunc: func(ctx context.Context, version string) (string, error) {
 // 				panic("mock out the Match method")
 // 			},
 // 		}
@@ -86,12 +94,14 @@ var _ AWSIndex = &AWSIndexMock{}
 // 	}
 type AWSIndexMock struct {
 	// MatchFunc mocks the Match method.
-	MatchFunc func(version string) (string, error)
+	MatchFunc func(ctx context.Context, version string) (string, error)
 
 	// calls tracks calls to the methods.
 	calls struct {
 		// Match holds details about calls to the Match method.
 		Match []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
 			// Version is the version argument value.
 			Version string
 		}
@@ -100,28 +110,32 @@ type AWSIndexMock struct {
 }
 
 // Match calls MatchFunc.
-func (mock *AWSIndexMock) Match(version string) (string, error) {
+func (mock *AWSIndexMock) Match(ctx context.Context, version string) (string, error) {
 	if mock.MatchFunc == nil {
 		panic("AWSIndexMock.MatchFunc: method is nil but AWSIndex.Match was just called")
 	}
 	callInfo := struct {
+		Ctx     context.Context
 		Version string
 	}{
+		Ctx:     ctx,
 		Version: version,
 	}
 	mock.lockMatch.Lock()
 	mock.calls.Match = append(mock.calls.Match, callInfo)
 	mock.lockMatch.Unlock()
-	return mock.MatchFunc(version)
+	return mock.MatchFunc(ctx, version)
 }
 
 // MatchCalls gets all the calls that were made to Match.
 // Check the length with:
 //     len(mockedAWSIndex.MatchCalls())
 func (mock *AWSIndexMock) MatchCalls() []struct {
+	Ctx     context.Context
 	Version string
 } {
 	var calls []struct {
+		Ctx     context.Context
 		Version string
 	}
 	mock.lockMatch.RLock()

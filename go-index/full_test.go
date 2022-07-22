@@ -1,22 +1,24 @@
 package index
 
 import (
+	"context"
 	"fmt"
 	"testing"
 )
 
 func TestAll(t *testing.T) {
 	versionToTest := "0.2.6"
+	ctx := context.Background()
 
 	container := Container{Fetcher: &ContainerIndexFetchMock{
-		GetImagesFunc: func() (ContainerImages, error) {
+		GetImagesFunc: func(ctx context.Context) (ContainerImages, error) {
 			return ContainerImages{
 				fmt.Sprintf("v%s", versionToTest),
 			}, nil
 		},
 	}}
 
-	lastImage, err := container.Last()
+	lastImage, err := container.Last(ctx)
 	if err != nil {
 		t.Errorf("container last image error: %v != nil", err)
 		return
@@ -29,7 +31,7 @@ func TestAll(t *testing.T) {
 
 	awsIndex := AWS{
 		Fetcher: &AWSIndexFetchMock{
-			GetImagesFunc: func() (AWSImages, error) {
+			GetImagesFunc: func(ctx context.Context) (AWSImages, error) {
 				return AWSImages{
 					AWSImage{
 						ImageID: fmt.Sprintf("v%s", versionToTest),
@@ -49,7 +51,7 @@ func TestAll(t *testing.T) {
 		},
 	}
 
-	match, err := awsIndex.Match(lastImage)
+	match, err := awsIndex.Match(ctx, lastImage)
 	if err != nil {
 		t.Errorf("aws index match err != nil, %s", err)
 		return
@@ -62,7 +64,7 @@ func TestAll(t *testing.T) {
 
 	gcpIndex := GCP{
 		Fetcher: &GCPIndexFetchMock{
-			GetImagesFunc: func() (GCPImages, error) {
+			GetImagesFunc: func(ctx context.Context) (GCPImages, error) {
 				return GCPImages{
 					GCPImage{
 						Name: fmt.Sprintf("v%s", versionToTest),
@@ -78,7 +80,7 @@ func TestAll(t *testing.T) {
 		},
 	}
 
-	match, err = gcpIndex.Match(lastImage)
+	match, err = gcpIndex.Match(ctx, lastImage)
 	if err != nil {
 		t.Errorf("gcp index match err != nil, %s", err)
 		return
