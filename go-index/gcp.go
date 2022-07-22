@@ -76,7 +76,6 @@ func (f GCPIndexFetcher) GetImages(ctx context.Context) (GCPImages, error) {
 		return out, fmt.Errorf("could not decode index response: %w", err)
 	}
 	return out, nil
-
 }
 
 func (g GCP) Match(ctx context.Context, version string) (string, error) {
