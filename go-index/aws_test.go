@@ -3,7 +3,6 @@ package index
 import (
 	"context"
 	"errors"
-	_ "errors"
 	"net/http"
 	"testing"
 	"time"
@@ -14,11 +13,13 @@ func TestAWS_Match(t *testing.T) {
 		name       string
 		aws        AWS
 		version    string
+		region     string
 		wantedName string
 		wantError  error
 	}{
 		{
-			name: "valid",
+			name:   "valid",
+			region: "us-east-1",
 			aws: AWS{
 				Fetcher: &AWSIndexFetchMock{
 					GetImagesFunc: func(ctx context.Context) (AWSImages, error) {
@@ -26,15 +27,8 @@ func TestAWS_Match(t *testing.T) {
 							AWSImage{
 								ImageID: "test",
 								Name:    "test",
-								Tags: []struct {
-									Key   string `json:"Key"`
-									Value string `json:"Value"`
-								}{
-									{
-										Key:   awsCoreReleaseTag,
-										Value: "0.2.6",
-									},
-								},
+								Region:  "us-east-1",
+								Release: "0.2.6",
 							},
 						}, nil
 					},
@@ -44,64 +38,24 @@ func TestAWS_Match(t *testing.T) {
 			wantedName: "test",
 		},
 		{
-			name: "valid with multiple matching, get last one",
+			name: "not matching",
 			aws: AWS{
 				Fetcher: &AWSIndexFetchMock{
 					GetImagesFunc: func(ctx context.Context) (AWSImages, error) {
 						return AWSImages{
 							AWSImage{
-								CreationDate: time.Now().String(),
+								CreationDate: time.Now(),
 								ImageID:      "first",
 								Name:         "first",
-								Tags: []struct {
-									Key   string `json:"Key"`
-									Value string `json:"Value"`
-								}{
-									{
-										Key:   awsCoreReleaseTag,
-										Value: "0.2.6",
-									},
-								},
+								Release:      "0.2.7",
+								Region:       "us-west-1",
 							},
 							AWSImage{
-								CreationDate: time.Now().Add(time.Minute).String(),
+								CreationDate: time.Now().Add(time.Minute),
 								ImageID:      "last-image",
 								Name:         "last-image",
-								Tags: []struct {
-									Key   string `json:"Key"`
-									Value string `json:"Value"`
-								}{
-									{
-										Key:   awsCoreReleaseTag,
-										Value: "0.2.6",
-									},
-								},
-							},
-						}, nil
-					},
-				},
-			},
-			version:    "v0.2.6",
-			wantedName: "last-image",
-		},
-		{
-			name: "not found in index",
-			aws: AWS{
-				Fetcher: &AWSIndexFetchMock{
-					GetImagesFunc: func(ctx context.Context) (AWSImages, error) {
-						return AWSImages{
-							AWSImage{
-								ImageID: "test",
-								Name:    "test",
-								Tags: []struct {
-									Key   string `json:"Key"`
-									Value string `json:"Value"`
-								}{
-									{
-										Key:   awsCoreReleaseTag,
-										Value: "0.2.5",
-									},
-								},
+								Release:      "0.2.8",
+								Region:       "us-west-1",
 							},
 						}, nil
 					},
@@ -127,7 +81,7 @@ func TestAWS_Match(t *testing.T) {
 	ctx := context.Background()
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			version, err := tc.aws.Match(ctx, tc.version)
+			version, err := tc.aws.Match(ctx, tc.region, tc.version)
 			if err != nil && tc.wantError != nil && !errors.Is(err, tc.wantError) {
 				t.Errorf("error: %v != %v", err, tc.wantError)
 				return

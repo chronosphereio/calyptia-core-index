@@ -8,6 +8,83 @@ import (
 	"sync"
 )
 
+// Ensure, that AWSIndexMock does implement AWSIndex.
+// If this is not the case, regenerate this file with moq.
+var _ AWSIndex = &AWSIndexMock{}
+
+// AWSIndexMock is a mock implementation of AWSIndex.
+//
+// 	func TestSomethingThatUsesAWSIndex(t *testing.T) {
+//
+// 		// make and configure a mocked AWSIndex
+// 		mockedAWSIndex := &AWSIndexMock{
+// 			MatchFunc: func(ctx context.Context, region string, version string) (string, error) {
+// 				panic("mock out the Match method")
+// 			},
+// 		}
+//
+// 		// use mockedAWSIndex in code that requires AWSIndex
+// 		// and then make assertions.
+//
+// 	}
+type AWSIndexMock struct {
+	// MatchFunc mocks the Match method.
+	MatchFunc func(ctx context.Context, region string, version string) (string, error)
+
+	// calls tracks calls to the methods.
+	calls struct {
+		// Match holds details about calls to the Match method.
+		Match []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// Region is the region argument value.
+			Region string
+			// Version is the version argument value.
+			Version string
+		}
+	}
+	lockMatch sync.RWMutex
+}
+
+// Match calls MatchFunc.
+func (mock *AWSIndexMock) Match(ctx context.Context, region string, version string) (string, error) {
+	if mock.MatchFunc == nil {
+		panic("AWSIndexMock.MatchFunc: method is nil but AWSIndex.Match was just called")
+	}
+	callInfo := struct {
+		Ctx     context.Context
+		Region  string
+		Version string
+	}{
+		Ctx:     ctx,
+		Region:  region,
+		Version: version,
+	}
+	mock.lockMatch.Lock()
+	mock.calls.Match = append(mock.calls.Match, callInfo)
+	mock.lockMatch.Unlock()
+	return mock.MatchFunc(ctx, region, version)
+}
+
+// MatchCalls gets all the calls that were made to Match.
+// Check the length with:
+//     len(mockedAWSIndex.MatchCalls())
+func (mock *AWSIndexMock) MatchCalls() []struct {
+	Ctx     context.Context
+	Region  string
+	Version string
+} {
+	var calls []struct {
+		Ctx     context.Context
+		Region  string
+		Version string
+	}
+	mock.lockMatch.RLock()
+	calls = mock.calls.Match
+	mock.lockMatch.RUnlock()
+	return calls
+}
+
 // Ensure, that AWSIndexFetchMock does implement AWSIndexFetch.
 // If this is not the case, regenerate this file with moq.
 var _ AWSIndexFetch = &AWSIndexFetchMock{}
@@ -70,76 +147,5 @@ func (mock *AWSIndexFetchMock) GetImagesCalls() []struct {
 	mock.lockGetImages.RLock()
 	calls = mock.calls.GetImages
 	mock.lockGetImages.RUnlock()
-	return calls
-}
-
-// Ensure, that AWSIndexMock does implement AWSIndex.
-// If this is not the case, regenerate this file with moq.
-var _ AWSIndex = &AWSIndexMock{}
-
-// AWSIndexMock is a mock implementation of AWSIndex.
-//
-// 	func TestSomethingThatUsesAWSIndex(t *testing.T) {
-//
-// 		// make and configure a mocked AWSIndex
-// 		mockedAWSIndex := &AWSIndexMock{
-// 			MatchFunc: func(ctx context.Context, version string) (string, error) {
-// 				panic("mock out the Match method")
-// 			},
-// 		}
-//
-// 		// use mockedAWSIndex in code that requires AWSIndex
-// 		// and then make assertions.
-//
-// 	}
-type AWSIndexMock struct {
-	// MatchFunc mocks the Match method.
-	MatchFunc func(ctx context.Context, version string) (string, error)
-
-	// calls tracks calls to the methods.
-	calls struct {
-		// Match holds details about calls to the Match method.
-		Match []struct {
-			// Ctx is the ctx argument value.
-			Ctx context.Context
-			// Version is the version argument value.
-			Version string
-		}
-	}
-	lockMatch sync.RWMutex
-}
-
-// Match calls MatchFunc.
-func (mock *AWSIndexMock) Match(ctx context.Context, version string) (string, error) {
-	if mock.MatchFunc == nil {
-		panic("AWSIndexMock.MatchFunc: method is nil but AWSIndex.Match was just called")
-	}
-	callInfo := struct {
-		Ctx     context.Context
-		Version string
-	}{
-		Ctx:     ctx,
-		Version: version,
-	}
-	mock.lockMatch.Lock()
-	mock.calls.Match = append(mock.calls.Match, callInfo)
-	mock.lockMatch.Unlock()
-	return mock.MatchFunc(ctx, version)
-}
-
-// MatchCalls gets all the calls that were made to Match.
-// Check the length with:
-//     len(mockedAWSIndex.MatchCalls())
-func (mock *AWSIndexMock) MatchCalls() []struct {
-	Ctx     context.Context
-	Version string
-} {
-	var calls []struct {
-		Ctx     context.Context
-		Version string
-	}
-	mock.lockMatch.RLock()
-	calls = mock.calls.Match
-	mock.lockMatch.RUnlock()
 	return calls
 }

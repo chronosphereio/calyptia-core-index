@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"sort"
 	"time"
 
 	semver "github.com/hashicorp/go-version"
@@ -19,13 +18,15 @@ const (
 
 type (
 	AWSImage struct {
-		CreationDate string `json:"CreationDate"`
-		ImageID      string `json:"ImageId"`
-		Name         string `json:"Name"`
+		CreationDate time.Time `json:"CreationDate"`
+		ImageID      string    `json:"ImageId"`
+		Name         string    `json:"Name"`
 		Tags         []struct {
 			Key   string `json:"Key"`
 			Value string `json:"Value"`
 		} `json:"Tags"`
+		Region  string `json:"region"`
+		Release string `json:"release"`
 	}
 
 	AWSImages []AWSImage
@@ -37,7 +38,7 @@ type (
 
 	//go:generate moq -out aws_index_mock.go . AWSIndex
 	AWSIndex interface {
-		Match(ctx context.Context, version string) (string, error)
+		Match(ctx context.Context, region, version string) (string, error)
 	}
 
 	AWS struct {
@@ -79,7 +80,7 @@ func (f AWSIndexFetcher) GetImages(ctx context.Context) (AWSImages, error) {
 	return out, nil
 }
 
-func (a AWS) Match(ctx context.Context, version string) (string, error) {
+func (a AWS) Match(ctx context.Context, region, version string) (string, error) {
 	var images AWSImages
 
 	orig, err := semver.NewVersion(version)
@@ -92,34 +93,17 @@ func (a AWS) Match(ctx context.Context, version string) (string, error) {
 		return "", err
 	}
 
-	var imagesFromIndex []AWSImage
-
 	for _, image := range images {
-		for _, tag := range image.Tags {
-			if tag.Key == awsCoreReleaseTag {
-				release, err := semver.NewVersion(tag.Value)
-				if err != nil {
-					return "", err
-				}
-				if release.Equal(orig) {
-					imagesFromIndex = append(imagesFromIndex, image)
-				}
-			}
+		release, err := semver.NewSemver(image.Release)
+		if err != nil {
+			return "", err
+		}
+		if image.Region == region && release.Equal(orig) {
+			return image.ImageID, nil
 		}
 	}
 
-	if len(imagesFromIndex) == 0 {
-		return "", ErrNoMatchingImage
-	}
-
-	sort.Slice(imagesFromIndex, func(i, j int) bool {
-		current, _ := time.Parse(time.RFC3339, imagesFromIndex[i].CreationDate)
-		next, _ := time.Parse(time.RFC3339, imagesFromIndex[j].CreationDate)
-		return current.Unix() < next.Unix()
-	})
-
-	// return the AMI ID from the last image on the sorted list
-	return imagesFromIndex[len(imagesFromIndex)-1].ImageID, nil
+	return "", nil
 }
 
 func NewAWS() (*AWS, error) {
