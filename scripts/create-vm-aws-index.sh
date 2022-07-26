@@ -17,6 +17,7 @@ do
 
     # Get our images with this tag value and region, sort by creation date and select last for most recent then add region + release info
     while IFS= read -r release_tag_value; do
+        echo "Finding AMIs in region $aws_region for release $release_tag_value"
         aws ec2 describe-images --no-paginate --owners self --region "$aws_region" \
             --filters "Name=tag:$IMAGE_KEY,Values=$release_tag_value" "Name=name,Values=gold-calyptia-core*" \
             --query 'Images[] | sort_by(@, &CreationDate)[].{CreationDate: CreationDate, ImageId: ImageId, Name: Name, Tags: Tags}|[-1]' \
