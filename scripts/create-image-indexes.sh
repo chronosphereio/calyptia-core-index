@@ -1,46 +1,19 @@
 #!/bin/bash
-set -u
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-GITHUB_TOKEN=${GITHUB_TOKEN:?}
-CONTAINER_PACKAGE=${CONTAINER_PACKAGE:-calyptia/core}
-CONTAINER_INDEX_FILE=${CONTAINER_INDEX_FILE:-container.index.json}
+# Limit via credentials to what is required, this also prevents any races with updating the
+# same files in multiple PRs or jobs.
+if [[ -n "$GITHUB_TOKEN" ]]; then
+    echo "Detected GITHUB_TOKEN so running container index generation"
+    "$SCRIPT_DIR/create-container-index.sh"
+fi
 
-IMAGE_KEY=${GCP_IMAGE_LABEL:-calyptia-core-release}
-GCP_INDEX_FILE=${GCP_INDEX_FILE:-gcp.index.json}
-AWS_INDEX_FILE=${AWS_INDEX_FILE:-aws.index.json}
+if [[ -n "$AWS_ACCESS_KEY_ID" ]]; then
+    echo "Detected AWS_ACCESS_KEY_ID so running AWS VM index generation"
+    "$SCRIPT_DIR/create-vm-aws-index.sh"
+fi
 
-# Assumption for GCP is authentication is complete prior to this script
-AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:?}
-AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:?}
-
-GHCR_TOKEN=$(echo "$GITHUB_TOKEN" | base64)
-
-curl --silent -H "Authorization: Bearer $GHCR_TOKEN" https://ghcr.io/v2/"${CONTAINER_PACKAGE}"/tags/list | \
-    jq -r '.tags | map(select(.| test("^v(.*)")))' | tee "$CONTAINER_INDEX_FILE"
-
-# For AWS we have to iterate over regions
-for aws_region in $(aws ec2 describe-regions --output text | cut -f4)
-do
-    # As we only want a single image per tag value we need to first get our tag values then query for each one and take the latest
-    aws ec2 describe-tags --no-paginate --region "$aws_region" \
-        --filter "Name=key,Values=calyptia-core-release" --query 'Tags[*]' --output json | jq -cr 'unique_by(.Key,.Value)|.[].Value' > "$aws_region".tags
-
-    while IFS= read -r release_tag_value; do
-        # Get our images with this tag value and region, sort by creation date and select last for most recent then add region + release info
-        aws ec2 describe-images --no-paginate --owners self --region "$aws_region" \
-            --filters "Name=tag:$IMAGE_KEY,Values=$release_tag_value" "Name=name,Values=gold-calyptia-core*" \
-            --query 'Images[] | sort_by(@, &CreationDate)[].{CreationDate: CreationDate, ImageId: ImageId, Name: Name, Tags: Tags}|[-1]' \
-            --output=json | jq ". += {\"region\" : \"$aws_region\", \"release\": \"$release_tag_value\" }" > aws-region-"$aws_region"-"$release_tag_value".json
-    done <"$aws_region".tags
-    rm -f "$aws_region".tags
-
-done
-
-# Now combine our region files into a single array
-jq -s . aws-region-*.json | tee "$AWS_INDEX_FILE"
-rm -f aws-region-*.json
-
-# Sort by most recent any images with an appropriate label specified
-gcloud compute images list --no-standard-images --sort-by='~creationTimestamp' \
-    --filter="labels.$IMAGE_KEY ~ .+" --format='json(name,labels)' | tee "$GCP_INDEX_FILE"
-
+if [[ -n "$GOOGLE_APPLICATION_CREDENTIALS" ]]; then
+    echo "Detected GOOGLE_APPLICATION_CREDENTIALS so running GCP VM index generation"
+    "$SCRIPT_DIR/create-vm-gcp-index.sh"
+fi
