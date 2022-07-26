@@ -178,5 +178,35 @@
                 "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20220706"
             }
         ]
+    },
+    {
+        "CreationDate": "2022-07-26T11:17:54.000Z",
+        "ImageId": "ami-0f8246a28c2426175",
+        "Name": "pr-22-calyptia-core",
+        "Tags": [
+            {
+                "Key": "calyptia-core-release",
+                "Value": "0.2.8"
+            },
+            {
+                "Key": "source-image",
+                "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20220706"
+            }
+        ]
+    },
+    {
+        "CreationDate": "2022-07-26T12:21:17.000Z",
+        "ImageId": "ami-05f7750a222c96d21",
+        "Name": "gold-calyptia-core-20220726121926",
+        "Tags": [
+            {
+                "Key": "calyptia-core-release",
+                "Value": "0.2.8"
+            },
+            {
+                "Key": "source-image",
+                "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20220706"
+            }
+        ]
     }
 ]

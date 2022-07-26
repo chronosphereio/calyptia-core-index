@@ -1,5 +1,21 @@
 [
   {
+    "creationTimestamp": "2022-07-26T05:21:24.302-07:00",
+    "labels": {
+      "calyptia-core-release": "0-2-8",
+      "source-image": "ubuntu-2004-lts"
+    },
+    "name": "gold-calyptia-core-20220726121926"
+  },
+  {
+    "creationTimestamp": "2022-07-26T04:17:50.180-07:00",
+    "labels": {
+      "calyptia-core-release": "0-2-8",
+      "source-image": "ubuntu-2004-lts"
+    },
+    "name": "pr-22-calyptia-core"
+  },
+  {
     "creationTimestamp": "2022-07-22T11:39:18.791-07:00",
     "labels": {
       "calyptia-core-release": "0-2-8",
