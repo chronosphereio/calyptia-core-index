@@ -36,22 +36,15 @@ func TestAll(t *testing.T) {
 					AWSImage{
 						ImageID: fmt.Sprintf("v%s", versionToTest),
 						Name:    "test",
-						Tags: []struct {
-							Key   string `json:"Key"`
-							Value string `json:"Value"`
-						}{
-							{
-								Key:   awsCoreReleaseTag,
-								Value: versionToTest,
-							},
-						},
+						Region:  "us-east-1",
+						Release: versionToTest,
 					},
 				}, nil
 			},
 		},
 	}
 
-	match, err := awsIndex.Match(ctx, lastImage)
+	match, err := awsIndex.Match(ctx, "us-east-1", lastImage)
 	if err != nil {
 		t.Errorf("aws index match err != nil, %s", err)
 		return
