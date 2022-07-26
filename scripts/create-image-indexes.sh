@@ -13,7 +13,7 @@ if [[ -n "$AWS_ACCESS_KEY_ID" ]]; then
     "$SCRIPT_DIR/create-vm-aws-index.sh"
 fi
 
-if [[ -n "$GOOGLE_APPLICATION_CREDENTIALS" ]]; then
-    echo "Detected GOOGLE_APPLICATION_CREDENTIALS so running GCP VM index generation"
+if ! gcloud config get-value account | grep -q unset ; then
+    echo "Detected gcloud authentication so running GCP VM index generation"
     "$SCRIPT_DIR/create-vm-gcp-index.sh"
 fi

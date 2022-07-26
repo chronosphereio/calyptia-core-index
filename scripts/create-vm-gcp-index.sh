@@ -1,19 +1,16 @@
 #!/bin/bash
 set -u
 
-GOOGLE_APPLICATION_CREDENTIALS=${GOOGLE_APPLICATION_CREDENTIALS:?}
-
 IMAGE_KEY=${IMAGE_KEY:-calyptia-core-release}
 GCP_INDEX_FILE=${GCP_INDEX_FILE:-gcp.index.json}
 
-# Try to keep any auth as private as possible
-# https://serverfault.com/a/849910
-CLOUDSDK_CONFIG=$(mktemp -d)
-
-gcloud auth activate-service-account --key-file="$GOOGLE_APPLICATION_CREDENTIALS"
-
-# Sort by most recent any images with an appropriate label specified
-gcloud compute images list --no-standard-images --sort-by='~creationTimestamp' \
-    --filter="labels.$IMAGE_KEY ~ .+" --format='json(name,labels)' | tee "$GCP_INDEX_FILE"
-
-rm -rf "$CLOUDSDK_CONFIG"
+if gcloud config get-value account | grep -q unset; then
+    echo "ERROR: authenticate with gcloud first"
+    exit 1
+else
+    # Sort by most recent any images with an appropriate label specified,
+    # ensure we exclude PRs and then pick only latest one for a release
+    gcloud compute images list --no-standard-images --sort-by='~creationTimestamp' \
+        --filter="labels.$IMAGE_KEY ~ .+ AND name ~ gold-calyptia-core*" \
+        --format='json(name,labels)' | jq 'unique_by(.labels."calyptia-core-release")' | tee "$GCP_INDEX_FILE"
+fi
