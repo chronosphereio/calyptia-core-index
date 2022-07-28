@@ -17,10 +17,6 @@
     "release": "0.2.6"
   },
   {
-    "region": "ap-northeast-1",
-    "release": "0.2.7"
-  },
-  {
     "CreationDate": "2022-07-26T20:13:15.000Z",
     "ImageId": "ami-040c3314e47222de0",
     "Name": "gold-calyptia-core-20220726200819",
@@ -70,10 +66,6 @@
     ],
     "region": "ap-northeast-2",
     "release": "0.2.6"
-  },
-  {
-    "region": "ap-northeast-2",
-    "release": "0.2.7"
   },
   {
     "CreationDate": "2022-07-26T20:13:15.000Z",
@@ -127,10 +119,6 @@
     "release": "0.2.6"
   },
   {
-    "region": "ap-south-1",
-    "release": "0.2.7"
-  },
-  {
     "CreationDate": "2022-07-26T20:13:15.000Z",
     "ImageId": "ami-030a46c624bcfe004",
     "Name": "gold-calyptia-core-20220726200819",
@@ -180,10 +168,6 @@
     ],
     "region": "ap-southeast-1",
     "release": "0.2.6"
-  },
-  {
-    "region": "ap-southeast-1",
-    "release": "0.2.7"
   },
   {
     "CreationDate": "2022-07-26T20:13:15.000Z",
@@ -237,10 +221,6 @@
     "release": "0.2.6"
   },
   {
-    "region": "ap-southeast-2",
-    "release": "0.2.7"
-  },
-  {
     "CreationDate": "2022-07-26T20:13:15.000Z",
     "ImageId": "ami-0e7d9fbe5537fea7d",
     "Name": "gold-calyptia-core-20220726200819",
@@ -290,10 +270,6 @@
     ],
     "region": "us-east-1",
     "release": "0.2.6"
-  },
-  {
-    "region": "us-east-1",
-    "release": "0.2.7"
   },
   {
     "CreationDate": "2022-07-26T20:10:10.000Z",
@@ -347,10 +323,6 @@
     "release": "0.2.6"
   },
   {
-    "region": "us-east-2",
-    "release": "0.2.7"
-  },
-  {
     "CreationDate": "2022-07-26T20:13:14.000Z",
     "ImageId": "ami-00d9032cdad185ad1",
     "Name": "gold-calyptia-core-20220726200819",
@@ -402,10 +374,6 @@
     "release": "0.2.6"
   },
   {
-    "region": "us-west-1",
-    "release": "0.2.7"
-  },
-  {
     "CreationDate": "2022-07-26T20:13:14.000Z",
     "ImageId": "ami-07a1994b2468bdcd2",
     "Name": "gold-calyptia-core-20220726200819",
@@ -455,10 +423,6 @@
     ],
     "region": "us-west-2",
     "release": "0.2.6"
-  },
-  {
-    "region": "us-west-2",
-    "release": "0.2.7"
   },
   {
     "CreationDate": "2022-07-26T20:13:14.000Z",
