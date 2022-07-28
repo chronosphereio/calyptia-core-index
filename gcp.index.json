@@ -8,11 +8,19 @@
     "name": "gold-calyptia-core-20220721124106"
   },
   {
-    "creationTimestamp": "2022-07-26T06:48:43.376-07:00",
+    "creationTimestamp": "2022-07-26T13:10:20.243-07:00",
     "labels": {
       "calyptia-core-release": "0-2-8",
       "source-image": "ubuntu-2004-lts"
     },
-    "name": "gold-calyptia-core-20220726134630"
+    "name": "gold-calyptia-core-20220726200819"
+  },
+  {
+    "creationTimestamp": "2022-07-27T13:17:12.331-07:00",
+    "labels": {
+      "calyptia-core-release": "0-2-9",
+      "source-image": "ubuntu-2004-lts"
+    },
+    "name": "gold-calyptia-core-20220727201516"
   }
 ]
