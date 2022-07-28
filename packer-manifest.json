@@ -1,0 +1,49 @@
+{
+  "builds": [
+    {
+      "name": "gcp_compute_calyptia",
+      "builder_type": "googlecompute",
+      "build_time": 1659015736,
+      "files": null,
+      "artifact_id": "gold-calyptia-core-20220728133934-us",
+      "packer_run_uuid": "12603f39-cf7b-c136-f57c-544780516522",
+      "custom_data": {
+        "calyptia_core_release": "0.3.0"
+      }
+    },
+    {
+      "name": "gcp_compute_calyptia",
+      "builder_type": "googlecompute",
+      "build_time": 1659015747,
+      "files": null,
+      "artifact_id": "gold-calyptia-core-20220728133934-eu",
+      "packer_run_uuid": "12603f39-cf7b-c136-f57c-544780516522",
+      "custom_data": {
+        "calyptia_core_release": "0.3.0"
+      }
+    },
+    {
+      "name": "gcp_compute_calyptia",
+      "builder_type": "googlecompute",
+      "build_time": 1659015748,
+      "files": null,
+      "artifact_id": "gold-calyptia-core-20220728133934-asia",
+      "packer_run_uuid": "12603f39-cf7b-c136-f57c-544780516522",
+      "custom_data": {
+        "calyptia_core_release": "0.3.0"
+      }
+    },
+    {
+      "name": "aws_calyptia",
+      "builder_type": "amazon-ebs",
+      "build_time": 1659016150,
+      "files": null,
+      "artifact_id": "ap-northeast-1:ami-0fbe7f10e010ab1dd,ap-northeast-2:ami-07f658f30351fb8e4,ap-south-1:ami-0e573e237c8000f37,ap-southeast-1:ami-07c12bb4077dd1243,ap-southeast-2:ami-0423f623df2fff5bf,us-east-1:ami-0b2c8aef23a107913,us-east-2:ami-0b07f1f23ceb90331,us-west-1:ami-0a01b3f717d988faa,us-west-2:ami-05b6bb7db1aa9930a",
+      "packer_run_uuid": "12603f39-cf7b-c136-f57c-544780516522",
+      "custom_data": {
+        "calyptia_core_release": "0.3.0"
+      }
+    }
+  ],
+  "last_run_uuid": "12603f39-cf7b-c136-f57c-544780516522"
+}
