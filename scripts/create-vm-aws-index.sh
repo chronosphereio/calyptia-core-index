@@ -7,6 +7,9 @@ AWS_INDEX_FILE=${AWS_INDEX_FILE:-aws.index.json}
 # Assumption for GCP is authentication is complete prior to this script
 AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:?}
 AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:?}
+AWS_REGION=${AWS_REGION:-us-east-1}
+
+set -x
 
 # For AWS we have to iterate over regions
 for aws_region in $(aws ec2 describe-regions --output text | cut -f4)
