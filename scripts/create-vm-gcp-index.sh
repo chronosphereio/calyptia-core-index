@@ -12,5 +12,5 @@ else
     # ensure we exclude PRs and then pick only latest one for a release
     gcloud compute images list --no-standard-images --sort-by='~creationTimestamp' \
         --filter="labels.$IMAGE_KEY ~ .+ AND name ~ gold-calyptia-core*" \
-        --format='json(name,labels,storageLocations)' | jq 'unique_by(.labels."calyptia-core-release")' | tee "$GCP_INDEX_FILE"
+        --format='json(name,labels,storageLocations)' | jq 'unique_by(.labels."calyptia-core-release", .storageLocations)' | tee "$GCP_INDEX_FILE"
 fi
