@@ -103,7 +103,7 @@ func (a AWS) Match(ctx context.Context, region, version string) (string, error) 
 		}
 	}
 
-	return "", nil
+	return "", ErrNoMatchingImage
 }
 
 func NewAWS() (*AWS, error) {
