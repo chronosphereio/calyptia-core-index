@@ -82,10 +82,14 @@ func TestAWS_Match(t *testing.T) {
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
 			version, err := tc.aws.Match(ctx, tc.region, tc.version)
-			if err != nil && tc.wantError != nil && !errors.Is(err, tc.wantError) {
+			if err == nil && tc.wantError != nil {
+				t.Errorf("err == nil, != %v", tc.wantError)
+				return
+			} else if err != nil && tc.wantError != nil && !errors.Is(err, tc.wantError) {
 				t.Errorf("error: %v != %v", err, tc.wantError)
 				return
 			}
+
 			if want, got := tc.wantedName, version; want != got {
 				t.Errorf("want: %v != got: %v", want, got)
 				return
