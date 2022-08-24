@@ -110,7 +110,7 @@ type GCPIndexMock struct {
 }
 
 // Match calls MatchFunc.
-func (mock *GCPIndexMock) Match(ctx context.Context, version string) (string, error) {
+func (mock *GCPIndexMock) Match(ctx context.Context, version, region string) (string, error) {
 	if mock.MatchFunc == nil {
 		panic("GCPIndexMock.MatchFunc: method is nil but GCPIndex.Match was just called")
 	}

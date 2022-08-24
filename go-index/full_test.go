@@ -67,13 +67,14 @@ func TestAll(t *testing.T) {
 						}{
 							CalyptiaCoreRelease: "0-2-6",
 						},
+						StorageLocations: []string{"us"},
 					},
 				}, nil
 			},
 		},
 	}
 
-	match, err = gcpIndex.Match(ctx, lastImage)
+	match, err = gcpIndex.Match(ctx, lastImage, "us")
 	if err != nil {
 		t.Errorf("gcp index match err != nil, %s", err)
 		return

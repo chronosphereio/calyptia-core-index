@@ -25,7 +25,8 @@ type (
 			CalyptiaCoreRelease string `json:"calyptia-core-release"`
 			SourceImage         string `json:"source-image"`
 		} `json:"labels"`
-		Name string `json:"name"`
+		Name             string   `json:"name"`
+		StorageLocations []string `json:"storageLocations"`
 	}
 
 	GCPImages []GCPImage
@@ -37,7 +38,7 @@ type (
 
 	//go:generate moq -out gcp_index_mock.go . GCPIndex
 	GCPIndex interface {
-		Match(ctx context.Context, version string) (string, error)
+		Match(ctx context.Context, version, region string) (string, error)
 	}
 
 	GCP struct {
@@ -78,7 +79,7 @@ func (f GCPIndexFetcher) GetImages(ctx context.Context) (GCPImages, error) {
 	return out, nil
 }
 
-func (g GCP) Match(ctx context.Context, version string) (string, error) {
+func (g GCP) Match(ctx context.Context, version, region string) (string, error) {
 	var images GCPImages
 
 	orig, err := semver.NewVersion(version)
@@ -96,7 +97,7 @@ func (g GCP) Match(ctx context.Context, version string) (string, error) {
 		if err != nil {
 			return "", err
 		}
-		if release.Equal(orig) {
+		if image.StorageLocations[0] == region && release.Equal(orig) {
 			return image.Name, nil
 		}
 	}

@@ -29,7 +29,8 @@ func TestGCP_Match(t *testing.T) {
 								}{
 									CalyptiaCoreRelease: "0-2-6",
 								},
-								Name: "test",
+								Name:             "test",
+								StorageLocations: []string{"us"},
 							},
 						}, nil
 					},
@@ -52,6 +53,7 @@ func TestGCP_Match(t *testing.T) {
 								}{
 									CalyptiaCoreRelease: "0-2-5",
 								},
+								StorageLocations: []string{"us"},
 							},
 						}, nil
 					},
@@ -79,7 +81,7 @@ func TestGCP_Match(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			version, err := tc.gcp.Match(ctx, tc.version)
+			version, err := tc.gcp.Match(ctx, tc.version, "us")
 			if err != nil && tc.wantError != nil && !errors.Is(err, tc.wantError) {
 				t.Errorf("error: %v != %v", err, tc.wantError)
 				return
