@@ -1,0 +1,155 @@
+[
+  {
+    "CreationDate": "2022-09-02T12:02:09.000Z",
+    "ImageId": "ami-07cb695741ad3524a",
+    "Name": "core-test-0a7853a480ee3e2db1a1072c79eb2d9531989a69",
+    "Tags": [
+      {
+        "Key": "source-image",
+        "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20220901"
+      },
+      {
+        "Key": "calyptia-core-release",
+        "Value": "0.3.6"
+      }
+    ],
+    "region": "ap-northeast-1",
+    "release": "0.3.6"
+  },
+  {
+    "CreationDate": "2022-09-02T12:02:09.000Z",
+    "ImageId": "ami-06d2cdc409db26e8a",
+    "Name": "core-test-0a7853a480ee3e2db1a1072c79eb2d9531989a69",
+    "Tags": [
+      {
+        "Key": "source-image",
+        "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20220901"
+      },
+      {
+        "Key": "calyptia-core-release",
+        "Value": "0.3.6"
+      }
+    ],
+    "region": "ap-northeast-2",
+    "release": "0.3.6"
+  },
+  {
+    "CreationDate": "2022-09-02T12:02:09.000Z",
+    "ImageId": "ami-03e3793568d63b9b4",
+    "Name": "core-test-0a7853a480ee3e2db1a1072c79eb2d9531989a69",
+    "Tags": [
+      {
+        "Key": "calyptia-core-release",
+        "Value": "0.3.6"
+      },
+      {
+        "Key": "source-image",
+        "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20220901"
+      }
+    ],
+    "region": "ap-south-1",
+    "release": "0.3.6"
+  },
+  {
+    "CreationDate": "2022-09-02T12:02:09.000Z",
+    "ImageId": "ami-0123c21d2d3a570e9",
+    "Name": "core-test-0a7853a480ee3e2db1a1072c79eb2d9531989a69",
+    "Tags": [
+      {
+        "Key": "calyptia-core-release",
+        "Value": "0.3.6"
+      },
+      {
+        "Key": "source-image",
+        "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20220901"
+      }
+    ],
+    "region": "ap-southeast-1",
+    "release": "0.3.6"
+  },
+  {
+    "CreationDate": "2022-09-02T12:02:09.000Z",
+    "ImageId": "ami-0ec6d86a0e4945216",
+    "Name": "core-test-0a7853a480ee3e2db1a1072c79eb2d9531989a69",
+    "Tags": [
+      {
+        "Key": "calyptia-core-release",
+        "Value": "0.3.6"
+      },
+      {
+        "Key": "source-image",
+        "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20220901"
+      }
+    ],
+    "region": "ap-southeast-2",
+    "release": "0.3.6"
+  },
+  {
+    "CreationDate": "2022-09-02T11:59:03.000Z",
+    "ImageId": "ami-01bb460820f782f1f",
+    "Name": "core-test-0a7853a480ee3e2db1a1072c79eb2d9531989a69",
+    "Tags": [
+      {
+        "Key": "calyptia-core-release",
+        "Value": "0.3.6"
+      },
+      {
+        "Key": "source-image",
+        "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20220901"
+      }
+    ],
+    "region": "us-east-1",
+    "release": "0.3.6"
+  },
+  {
+    "CreationDate": "2022-09-02T12:02:08.000Z",
+    "ImageId": "ami-08cd0d1b52f427b37",
+    "Name": "core-test-0a7853a480ee3e2db1a1072c79eb2d9531989a69",
+    "Tags": [
+      {
+        "Key": "source-image",
+        "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20220901"
+      },
+      {
+        "Key": "calyptia-core-release",
+        "Value": "0.3.6"
+      }
+    ],
+    "region": "us-east-2",
+    "release": "0.3.6"
+  },
+  {
+    "CreationDate": "2022-09-02T12:02:08.000Z",
+    "ImageId": "ami-07a03ed49729c4327",
+    "Name": "core-test-0a7853a480ee3e2db1a1072c79eb2d9531989a69",
+    "Tags": [
+      {
+        "Key": "calyptia-core-release",
+        "Value": "0.3.6"
+      },
+      {
+        "Key": "source-image",
+        "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20220901"
+      }
+    ],
+    "region": "us-west-1",
+    "release": "0.3.6"
+  },
+  {
+    "CreationDate": "2022-09-02T12:02:08.000Z",
+    "ImageId": "ami-0a3d913d71b84b479",
+    "Name": "core-test-0a7853a480ee3e2db1a1072c79eb2d9531989a69",
+    "Tags": [
+      {
+        "Key": "calyptia-core-release",
+        "Value": "0.3.6"
+      },
+      {
+        "Key": "source-image",
+        "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20220901"
+      }
+    ],
+    "region": "us-west-2",
+    "release": "0.3.6"
+  }
+]

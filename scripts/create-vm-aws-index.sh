@@ -3,6 +3,7 @@ set -u
 
 IMAGE_KEY=${IMAGE_KEY:-calyptia-core-release}
 AWS_INDEX_FILE=${AWS_INDEX_FILE:-aws.index.json}
+IMAGE_NAME_PREFIX=${IMAGE_NAME_PREFIX:-gold-calyptia-core}
 
 # Assumption for GCP is authentication is complete prior to this script
 AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:?}
@@ -21,7 +22,7 @@ do
     while IFS= read -r release_tag_value; do
         echo "Finding AMIs in region $aws_region for release $release_tag_value"
         aws ec2 describe-images --no-paginate --owners self --region "$aws_region" \
-            --filters "Name=tag:$IMAGE_KEY,Values=$release_tag_value" "Name=name,Values=gold-calyptia-core*" \
+            --filters "Name=tag:$IMAGE_KEY,Values=$release_tag_value" "Name=name,Values=$IMAGE_NAME_PREFIX*" \
             --query 'Images[] | sort_by(@, &CreationDate)[].{CreationDate: CreationDate, ImageId: ImageId, Name: Name, Tags: Tags}|[-1]' \
             --output=json | jq "select(. != null)|. += {\"region\" : \"$aws_region\", \"release\": \"$release_tag_value\" }" \
                 > aws-region-"$aws_region"-"$release_tag_value".json
