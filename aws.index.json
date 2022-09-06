@@ -136,9 +136,9 @@
     "release": "0.3.4"
   },
   {
-    "CreationDate": "2022-09-02T12:00:20.000Z",
-    "ImageId": "ami-0d2358ab2bf27bb72",
-    "Name": "gold-calyptia-core-20220902115644",
+    "CreationDate": "2022-09-06T15:48:57.000Z",
+    "ImageId": "ami-0b63917e35032190d",
+    "Name": "gold-calyptia-core-20220906154346",
     "Tags": [
       {
         "Key": "calyptia-core-release",
@@ -289,17 +289,17 @@
     "release": "0.3.4"
   },
   {
-    "CreationDate": "2022-09-02T12:00:20.000Z",
-    "ImageId": "ami-0e3a0732fda70e2dc",
-    "Name": "gold-calyptia-core-20220902115644",
+    "CreationDate": "2022-09-06T15:48:56.000Z",
+    "ImageId": "ami-0be8a962966c2103a",
+    "Name": "gold-calyptia-core-20220906154346",
     "Tags": [
-      {
-        "Key": "source-image",
-        "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20220901"
-      },
       {
         "Key": "calyptia-core-release",
         "Value": "0.3.6"
+      },
+      {
+        "Key": "source-image",
+        "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20220901"
       }
     ],
     "region": "ap-northeast-2",
@@ -442,17 +442,17 @@
     "release": "0.3.4"
   },
   {
-    "CreationDate": "2022-09-02T12:00:20.000Z",
-    "ImageId": "ami-0678d5d7d7d997026",
-    "Name": "gold-calyptia-core-20220902115644",
+    "CreationDate": "2022-09-06T15:48:58.000Z",
+    "ImageId": "ami-030834a826aaec9c1",
+    "Name": "gold-calyptia-core-20220906154346",
     "Tags": [
-      {
-        "Key": "source-image",
-        "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20220901"
-      },
       {
         "Key": "calyptia-core-release",
         "Value": "0.3.6"
+      },
+      {
+        "Key": "source-image",
+        "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20220901"
       }
     ],
     "region": "ap-south-1",
@@ -595,9 +595,9 @@
     "release": "0.3.4"
   },
   {
-    "CreationDate": "2022-09-02T12:00:21.000Z",
-    "ImageId": "ami-0019293d5811f5ead",
-    "Name": "gold-calyptia-core-20220902115644",
+    "CreationDate": "2022-09-06T15:48:57.000Z",
+    "ImageId": "ami-0303f50af8143dfbf",
+    "Name": "gold-calyptia-core-20220906154346",
     "Tags": [
       {
         "Key": "calyptia-core-release",
@@ -748,17 +748,17 @@
     "release": "0.3.4"
   },
   {
-    "CreationDate": "2022-09-02T12:00:21.000Z",
-    "ImageId": "ami-025e0be0482cb41e1",
-    "Name": "gold-calyptia-core-20220902115644",
+    "CreationDate": "2022-09-06T15:48:57.000Z",
+    "ImageId": "ami-02eec3bb17be0143a",
+    "Name": "gold-calyptia-core-20220906154346",
     "Tags": [
-      {
-        "Key": "calyptia-core-release",
-        "Value": "0.3.6"
-      },
       {
         "Key": "source-image",
         "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20220901"
+      },
+      {
+        "Key": "calyptia-core-release",
+        "Value": "0.3.6"
       }
     ],
     "region": "ap-southeast-2",
@@ -901,9 +901,9 @@
     "release": "0.3.4"
   },
   {
-    "CreationDate": "2022-09-02T11:58:33.000Z",
-    "ImageId": "ami-049f0da4dd0abfec3",
-    "Name": "gold-calyptia-core-20220902115644",
+    "CreationDate": "2022-09-06T15:45:53.000Z",
+    "ImageId": "ami-097d6009b2fe4dac7",
+    "Name": "gold-calyptia-core-20220906154346",
     "Tags": [
       {
         "Key": "calyptia-core-release",
@@ -1054,17 +1054,17 @@
     "release": "0.3.4"
   },
   {
-    "CreationDate": "2022-09-02T12:00:19.000Z",
-    "ImageId": "ami-0dd314c10c18d15a2",
-    "Name": "gold-calyptia-core-20220902115644",
+    "CreationDate": "2022-09-06T15:48:55.000Z",
+    "ImageId": "ami-0ac82227870c90590",
+    "Name": "gold-calyptia-core-20220906154346",
     "Tags": [
-      {
-        "Key": "calyptia-core-release",
-        "Value": "0.3.6"
-      },
       {
         "Key": "source-image",
         "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20220901"
+      },
+      {
+        "Key": "calyptia-core-release",
+        "Value": "0.3.6"
       }
     ],
     "region": "us-east-2",
@@ -1207,9 +1207,9 @@
     "release": "0.3.4"
   },
   {
-    "CreationDate": "2022-09-02T12:00:20.000Z",
-    "ImageId": "ami-0acaaf86e93e70c0d",
-    "Name": "gold-calyptia-core-20220902115644",
+    "CreationDate": "2022-09-06T15:48:56.000Z",
+    "ImageId": "ami-09a9d23b36164e639",
+    "Name": "gold-calyptia-core-20220906154346",
     "Tags": [
       {
         "Key": "calyptia-core-release",
@@ -1360,9 +1360,9 @@
     "release": "0.3.4"
   },
   {
-    "CreationDate": "2022-09-02T12:00:19.000Z",
-    "ImageId": "ami-04cf398f5a7862cf7",
-    "Name": "gold-calyptia-core-20220902115644",
+    "CreationDate": "2022-09-06T15:48:56.000Z",
+    "ImageId": "ami-079309bf8d2cd2e8f",
+    "Name": "gold-calyptia-core-20220906154346",
     "Tags": [
       {
         "Key": "source-image",
