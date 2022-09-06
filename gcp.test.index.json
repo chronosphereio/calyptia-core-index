@@ -1,0 +1,35 @@
+[
+  {
+    "creationTimestamp": "2022-09-02T10:10:02.458-07:00",
+    "labels": {
+      "calyptia-core-release": "0-3-6",
+      "source-image": "ubuntu-2004-lts"
+    },
+    "name": "core-test-pr-66-calyptia-core-asia",
+    "storageLocations": [
+      "asia"
+    ]
+  },
+  {
+    "creationTimestamp": "2022-09-02T10:10:02.359-07:00",
+    "labels": {
+      "calyptia-core-release": "0-3-6",
+      "source-image": "ubuntu-2004-lts"
+    },
+    "name": "core-test-pr-66-calyptia-core-eu",
+    "storageLocations": [
+      "eu"
+    ]
+  },
+  {
+    "creationTimestamp": "2022-09-02T10:09:58.640-07:00",
+    "labels": {
+      "calyptia-core-release": "0-3-6",
+      "source-image": "ubuntu-2004-lts"
+    },
+    "name": "core-test-pr-66-calyptia-core-us",
+    "storageLocations": [
+      "us"
+    ]
+  }
+]

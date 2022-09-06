@@ -1,12 +1,12 @@
 #!/bin/bash
+set -u
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-# Limit via credentials to what is required, this also prevents any races with updating the
-# same files in multiple PRs or jobs.
-if [[ -n "$GITHUB_TOKEN" ]]; then
-    echo "Detected GITHUB_TOKEN so running container index generation"
-    "$SCRIPT_DIR/create-container-index.sh"
-fi
+# Reuse existing scripts but redirect for test images
+export IMAGE_KEY=${IMAGE_KEY:-calyptia-core-release}
+export GCP_INDEX_FILE=${GCP_INDEX_FILE:-gcp.test.index.json}
+export AWS_INDEX_FILE=${AWS_INDEX_FILE:-aws.test.index.json}
+export IMAGE_NAME_PREFIX=${IMAGE_NAME_PREFIX:-core-test}
 
 if [[ -n "$AWS_ACCESS_KEY_ID" ]]; then
     echo "Detected AWS_ACCESS_KEY_ID so running AWS VM index generation"
@@ -17,5 +17,3 @@ if ! gcloud config get-value account | grep -q unset ; then
     echo "Detected gcloud authentication so running GCP VM index generation"
     "$SCRIPT_DIR/create-vm-gcp-index.sh"
 fi
-
-"$SCRIPT_DIR/create-vm-test-index.sh"
