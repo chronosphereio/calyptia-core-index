@@ -12,8 +12,8 @@ import (
 )
 
 const (
-	awsIndexURL       = "https://raw.githubusercontent.com/calyptia/core-images-index/main/aws.index.json"
-	awsCoreReleaseTag = "calyptia-core-release"
+	awsIndexURL     = "https://raw.githubusercontent.com/calyptia/core-images-index/main/aws.index.json"
+	awsTestIndexURL = "https://raw.githubusercontent.com/calyptia/core-images-index/main/aws.test.index.json"
 )
 
 type (
@@ -33,12 +33,12 @@ type (
 
 	//go:generate moq -out aws_index_fetch_mock.go . AWSIndexFetch
 	AWSIndexFetch interface {
-		GetImages(ctx context.Context) (AWSImages, error)
+		GetImages(ctx context.Context, opts FilterOpts) (AWSImages, error)
 	}
 
 	//go:generate moq -out aws_index_mock.go . AWSIndex
 	AWSIndex interface {
-		Match(ctx context.Context, region, version string) (string, error)
+		Match(ctx context.Context, opts FilterOpts) (string, error)
 	}
 
 	AWS struct {
@@ -51,18 +51,23 @@ type (
 	}
 )
 
-func (f AWSIndexFetcher) GetImages(ctx context.Context) (AWSImages, error) {
+func (f AWSIndexFetcher) GetImages(ctx context.Context, opts FilterOpts) (AWSImages, error) {
 	var out AWSImages
 
-	request, err := http.NewRequestWithContext(ctx, http.MethodGet, awsIndexURL, nil)
+	url := awsIndexURL
+	if opts.TestIndex {
+		url = awsTestIndexURL
+	}
+
+	request, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
-		return out, fmt.Errorf("cannot create a request to index %s: %w", awsIndexURL, err)
+		return out, fmt.Errorf("cannot create a request to index %s: %w", url, err)
 	}
 
 	client := http.DefaultClient
 	res, err := client.Do(request)
 	if err != nil {
-		return out, fmt.Errorf("could not fetch index %s: %w", awsIndexURL, err)
+		return out, fmt.Errorf("could not fetch index %s: %w", url, err)
 	}
 
 	defer func(Body io.ReadCloser) {
@@ -80,15 +85,15 @@ func (f AWSIndexFetcher) GetImages(ctx context.Context) (AWSImages, error) {
 	return out, nil
 }
 
-func (a AWS) Match(ctx context.Context, region, version string) (string, error) {
+func (a AWS) Match(ctx context.Context, opts FilterOpts) (string, error) {
 	var images AWSImages
 
-	orig, err := semver.NewVersion(version)
+	orig, err := semver.NewVersion(opts.Version)
 	if err != nil {
 		return "", err
 	}
 
-	images, err = a.Fetcher.GetImages(ctx)
+	images, err = a.Fetcher.GetImages(ctx, opts)
 	if err != nil {
 		return "", err
 	}
@@ -98,7 +103,7 @@ func (a AWS) Match(ctx context.Context, region, version string) (string, error) 
 		if err != nil {
 			return "", err
 		}
-		if image.Region == region && release.Equal(orig) {
+		if image.Region == opts.Region && release.Equal(orig) {
 			return image.ImageID, nil
 		}
 	}
