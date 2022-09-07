@@ -31,7 +31,7 @@ func TestAll(t *testing.T) {
 
 	awsIndex := AWS{
 		Fetcher: &AWSIndexFetchMock{
-			GetImagesFunc: func(ctx context.Context) (AWSImages, error) {
+			GetImagesFunc: func(ctx context.Context, opts FilterOpts) (AWSImages, error) {
 				return AWSImages{
 					AWSImage{
 						ImageID: fmt.Sprintf("v%s", versionToTest),
@@ -44,7 +44,11 @@ func TestAll(t *testing.T) {
 		},
 	}
 
-	match, err := awsIndex.Match(ctx, "us-east-1", lastImage)
+	match, err := awsIndex.Match(ctx, FilterOpts{
+		Region:    "us-east-1",
+		Version:   lastImage,
+		TestIndex: false,
+	})
 	if err != nil {
 		t.Errorf("aws index match err != nil, %s", err)
 		return
@@ -57,7 +61,7 @@ func TestAll(t *testing.T) {
 
 	gcpIndex := GCP{
 		Fetcher: &GCPIndexFetchMock{
-			GetImagesFunc: func(ctx context.Context) (GCPImages, error) {
+			GetImagesFunc: func(ctx context.Context, opts FilterOpts) (GCPImages, error) {
 				return GCPImages{
 					GCPImage{
 						Name: fmt.Sprintf("v%s", versionToTest),
@@ -74,7 +78,11 @@ func TestAll(t *testing.T) {
 		},
 	}
 
-	match, err = gcpIndex.Match(ctx, lastImage, "us")
+	match, err = gcpIndex.Match(ctx, FilterOpts{
+		Region:    "us",
+		Version:   lastImage,
+		TestIndex: false,
+	})
 	if err != nil {
 		t.Errorf("gcp index match err != nil, %s", err)
 		return

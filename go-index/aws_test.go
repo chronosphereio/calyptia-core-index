@@ -12,17 +12,20 @@ func TestAWS_Match(t *testing.T) {
 	tt := []struct {
 		name       string
 		aws        AWS
-		version    string
-		region     string
+		opts       FilterOpts
 		wantedName string
 		wantError  error
 	}{
 		{
-			name:   "valid",
-			region: "us-east-1",
+			name: "valid",
+			opts: FilterOpts{
+				Region:    "us-east-1",
+				Version:   "v0.2.6",
+				TestIndex: false,
+			},
 			aws: AWS{
 				Fetcher: &AWSIndexFetchMock{
-					GetImagesFunc: func(ctx context.Context) (AWSImages, error) {
+					GetImagesFunc: func(ctx context.Context, opts FilterOpts) (AWSImages, error) {
 						return AWSImages{
 							AWSImage{
 								ImageID: "test",
@@ -34,14 +37,18 @@ func TestAWS_Match(t *testing.T) {
 					},
 				},
 			},
-			version:    "v0.2.6",
 			wantedName: "test",
 		},
 		{
 			name: "not matching",
+			opts: FilterOpts{
+				Region:    "us",
+				Version:   "0.2.9",
+				TestIndex: false,
+			},
 			aws: AWS{
 				Fetcher: &AWSIndexFetchMock{
-					GetImagesFunc: func(ctx context.Context) (AWSImages, error) {
+					GetImagesFunc: func(ctx context.Context, opts FilterOpts) (AWSImages, error) {
 						return AWSImages{
 							AWSImage{
 								CreationDate: time.Now(),
@@ -61,19 +68,22 @@ func TestAWS_Match(t *testing.T) {
 					},
 				},
 			},
-			version:   "v0.2.6",
 			wantError: ErrNoMatchingImage,
 		},
 		{
 			name: "error getting images",
+			opts: FilterOpts{
+				Region:    "us-east-1",
+				Version:   "v0.2.6",
+				TestIndex: false,
+			},
 			aws: AWS{
 				Fetcher: &AWSIndexFetchMock{
-					GetImagesFunc: func(ctx context.Context) (AWSImages, error) {
+					GetImagesFunc: func(ctx context.Context, opts FilterOpts) (AWSImages, error) {
 						return nil, http.ErrHijacked
 					},
 				},
 			},
-			version:   "v0.2.6",
 			wantError: http.ErrHijacked,
 		},
 	}
@@ -81,7 +91,7 @@ func TestAWS_Match(t *testing.T) {
 	ctx := context.Background()
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			version, err := tc.aws.Match(ctx, tc.region, tc.version)
+			version, err := tc.aws.Match(ctx, tc.opts)
 			if err == nil && tc.wantError != nil {
 				t.Errorf("err == nil, != %v", tc.wantError)
 				return

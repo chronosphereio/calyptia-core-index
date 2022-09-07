@@ -15,7 +15,8 @@ import (
 )
 
 const (
-	gcpIndexURL = "https://raw.githubusercontent.com/calyptia/core-images-index/main/gcp.index.json"
+	gcpIndexURL     = "https://raw.githubusercontent.com/calyptia/core-images-index/main/gcp.index.json"
+	gcpTestIndexURL = "https://raw.githubusercontent.com/calyptia/core-images-index/main/gcp.test.index.json"
 )
 
 type (
@@ -33,12 +34,12 @@ type (
 
 	//go:generate moq -out gcp_index_fetch_mock.go . GCPIndex
 	GCPIndexFetch interface {
-		GetImages(ctx context.Context) (GCPImages, error)
+		GetImages(ctx context.Context, opts FilterOpts) (GCPImages, error)
 	}
 
 	//go:generate moq -out gcp_index_mock.go . GCPIndex
 	GCPIndex interface {
-		Match(ctx context.Context, version, region string) (string, error)
+		Match(ctx context.Context, opts FilterOpts) (string, error)
 	}
 
 	GCP struct {
@@ -51,12 +52,17 @@ type (
 	}
 )
 
-func (f GCPIndexFetcher) GetImages(ctx context.Context) (GCPImages, error) {
+func (f GCPIndexFetcher) GetImages(ctx context.Context, opts FilterOpts) (GCPImages, error) {
 	var out GCPImages
 
-	request, err := http.NewRequestWithContext(ctx, http.MethodGet, gcpIndexURL, nil)
+	url := gcpIndexURL
+	if opts.TestIndex {
+		url = gcpTestIndexURL
+	}
+
+	request, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
-		return out, fmt.Errorf("cannot create a request to index %s: %w", gcpIndexURL, err)
+		return out, fmt.Errorf("cannot create a request to index %s: %w", url, err)
 	}
 
 	client := http.DefaultClient
@@ -79,15 +85,15 @@ func (f GCPIndexFetcher) GetImages(ctx context.Context) (GCPImages, error) {
 	return out, nil
 }
 
-func (g GCP) Match(ctx context.Context, version, region string) (string, error) {
+func (g GCP) Match(ctx context.Context, opts FilterOpts) (string, error) {
 	var images GCPImages
 
-	orig, err := semver.NewVersion(version)
+	orig, err := semver.NewVersion(opts.Version)
 	if err != nil {
 		return "", err
 	}
 
-	images, err = g.Fetcher.GetImages(ctx)
+	images, err = g.Fetcher.GetImages(ctx, opts)
 	if err != nil {
 		return "", fmt.Errorf("error fetching images: %w", err)
 	}
@@ -97,7 +103,7 @@ func (g GCP) Match(ctx context.Context, version, region string) (string, error) 
 		if err != nil {
 			return "", err
 		}
-		if image.StorageLocations[0] == region && release.Equal(orig) {
+		if image.StorageLocations[0] == opts.Region && release.Equal(orig) {
 			return image.Name, nil
 		}
 	}

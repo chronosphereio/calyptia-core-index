@@ -11,7 +11,7 @@ func TestGCP_Match(t *testing.T) {
 	tt := []struct {
 		name       string
 		gcp        GCP
-		version    string
+		opts       FilterOpts
 		wantedName string
 		wantError  error
 	}{
@@ -20,7 +20,7 @@ func TestGCP_Match(t *testing.T) {
 			gcp: GCP{
 				GCPIndex: nil,
 				Fetcher: &GCPIndexFetchMock{
-					GetImagesFunc: func(ctx context.Context) (GCPImages, error) {
+					GetImagesFunc: func(ctx context.Context, opts FilterOpts) (GCPImages, error) {
 						return GCPImages{
 							GCPImage{
 								Labels: struct {
@@ -36,7 +36,11 @@ func TestGCP_Match(t *testing.T) {
 					},
 				},
 			},
-			version:    "v0.2.6",
+			opts: FilterOpts{
+				Region:    "us",
+				Version:   "v0.2.6",
+				TestIndex: false,
+			},
 			wantedName: "test",
 		},
 		{
@@ -44,7 +48,7 @@ func TestGCP_Match(t *testing.T) {
 			gcp: GCP{
 				GCPIndex: nil,
 				Fetcher: &GCPIndexFetchMock{
-					GetImagesFunc: func(ctx context.Context) (GCPImages, error) {
+					GetImagesFunc: func(ctx context.Context, opts FilterOpts) (GCPImages, error) {
 						return GCPImages{
 							GCPImage{
 								Labels: struct {
@@ -59,7 +63,11 @@ func TestGCP_Match(t *testing.T) {
 					},
 				},
 			},
-			version:   "v0.2.6",
+			opts: FilterOpts{
+				Region:    "us",
+				Version:   "v0.2.6",
+				TestIndex: false,
+			},
 			wantError: ErrNoMatchingImage,
 		},
 		{
@@ -67,12 +75,16 @@ func TestGCP_Match(t *testing.T) {
 			gcp: GCP{
 				GCPIndex: nil,
 				Fetcher: &GCPIndexFetchMock{
-					GetImagesFunc: func(ctx context.Context) (GCPImages, error) {
+					GetImagesFunc: func(ctx context.Context, opts FilterOpts) (GCPImages, error) {
 						return nil, http.ErrHijacked
 					},
 				},
 			},
-			version:   "v0.2.6",
+			opts: FilterOpts{
+				Region:    "us",
+				Version:   "v0.2.6",
+				TestIndex: false,
+			},
 			wantError: http.ErrHijacked,
 		},
 	}
@@ -81,7 +93,7 @@ func TestGCP_Match(t *testing.T) {
 
 	for _, tc := range tt {
 		t.Run(tc.name, func(t *testing.T) {
-			version, err := tc.gcp.Match(ctx, tc.version, "us")
+			version, err := tc.gcp.Match(ctx, tc.opts)
 			if err != nil && tc.wantError != nil && !errors.Is(err, tc.wantError) {
 				t.Errorf("error: %v != %v", err, tc.wantError)
 				return
