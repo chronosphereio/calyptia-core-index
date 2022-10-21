@@ -3,55 +3,55 @@
     {
       "name": "gcp_compute_calyptia",
       "builder_type": "googlecompute",
-      "build_time": 1664051114,
+      "build_time": 1666385998,
       "files": null,
-      "artifact_id": "gold-calyptia-core-20220924202111-us",
-      "packer_run_uuid": "c006be07-17cd-b91a-9e7e-cfe387cba79e",
+      "artifact_id": "gold-calyptia-core-20221021205557-eu",
+      "packer_run_uuid": "397d5e1c-89a3-89dc-46d9-9eb7efbc5288",
       "custom_data": {
-        "calyptia_cli_release": "0.34.0",
+        "calyptia_cli_release": "0.41.2",
         "calyptia_cloud_local": "no",
-        "calyptia_core_release": "0.4.0"
+        "calyptia_core_release": "0.4.1"
       }
     },
     {
       "name": "gcp_compute_calyptia",
       "builder_type": "googlecompute",
-      "build_time": 1664051126,
+      "build_time": 1666386007,
       "files": null,
-      "artifact_id": "gold-calyptia-core-20220924202111-asia",
-      "packer_run_uuid": "c006be07-17cd-b91a-9e7e-cfe387cba79e",
+      "artifact_id": "gold-calyptia-core-20221021205557-us",
+      "packer_run_uuid": "397d5e1c-89a3-89dc-46d9-9eb7efbc5288",
       "custom_data": {
-        "calyptia_cli_release": "0.34.0",
+        "calyptia_cli_release": "0.41.2",
         "calyptia_cloud_local": "no",
-        "calyptia_core_release": "0.4.0"
+        "calyptia_core_release": "0.4.1"
       }
     },
     {
       "name": "gcp_compute_calyptia",
       "builder_type": "googlecompute",
-      "build_time": 1664051127,
+      "build_time": 1666386020,
       "files": null,
-      "artifact_id": "gold-calyptia-core-20220924202111-eu",
-      "packer_run_uuid": "c006be07-17cd-b91a-9e7e-cfe387cba79e",
+      "artifact_id": "gold-calyptia-core-20221021205557-asia",
+      "packer_run_uuid": "397d5e1c-89a3-89dc-46d9-9eb7efbc5288",
       "custom_data": {
-        "calyptia_cli_release": "0.34.0",
+        "calyptia_cli_release": "0.41.2",
         "calyptia_cloud_local": "no",
-        "calyptia_core_release": "0.4.0"
+        "calyptia_core_release": "0.4.1"
       }
     },
     {
       "name": "aws_calyptia",
       "builder_type": "amazon-ebs",
-      "build_time": 1664051586,
+      "build_time": 1666386417,
       "files": null,
-      "artifact_id": "ap-northeast-1:ami-09417c1abbdf64bce,ap-northeast-2:ami-0ea409e014d8cd90d,ap-south-1:ami-0aaaa6fee89adcad1,ap-southeast-1:ami-069fbacd38837d173,ap-southeast-2:ami-0162ee248dda316c5,us-east-1:ami-00b531e1dab9d73a6,us-east-2:ami-0dd6a6226f4bc8400,us-west-1:ami-0f860f3af99b8c122,us-west-2:ami-07de8796f8e46c87d",
-      "packer_run_uuid": "c006be07-17cd-b91a-9e7e-cfe387cba79e",
+      "artifact_id": "ap-northeast-1:ami-0fd1113ac6666cdad,ap-northeast-2:ami-0217871da2e2285d8,ap-south-1:ami-04be63412e853af0d,ap-southeast-1:ami-005e5bf82c2939a3f,ap-southeast-2:ami-0b5cbda1b590609d3,us-east-1:ami-00ed841dba083678d,us-east-2:ami-0e262a80dc7db1d8c,us-west-1:ami-0668dda9f9ed99c69,us-west-2:ami-02a0213534edd612f",
+      "packer_run_uuid": "397d5e1c-89a3-89dc-46d9-9eb7efbc5288",
       "custom_data": {
-        "calyptia_cli_release": "0.34.0",
+        "calyptia_cli_release": "0.41.2",
         "calyptia_cloud_local": "no",
-        "calyptia_core_release": "0.4.0"
+        "calyptia_core_release": "0.4.1"
       }
     }
   ],
-  "last_run_uuid": "c006be07-17cd-b91a-9e7e-cfe387cba79e"
+  "last_run_uuid": "397d5e1c-89a3-89dc-46d9-9eb7efbc5288"
 }
