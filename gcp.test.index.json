@@ -231,34 +231,67 @@
     ]
   },
   {
-    "creationTimestamp": "2022-11-08T05:06:24.764-08:00",
+    "creationTimestamp": "2022-11-14T07:24:33.676-08:00",
     "labels": {
       "calyptia-core-release": "0-4-5",
       "source-image": "ubuntu-2004-lts"
     },
-    "name": "core-test-6becfe8baa9d35dc00b65b3d0b948a6fa19299b3-asia",
+    "name": "core-test-907088222a70caac6f875fe9a38406a7a1deb45f-asia",
     "storageLocations": [
       "asia"
     ]
   },
   {
-    "creationTimestamp": "2022-11-08T05:07:09.655-08:00",
+    "creationTimestamp": "2022-11-14T07:24:30.603-08:00",
     "labels": {
       "calyptia-core-release": "0-4-5",
       "source-image": "ubuntu-2004-lts"
     },
-    "name": "core-test-6becfe8baa9d35dc00b65b3d0b948a6fa19299b3-eu",
+    "name": "core-test-907088222a70caac6f875fe9a38406a7a1deb45f-eu",
     "storageLocations": [
       "eu"
     ]
   },
   {
-    "creationTimestamp": "2022-11-08T05:06:51.827-08:00",
+    "creationTimestamp": "2022-11-14T07:24:40.607-08:00",
     "labels": {
       "calyptia-core-release": "0-4-5",
       "source-image": "ubuntu-2004-lts"
     },
-    "name": "core-test-6becfe8baa9d35dc00b65b3d0b948a6fa19299b3-us",
+    "name": "core-test-907088222a70caac6f875fe9a38406a7a1deb45f-us",
+    "storageLocations": [
+      "us"
+    ]
+  },
+  {
+    "creationTimestamp": "2022-11-14T07:24:42.804-08:00",
+    "labels": {
+      "calyptia-core-release": "0-4-6",
+      "source-image": "ubuntu-2004-lts"
+    },
+    "name": "core-test-pr-113-calyptia-core-asia",
+    "storageLocations": [
+      "asia"
+    ]
+  },
+  {
+    "creationTimestamp": "2022-11-14T07:25:14.054-08:00",
+    "labels": {
+      "calyptia-core-release": "0-4-6",
+      "source-image": "ubuntu-2004-lts"
+    },
+    "name": "core-test-pr-113-calyptia-core-eu",
+    "storageLocations": [
+      "eu"
+    ]
+  },
+  {
+    "creationTimestamp": "2022-11-14T07:25:12.703-08:00",
+    "labels": {
+      "calyptia-core-release": "0-4-6",
+      "source-image": "ubuntu-2004-lts"
+    },
+    "name": "core-test-pr-113-calyptia-core-us",
     "storageLocations": [
       "us"
     ]
