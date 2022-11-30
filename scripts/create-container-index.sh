@@ -1,9 +1,10 @@
 #!/bin/bash
 set -u
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 GITHUB_TOKEN=${GITHUB_TOKEN:?}
 CONTAINER_PACKAGE=${CONTAINER_PACKAGE:-calyptia/core}
-CONTAINER_INDEX_FILE=${CONTAINER_INDEX_FILE:-container.index.json}
+CONTAINER_INDEX_FILE=${CONTAINER_INDEX_FILE:-$SCRIPT_DIR/../container.index.json}
 
 GHCR_TOKEN=$(echo "$GITHUB_TOKEN" | base64)
 
