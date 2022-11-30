@@ -11,7 +11,8 @@ SCHEMA_FILENAME=${SCHEMA_FILENAME:-core-fluent-bit}
 GHCR_TOKEN=$(echo "$GITHUB_TOKEN" | base64)
 
 TAGS=$(curl --silent -H "Authorization: Bearer $GHCR_TOKEN" https://ghcr.io/v2/"${CONTAINER_PACKAGE}"/tags/list?n=100000 | \
-    jq -r '.tags | map(select(.| test("^v(.*)")))|flatten[]')
+    jq -r '.tags | map(select(.| test("^(22\\.|v)(.*)")))|flatten[]') 
+# Test for tags beginning with v* or 22.*: https://github.com/stedolan/jq/issues/1250#issuecomment-252396642
 
 for TAG in $TAGS; do
     mkdir -p "${SCHEMA_DIR}/${TAG}"
