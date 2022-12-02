@@ -188,7 +188,6 @@ function verify_k3s_reqs() {
 
 declare -a ALLOWED_URLS=("https://github.com/k3s-io/k3s/releases" 
                          "https://dl.k8s.io/release" 
-                         "https://storage.googleapis.com/k3s-ci-builds" 
                          "https://cloud-api.calyptia.com" 
                          "https://github.com/calyptia/cli/releases" 
                          "https://ghcr.io/calyptia/core" 
