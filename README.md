@@ -17,13 +17,13 @@ The following index files of supported images for [Calyptia Core](https://calypt
 We provide a simple helper script to install Calyptia Core on various supported platforms like so:
 
 ```shell
-curl -sSfL https://raw.githubusercontent.com/calyptia/core-images-index/main/install-core.sh | sudo sh -s -
+curl -sSfL https://raw.githubusercontent.com/calyptia/core-images-index/main/install-core.sh | sh -s -
 ```
 
 This will run pre-flight checks which you can force install afterwards with a `--force` parameter:
 
 ```shell
-$ curl -sSfL https://raw.githubusercontent.com/calyptia/core-images-index/main/install-core.sh | sudo sh -s - --force
+$ curl -sSfL https://raw.githubusercontent.com/calyptia/core-images-index/main/install-core.sh | sh -s - --force
 [INFO]   =================================== 
 [INFO]    Calyptia Core Installation Script  
 [INFO]   =================================== 
