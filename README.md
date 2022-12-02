@@ -1,4 +1,4 @@
-# Calyptia Core - Public image indexes
+# Calyptia Core - Public image indexes and other tooling
 
 This is a public repository to an updated set of indexes of container tags and public cloud provider images.
 
@@ -11,6 +11,31 @@ The following index files of supported images for [Calyptia Core](https://calypt
 | [AWS VM images index](./aws.index.json)  | List of AWS VM images available. |
 | [GCP VM images index](./gcp.index.json)  | List of GCP VM images available. |
 | [Packer VM manifest](./packer-manifest.json) | The manifest from the latest Packer build. |
+
+## Install Calyptia Core
+
+We provide a simple helper script to install Calyptia Core on various supported platforms like so:
+
+```shell
+curl -sSfL https://raw.githubusercontent.com/calyptia/core-images-index/main/install-core.sh | sh -s -
+```
+
+This will run pre-flight checks which you can force install afterwards with a `--force` parameter:
+
+```shell
+$ curl -sSfL https://raw.githubusercontent.com/calyptia/core-images-index/main/install-core.sh | sh -s - --force
+[INFO]   =================================== 
+[INFO]    Calyptia Core Installation Script  
+[INFO]   =================================== 
+[INFO]   This script requires superuser access to install packages. 
+[INFO]   You will be prompted for your password by sudo. 
+[INFO]   =================================== 
+[INFO]   Detected: centos, amd64 
+[INFO]   Installing Calyptia Core 0.4.6 to: /opt/calyptia-core 
+[INFO]   Installing Calyptia CLI 0.48.0 
+[INFO]   Installing as root:root 
+[WARN]   Ignoring any errors during preflight checks 
+```
 
 ## "Public" images
 
