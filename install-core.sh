@@ -22,7 +22,7 @@ PROVISIONED_USER=${INSTALL_CALYPTIA_PROVISIONED_USER:-$USER}
 PROVISIONED_GROUP=${INSTALL_CALYPTIA_PROVISIONED_GROUP:-$(id -gn)}
 # The location to install Calyptia Core, it will be created during installation.
 # Upgrading of existing versions is not supported.
-CALYPTIA_CORE_DIR=${INSTALL_CALYPTIA_CORE_DIR:-/opt/calyptia-core}
+CALYPTIA_CORE_DIR=${INSTALL_CALYPTIA_CORE_DIR:-/opt/calyptia}
 # The version of Calyptia Core to install.
 RELEASE_VERSION=${INSTALL_CALYPTIA_RELEASE_VERSION:-0.4.6}
 # The version of Calyptia CLI to install.
@@ -186,9 +186,11 @@ function verify_k3s_reqs() {
     fi
 }
 
+# The bucket set up for the aggregator is strange so requires a specific URL that exists
 declare -a ALLOWED_URLS=("https://github.com/k3s-io/k3s/releases" 
                          "https://dl.k8s.io/release" 
                          "https://cloud-api.calyptia.com" 
+                         "https://storage.googleapis.com/calyptia_aggregator_bucket/releases/${RELEASE_VERSION}/core_${RELEASE_VERSION}_checksums.txt"
                          "https://github.com/calyptia/cli/releases" 
                          "https://ghcr.io/calyptia/core" 
                         )
@@ -300,12 +302,13 @@ function setup() {
         x86_64)
             ARCH=amd64
             ;;
-        arm64)
-            ARCH=arm64
-            ;;
-        aarch64)
-            ARCH=arm64
-            ;;
+        # No ARM64 CLI support yet: https://github.com/calyptia/cli/issues/264
+        # arm64)
+        #     ARCH=arm64
+        #     ;;
+        # aarch64)
+        #     ARCH=arm64
+        #     ;;
         *)
             fatal "Unsupported architecture $ARCH"
     esac
