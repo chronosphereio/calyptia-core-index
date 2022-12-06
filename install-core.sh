@@ -26,7 +26,7 @@ CALYPTIA_CORE_DIR=${INSTALL_CALYPTIA_CORE_DIR:-/opt/calyptia}
 # The version of Calyptia Core to install.
 RELEASE_VERSION=${INSTALL_CALYPTIA_RELEASE_VERSION:-0.4.6}
 # The version of Calyptia CLI to install.
-CLI_RELEASE_VERSION=${INSTALL_CALYPTIA_CLI_RELEASE_VERSION:-0.48.0}
+CLI_RELEASE_VERSION=${INSTALL_CALYPTIA_CLI_RELEASE_VERSION:-0.49.0}
 # Optionally just run the checks and do not install by setting to 'yes'.
 DRY_RUN=${INSTALL_CALYPTIA_DRY_RUN:-no}
 
