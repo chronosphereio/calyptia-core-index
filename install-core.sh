@@ -4,41 +4,36 @@ set -eu
 # Configuration variables, all of these should use the INSTALL_CALYPTIA_ prefix to make it simple and clear.
 # Each handles a specific option that may also then be overridden via a command line argument too.
 
-# By default we install kubectl as part of this process, set this to 'yes' to prevent that.
-DISABLE_KUBECTL=${INSTALL_CALYPTIA_DISABLE_KUBECTL:-no}
-# By default we install K3S as part of this process, set this to 'yes' to prevent that.
-# This is not recommended as Calyptia Core is intended to be used with K3S but it can be used to run with
-# another K8S provider.
-DISABLE_K3S=${INSTALL_CALYPTIA_DISABLE_K3S:-no}
 # Optionally install the Kubeshark tool, it is disabled by default, by setting to 'no'.
 # See https://github.com/kubeshark/kubeshark for more detail.
 DISABLE_KUBESHARK=${INSTALL_CALYPTIA_DISABLE_KUBESHARK:-yes}
 # Optionally install the Kubernetes dashboard for k3s. Disabled by default so enable by setting to 'no'.
 DISABLE_KUBEDASHBOARD=${INSTALL_CALYPTIA_DISABLE_KUBEDASHBOARD:-yes}
+# Optionally install the `jq` tool. Enabled by default so disable by setting to 'yes'.
+DISABLE_JQ=${INSTALL_CALYPTIA_DISABLE_JQ:-no}
 
 # The user to install Calyptia Core as, it must pre-exist.
 PROVISIONED_USER=${INSTALL_CALYPTIA_PROVISIONED_USER:-$USER}
 # The group to install Calyptia Core as, it must pre-exist.
 PROVISIONED_GROUP=${INSTALL_CALYPTIA_PROVISIONED_GROUP:-$(id -gn)}
-# The location to install Calyptia Core, it will be created during installation.
-# Upgrading of existing versions is not supported.
-CALYPTIA_CORE_DIR=${INSTALL_CALYPTIA_CORE_DIR:-/opt/calyptia}
 # The version of Calyptia Core to install.
 RELEASE_VERSION=${INSTALL_CALYPTIA_RELEASE_VERSION:-0.4.6}
-# The version of Calyptia CLI to install.
-CLI_RELEASE_VERSION=${INSTALL_CALYPTIA_CLI_RELEASE_VERSION:-0.49.0}
 # Optionally just run the checks and do not install by setting to 'yes'.
 DRY_RUN=${INSTALL_CALYPTIA_DRY_RUN:-no}
 
-# The version of K3S to install.
-K3S_VERSION=${INSTALL_CALYPTIA_K3S_VERSION:-v1.25.3+k3s1}
-# The location of the kubeconfig for K3S
-K3S_KUBECONFIG_OUTPUT=${INSTALL_CALYPTIA_K3S_KUBECONFIG_OUTPUT:-/etc/rancher/k3s/k3s.yaml}
+# The architecture to install.
+ARCH=${ARCH:-$(uname -m)}
+# Provide a local package to use in preference by setting this, otherwise the package will be downloaded for RELEASE_VERSION.
+# This can also be a local directory to cope with packages for different OS/arch types.
+LOCAL_PACKAGE=${LOCAL_PACKAGE:-}
+# Base URL to download packages from if required
+BASE_URL=${BASE_URL:-https://storage.googleapis.com/calyptia_aggregator_bucket/packages/$RELEASE_VERSION}
 
 # Internal variables
 IGNORE_ERRORS=no
 CURL_PARAMETERS=""
-SSL_VERIFY="1"
+# TODO: make this relocatable
+CALYPTIA_CORE_DIR="/opt/calyptia"
 # Output variables - set to empty if disabled
 Color_Off='\033[0m'
 Red='\033[0;31m'
@@ -187,19 +182,17 @@ function verify_k3s_reqs() {
 }
 
 # The bucket set up for the aggregator is strange so requires a specific URL that exists
-declare -a ALLOWED_URLS=("https://github.com/k3s-io/k3s/releases" 
-                         "https://dl.k8s.io/release" 
-                         "https://cloud-api.calyptia.com" 
-                         "https://storage.googleapis.com/calyptia_aggregator_bucket/releases/${RELEASE_VERSION}/core_${RELEASE_VERSION}_checksums.txt"
-                         "https://github.com/calyptia/cli/releases" 
+declare -a ALLOWED_URLS=("https://cloud-api.calyptia.com" 
+                         "https://core-packages.calyptia.com"
                          "https://ghcr.io/calyptia/core" 
+                         "https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64"
                         )
 
 function verify_urls_reachable() {
     for i in "${ALLOWED_URLS[@]}"
     do
         # shellcheck disable=SC2086
-        if curl -sSfl $CURL_PARAMETERS "$i" &> /dev/null ; then
+        if curl -o /dev/null -sSfl $CURL_PARAMETERS "$i" &> /dev/null ; then
             info "$i - OK"
         else
             error_ignorable "$i - Failed"
@@ -228,15 +221,6 @@ function setup() {
                 ;;
             -k|--disable-tls-verify)
                 CURL_PARAMETERS="$CURL_PARAMETERS --insecure"
-                SSL_VERIFY="0"
-                shift
-                ;;
-            --disable-k3s)
-                DISABLE_K3S=yes
-                shift
-                ;;
-            --disable-kubectl)
-                DISABLE_KUBECTL=yes
                 shift
                 ;;
             --enable-kubeshark)
@@ -247,6 +231,10 @@ function setup() {
                 DISABLE_KUBEDASHBOARD=no
                 shift
                 ;;
+            --disable-jq)
+                DISABLE_JQ=yes
+                shift
+                ;;
             -u=*|--user=*)
                 PROVISIONED_USER="${i#*=}"
                 shift
@@ -255,16 +243,8 @@ function setup() {
                 PROVISIONED_GROUP="${i#*=}"
                 shift
                 ;;
-            --core-dir=*)
-                CALYPTIA_CORE_DIR="${i#*=}"
-                shift
-                ;;
             --core-version=*)
                 RELEASE_VERSION="${i#*=}"
-                shift
-                ;;
-            --cli-version=*)
-                CLI_RELEASE_VERSION="${i#*=}"
                 shift
                 ;;
             --dry-run)
@@ -291,10 +271,6 @@ function setup() {
         SUDO=''
     fi
 
-    # setup the architecture variable to use for downloads, etc.
-    if [[ -z "${ARCH:-}" ]]; then
-        ARCH=$(uname -m)
-    fi
     case $ARCH in
         amd64)
             ARCH=amd64
@@ -302,28 +278,15 @@ function setup() {
         x86_64)
             ARCH=amd64
             ;;
-        # No ARM64 CLI support yet: https://github.com/calyptia/cli/issues/264
-        # arm64)
-        #     ARCH=arm64
-        #     ;;
-        # aarch64)
-        #     ARCH=arm64
-        #     ;;
+        arm64)
+            ARCH=arm64
+            ;;
+        aarch64)
+            ARCH=arm64
+            ;;
         *)
             fatal "Unsupported architecture $ARCH"
     esac
-
-    # Determine OS type: https://unix.stackexchange.com/a/6348
-    if [ -f /etc/os-release ]; then
-        # Debian uses Dash which does not support source
-        # shellcheck source=/dev/null
-        . /etc/os-release
-        OS=$( echo "${ID}" | tr '[:upper:]' '[:lower:]')
-    elif lsb_release &>/dev/null; then
-        OS=$(lsb_release -is | tr '[:upper:]' '[:lower:]')
-    else
-        OS=$(uname -s)
-    fi
 }
 
 setup "$@"
@@ -334,9 +297,8 @@ info "==================================="
 info "This script requires superuser access to install packages."
 info "You will be prompted for your password by sudo."
 info "==================================="
-info "Detected: $OS, $ARCH"
-info "Installing Calyptia Core ${RELEASE_VERSION} to: $CALYPTIA_CORE_DIR"
-info "Installing Calyptia CLI ${CLI_RELEASE_VERSION}"
+info "Installing for: $ARCH"
+info "Installing Calyptia ${RELEASE_VERSION} to: $CALYPTIA_CORE_DIR"
 info "Installing as ${PROVISIONED_USER}:${PROVISIONED_GROUP}"
 
 if [[ "$IGNORE_ERRORS" == "yes" ]]; then
@@ -352,75 +314,98 @@ if [[ "$DRY_RUN" == "yes" ]]; then
 fi
 
 # Do any OS-specific stuff first
-case ${OS} in
-    centos|centoslinux|rhel|redhatenterpriselinuxserver|fedora|rocky|almalinux)
-        info "Installing RHEL-derived OS dependencies"
-        "$SUDO" yum install -yq jq
-    ;;
-    ubuntu|debian)
-        info "Installing Debian-derived OS dependencies"
-        "$SUDO" sh -e <<SCRIPT
-export DEBIAN_FRONTEND=noninteractive
-apt-get -o DPkg::Lock::Timeout=-1 -qq update
-apt-get -o DPkg::Lock::Timeout=-1 -qq install -y jq || snap install jq
+# TODO: handle upgrade
+if command -v dpkg &> /dev/null ; then
+    # If we provide a directory then attempt to select the package within that directory
+    if [[ -d "$LOCAL_PACKAGE" ]]; then
+        info "Using local package directory: $LOCAL_PACKAGE"
+        LOCAL_PACKAGE="${LOCAL_PACKAGE}/calyptia-core_${RELEASE_VERSION}_${ARCH}.deb"
+    fi
 
-SCRIPT
-    ;;
-    *)
-        fatal "${OS} not supported."
-    ;;
-esac
+    # Now check if we have a package or not, if not we download one
+    if [[ -f "$LOCAL_PACKAGE" ]]; then
+        info "Using local package: $LOCAL_PACKAGE"
+    else
+        URL="${BASE_URL}/calyptia-core_${RELEASE_VERSION}_${ARCH}.deb"
+        info "Downloading $URL"
+        # shellcheck disable=SC2086
+        curl -o "/tmp/calyptia-core_${RELEASE_VERSION}_${ARCH}.deb" -sSfL $CURL_PARAMETERS "$URL"
+        LOCAL_PACKAGE="/tmp/calyptia-core_${RELEASE_VERSION}_${ARCH}.deb"
+    fi
+    info "Installing Debian-derived OS dependencies"
+    "$SUDO" dpkg --install "${LOCAL_PACKAGE}"
+elif command -v rpm &> /dev/null ; then
+    # RPMs use the other defaults
+    case $ARCH in
+        amd64)
+            PACKAGE_ARCH=x86_64
+            ;;
+        arm64)
+            PACKAGE_ARCH=aarch64
+            ;;
+        *)
+            fatal "Unknown architecture: $ARCH"
+    esac
 
-# Do any common stuff now
-"$SUDO" mkdir -p /home/"${PROVISIONED_USER}"/.kube/ /root/.kube/ "$CALYPTIA_CORE_DIR" /etc/systemd/system/
+    if [[ -d "$LOCAL_PACKAGE" ]]; then
+        info "Using local package directory: $LOCAL_PACKAGE"
+        LOCAL_PACKAGE="${LOCAL_PACKAGE}/calyptia-core-${RELEASE_VERSION}.${PACKAGE_ARCH}.rpm"
+    fi
 
-if [[ "$DISABLE_KUBECTL" = "no" ]]; then
-    info "Installing kubectl"
-    # shellcheck disable=SC2086
-    curl -sLO $CURL_PARAMETERS "https://dl.k8s.io/release/$(curl -sSfL $CURL_PARAMETERS https://dl.k8s.io/release/stable.txt)/bin/linux/${ARCH}/kubectl"
-    "$SUDO" install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+    if [[ -f "$LOCAL_PACKAGE" ]]; then
+        info "Using local package: $LOCAL_PACKAGE"
+    else
+        URL="${BASE_URL}/calyptia-core-${RELEASE_VERSION}.${PACKAGE_ARCH}.rpm"
+        info "Downloading $URL"
+        # shellcheck disable=SC2086
+        curl -o "/tmp/calyptia-core-${RELEASE_VERSION}.${PACKAGE_ARCH}.rpm" -sSfL $CURL_PARAMETERS "$URL"
+        LOCAL_PACKAGE="/tmp/calyptia-core-${RELEASE_VERSION}.${PACKAGE_ARCH}.rpm"
+    fi
+    info "Installing RHEL-derived OS dependencies"
+    "$SUDO" rpm -ivh "${LOCAL_PACKAGE}"
+elif command -v apk &> /dev/null ; then
+    if [[ -d "$LOCAL_PACKAGE" ]]; then
+        info "Using local package directory: $LOCAL_PACKAGE"
+        LOCAL_PACKAGE="${LOCAL_PACKAGE}/calyptia-core_${RELEASE_VERSION}_${ARCH}.apk"
+    fi
+
+    if [[ -f "$LOCAL_PACKAGE" ]]; then
+        info "Using local package: $LOCAL_PACKAGE"
+    else
+        URL="${BASE_URL}/calyptia-core_${RELEASE_VERSION}_${ARCH}.apk"
+        info "Downloading $URL"
+        # shellcheck disable=SC2086
+        curl -o "/tmp/calyptia-core_${RELEASE_VERSION}_${ARCH}.apk" -sSfL $CURL_PARAMETERS "$URL"
+        LOCAL_PACKAGE="/tmp/calyptia-core_${RELEASE_VERSION}_${ARCH}.apk"
+    fi
+    info "Installing APK-derived OS dependencies"
+    "$SUDO" apk add --allow-untrusted "${LOCAL_PACKAGE}"
 else
-    warn "Disabled kubectl installation, ensure it is present."
+    fatal "Unsupported platform"
 fi
 
-if [[ "$DISABLE_K3S" = "no" ]]; then
-    info "Installing k3s, ensure pre-reqs are met: https://docs.k3s.io/advanced#additional-os-preparations"
-    "$SUDO" sh -e <<SCRIPT
-    # Only RHEL-based repos deal with SELinux currently so we set up sslverify for those
-    curl -sfL $CURL_PARAMETERS https://get.k3s.io | \
-        sed "/^gpgcheck=1.*/a sslverify=$SSL_VERIFY" | sed "s/sslverify=.*/sslverify=$SSL_VERIFY/g" | \
-        INSTALL_K3S_VERSION="$K3S_VERSION" INSTALL_K3S_SELINUX_WARN=true sh -s - --write-kubeconfig-mode 644 \
-        --kubelet-arg='eviction-hard=imagefs.available<1%,nodefs.available<1%' \
-        --kubelet-arg='eviction-minimum-reclaim=imagefs.available=1%,nodefs.available=1%'
-    # Note we drop disk pressure eviction to <1% above
-    
-    cp -fv "$K3S_KUBECONFIG_OUTPUT" "$CALYPTIA_CORE_DIR"/kubeconfig
-    cp -fv "$K3S_KUBECONFIG_OUTPUT" /home/${PROVISIONED_USER}/.kube/config
-    cp -fv "$K3S_KUBECONFIG_OUTPUT" /root/.kube/config
-    
-    echo 'export KUBECONFIG=$CALYPTIA_CORE_DIR/kubeconfig' >> /etc/profile.d/calyptia-core.sh
-SCRIPT
-
-else
-    warn "Disabled k3s installation, not recommended."
-fi
-
-info "Installing Calyptia Core and CLI"
-"$SUDO" sh -e <<SCRIPT
-curl -sSfL $CURL_PARAMETERS https://storage.googleapis.com/calyptia_aggregator_bucket/releases/${RELEASE_VERSION}/core_${RELEASE_VERSION}_linux_${ARCH}.tar.gz | tar -xzC "$CALYPTIA_CORE_DIR"/
-echo 'export PATH=\$PATH:$CALYPTIA_CORE_DIR/' >> /etc/profile.d/calyptia-core.sh
-
-curl -sSfL $CURL_PARAMETERS https://github.com/calyptia/cli/releases/download/v${CLI_RELEASE_VERSION}/cli_${CLI_RELEASE_VERSION}_linux_${ARCH}.tar.gz | tar -xzC "/usr/local/bin"
-
-chown -R ${PROVISIONED_USER}:${PROVISIONED_GROUP} /home/"${PROVISIONED_USER}"/.kube/ "$CALYPTIA_CORE_DIR"/
-chmod -R a+r "$CALYPTIA_CORE_DIR"/
-
-SCRIPT
+# Ensure our various directories are correctly set up to allow users to access everything
+export KUBECONFIG="$CALYPTIA_CORE_DIR"/kubeconfig
+"$SUDO" mkdir -p "/home/${PROVISIONED_USER}/.kube"
+"$SUDO" cp -fv "$KUBECONFIG" "/home/${PROVISIONED_USER}/.kube/config"
+"$SUDO" chown -R "${PROVISIONED_USER}:${PROVISIONED_GROUP}" "/home/${PROVISIONED_USER}/.kube" "$CALYPTIA_CORE_DIR"/
+"$SUDO" chmod -R a+r "$CALYPTIA_CORE_DIR"/
 
 info "Calyptia Core installation completed: $("$CALYPTIA_CORE_DIR"/calyptia-core -v)"
 info "Calyptia CLI installation completed: $(calyptia --version)"
+info "K3S cluster info: $(kubectl cluster-info)"
 
 # Optional extras now
+if [[ "$DISABLE_JQ" = "no" ]]; then
+    # Use curl to allow us to run with ssl verify disabled
+    if ! command -v jq &> /dev/null; then
+        info "Installing jq"
+        # shellcheck disable=SC2086
+        "$SUDO" curl -o /usr/local/bin/jq -sSfL $CURL_PARAMETERS https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64
+        "$SUDO" chmod 755 /usr/local/bin/jq
+    fi
+fi
+
 if [[ "$DISABLE_KUBESHARK" = "no" ]]; then
     info "Installing Kubeshark, see docs for more details: https://kubeshark.co/"
     "$SUDO" sh -e <<SCRIPT
