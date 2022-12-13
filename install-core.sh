@@ -9,8 +9,6 @@ set -eu
 DISABLE_KUBESHARK=${INSTALL_CALYPTIA_DISABLE_KUBESHARK:-yes}
 # Optionally install the Kubernetes dashboard for k3s. Disabled by default so enable by setting to 'no'.
 DISABLE_KUBEDASHBOARD=${INSTALL_CALYPTIA_DISABLE_KUBEDASHBOARD:-yes}
-# Optionally install the `jq` tool. Enabled by default so disable by setting to 'yes'.
-DISABLE_JQ=${INSTALL_CALYPTIA_DISABLE_JQ:-no}
 
 # The user to install Calyptia Core as, it must pre-exist.
 PROVISIONED_USER=${INSTALL_CALYPTIA_PROVISIONED_USER:-$USER}
@@ -77,6 +75,15 @@ function verify_system() {
         fatal 'Can not find systemctl'
     fi
 
+    # Detect if running as root or not provisioning extra users
+    if [[ $(id -u) -eq 0 ]]; then
+        error_ignorable "Running as root"
+    fi
+
+    if [[ -z "${PROVISIONED_USER:-}" || "${PROVISIONED_USER:-}" == "root" ]]; then
+        error_ignorable "Not provisioning additional user"
+    fi
+
     if id "$PROVISIONED_USER" &> /dev/null; then
         info "$PROVISIONED_USER user found"
     else
@@ -92,7 +99,7 @@ function verify_system() {
     if [[ -d "$CALYPTIA_CORE_DIR" ]]; then
         error_ignorable "Found existing directory: $CALYPTIA_CORE_DIR"
     fi
-
+    
     info "Basic system checks complete"
 }
 
@@ -185,7 +192,6 @@ function verify_k3s_reqs() {
 declare -a ALLOWED_URLS=("https://cloud-api.calyptia.com" 
                          "https://core-packages.calyptia.com"
                          "https://ghcr.io/calyptia/core" 
-                         "https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64"
                         )
 
 function verify_urls_reachable() {
@@ -229,10 +235,6 @@ function setup() {
                 ;;
             --enable-kubedashboard)
                 DISABLE_KUBEDASHBOARD=no
-                shift
-                ;;
-            --disable-jq)
-                DISABLE_JQ=yes
                 shift
                 ;;
             -u=*|--user=*)
@@ -395,15 +397,11 @@ info "Calyptia Core installation completed: $("$CALYPTIA_CORE_DIR"/calyptia-core
 info "Calyptia CLI installation completed: $(calyptia --version)"
 info "K3S cluster info: $(kubectl cluster-info)"
 
-# Optional extras now
-if [[ "$DISABLE_JQ" = "no" ]]; then
-    # Use curl to allow us to run with ssl verify disabled
-    if ! command -v jq &> /dev/null; then
-        info "Installing jq"
-        # shellcheck disable=SC2086
-        "$SUDO" curl -o /usr/local/bin/jq -sSfL $CURL_PARAMETERS https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64
-        "$SUDO" chmod 755 /usr/local/bin/jq
-    fi
+if [[ -e "/usr/local/bin/jq" ]]; then
+    info "Existing jq detected so not updating"
+else
+    info "Creating jq symlink"
+    "$SUDO" ln -s /opt/calyptia/jq /usr/local/bin/jq
 fi
 
 if [[ "$DISABLE_KUBESHARK" = "no" ]]; then
