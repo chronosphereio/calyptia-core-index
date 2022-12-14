@@ -4,12 +4,6 @@ set -eu
 # Configuration variables, all of these should use the INSTALL_CALYPTIA_ prefix to make it simple and clear.
 # Each handles a specific option that may also then be overridden via a command line argument too.
 
-# Optionally install the Kubeshark tool, it is disabled by default, by setting to 'no'.
-# See https://github.com/kubeshark/kubeshark for more detail.
-DISABLE_KUBESHARK=${INSTALL_CALYPTIA_DISABLE_KUBESHARK:-yes}
-# Optionally install the Kubernetes dashboard for k3s. Disabled by default so enable by setting to 'no'.
-DISABLE_KUBEDASHBOARD=${INSTALL_CALYPTIA_DISABLE_KUBEDASHBOARD:-yes}
-
 # The user to install Calyptia Core as, it must pre-exist.
 PROVISIONED_USER=${INSTALL_CALYPTIA_PROVISIONED_USER:-$USER}
 # The group to install Calyptia Core as, it must pre-exist.
@@ -25,7 +19,7 @@ ARCH=${ARCH:-$(uname -m)}
 # This can also be a local directory to cope with packages for different OS/arch types.
 LOCAL_PACKAGE=${LOCAL_PACKAGE:-}
 # Base URL to download packages from if required
-BASE_URL=${BASE_URL:-https://storage.googleapis.com/calyptia_aggregator_bucket/packages/$RELEASE_VERSION}
+BASE_URL=${BASE_URL:-https://core-packages.calyptia.com/$RELEASE_VERSION}
 
 # Internal variables
 IGNORE_ERRORS=no
@@ -229,14 +223,6 @@ function setup() {
                 CURL_PARAMETERS="$CURL_PARAMETERS --insecure"
                 shift
                 ;;
-            --enable-kubeshark)
-                DISABLE_KUBESHARK=no
-                shift
-                ;;
-            --enable-kubedashboard)
-                DISABLE_KUBEDASHBOARD=no
-                shift
-                ;;
             -u=*|--user=*)
                 PROVISIONED_USER="${i#*=}"
                 shift
@@ -402,47 +388,6 @@ if [[ -e "/usr/local/bin/jq" ]]; then
 else
     info "Creating jq symlink"
     "$SUDO" ln -s /opt/calyptia/jq /usr/local/bin/jq
-fi
-
-if [[ "$DISABLE_KUBESHARK" = "no" ]]; then
-    info "Installing Kubeshark, see docs for more details: https://kubeshark.co/"
-    "$SUDO" sh -e <<SCRIPT
-    curl -sSfL $CURL_PARAMETERS -o /usr/local/bin/kubeshark https://github.com/kubeshark/kubeshark/releases/latest/download/kubeshark_linux_${ARCH}
-    chmod 755 /usr/local/bin/kubeshark
-SCRIPT
-fi
-
-if [[ "$DISABLE_KUBEDASHBOARD" = "no" ]]; then
-    if ! "$SUDO" k3s kubectl cluster-info &> /dev/null; then
-        warn "Unable to install kube-dashboard as k3s is not running, follow docs to manually install: https://docs.k3s.io/installation"
-    else
-        info "Installing Kubedashboard, see docs for more details: https://docs.k3s.io/installation/kube-dashboard"
-        GITHUB_URL=https://github.com/kubernetes/dashboard/releases
-        # shellcheck disable=SC2086
-        VERSION_KUBE_DASHBOARD=$(curl -w '%{url_effective}' -I -L -s -S $CURL_PARAMETERS "${GITHUB_URL}"/latest -o /dev/null | sed -e 's|.*/||')
-        "$SUDO" k3s kubectl create -f https://raw.githubusercontent.com/kubernetes/dashboard/"${VERSION_KUBE_DASHBOARD}"/aio/deploy/recommended.yaml
-        cat << K8S_DASH_EOF | "$SUDO" k3s kubectl apply -f dashboard -
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: admin-user
-  namespace: kubernetes-dashboard
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: admin-user
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: cluster-admin
-subjects:
-- kind: ServiceAccount
-  name: admin-user
-  namespace: kubernetes-dashboard
-K8S_DASH_EOF
-    fi
 fi
 
 info "==================================="
