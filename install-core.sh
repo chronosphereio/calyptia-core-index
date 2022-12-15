@@ -19,7 +19,7 @@ ARCH=${ARCH:-$(uname -m)}
 # This can also be a local directory to cope with packages for different OS/arch types.
 LOCAL_PACKAGE=${LOCAL_PACKAGE:-}
 # Base URL to download packages from if required
-BASE_URL=${BASE_URL:-https://core-packages.calyptia.com/$RELEASE_VERSION}
+BASE_URL=${BASE_URL:-https://core-packages.calyptia.com/core/$RELEASE_VERSION}
 
 # Internal variables
 IGNORE_ERRORS=no
@@ -57,6 +57,21 @@ function error_ignorable() {
 }
 
 function verify_system() {
+    case $(uname | tr '[:upper:]' '[:lower:]') in
+        linux*)
+            info "Linux OS detected"
+            ;;
+        darwin*)
+            fatal 'macOS system detected, please use Docker Desktop with the Calyptia Core extension'
+            ;;
+        msys*)
+            fatal 'Windows OS detected, not supported by this installation method'
+            ;;
+        *)
+            error_ignorable 'Unknown OS detected, confirm it is supported'
+            ;;
+    esac
+
     if command -v curl &> /dev/null; then
         info "Found curl"
     else
