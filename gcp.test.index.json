@@ -264,34 +264,34 @@
     ]
   },
   {
-    "creationTimestamp": "2022-12-14T02:15:52.823-08:00",
+    "creationTimestamp": "2022-12-15T08:44:34.362-08:00",
     "labels": {
       "calyptia-core-release": "0-4-6",
       "source-image": "ubuntu-2004-lts"
     },
-    "name": "core-test-a615ab91c155762617bb5aef6842dcd73aed219b-asia",
+    "name": "core-test-4834ff61309ed16ae60f5f6b22a4d87d8ac3c257-asia",
     "storageLocations": [
       "asia"
     ]
   },
   {
-    "creationTimestamp": "2022-12-14T02:16:11.481-08:00",
+    "creationTimestamp": "2022-12-15T08:44:35.160-08:00",
     "labels": {
       "calyptia-core-release": "0-4-6",
       "source-image": "ubuntu-2004-lts"
     },
-    "name": "core-test-a615ab91c155762617bb5aef6842dcd73aed219b-eu",
+    "name": "core-test-4834ff61309ed16ae60f5f6b22a4d87d8ac3c257-eu",
     "storageLocations": [
       "eu"
     ]
   },
   {
-    "creationTimestamp": "2022-12-14T02:15:53.122-08:00",
+    "creationTimestamp": "2022-12-15T08:44:41.359-08:00",
     "labels": {
       "calyptia-core-release": "0-4-6",
       "source-image": "ubuntu-2004-lts"
     },
-    "name": "core-test-a615ab91c155762617bb5aef6842dcd73aed219b-us",
+    "name": "core-test-4834ff61309ed16ae60f5f6b22a4d87d8ac3c257-us",
     "storageLocations": [
       "us"
     ]
