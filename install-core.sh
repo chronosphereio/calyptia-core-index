@@ -12,6 +12,8 @@ PROVISIONED_GROUP=${INSTALL_CALYPTIA_PROVISIONED_GROUP:-$(id -gn)}
 RELEASE_VERSION=${INSTALL_CALYPTIA_RELEASE_VERSION:-0.4.6}
 # Optionally just run the checks and do not install by setting to 'yes'.
 DRY_RUN=${INSTALL_CALYPTIA_DRY_RUN:-no}
+# Equivalent to '--force' to ignore errors as warnings and continue after checks even if they fail.
+IGNORE_ERRORS=${INSTALL_CALYPTIA_IGNORE_ERRORS:-no}
 
 # The architecture to install.
 ARCH=${ARCH:-$(uname -m)}
@@ -22,7 +24,6 @@ LOCAL_PACKAGE=${LOCAL_PACKAGE:-}
 BASE_URL=${BASE_URL:-https://core-packages.calyptia.com/core/$RELEASE_VERSION}
 
 # Internal variables
-IGNORE_ERRORS=no
 CURL_PARAMETERS=""
 # TODO: make this relocatable
 CALYPTIA_CORE_DIR="/opt/calyptia"
@@ -52,7 +53,7 @@ function error_ignorable() {
     if [[ "$IGNORE_ERRORS" == "yes" ]]; then
         warn "$@"
     else
-        fatal "$@"
+        fatal "$@" "(ignore with '--force' or set 'INSTALL_CALYPTIA_IGNORE_ERRORS=yes')"
     fi
 }
 
@@ -68,45 +69,45 @@ function verify_system() {
             fatal 'Windows OS detected, not supported by this installation method'
             ;;
         *)
-            error_ignorable 'Unknown OS detected, confirm it is supported'
+            error_ignorable "Unknown OS detected, confirm it is supported."
             ;;
     esac
 
     if command -v curl &> /dev/null; then
         info "Found curl"
     else
-        fatal 'No curl command present'
+        fatal 'No curl command present, please install.'
     fi
 
     if [ -x /bin/systemctl ] || type systemctl &> /dev/null; then
         info "Found systemctl"
     else
-        fatal 'Can not find systemctl'
+        fatal 'Can not find systemctl, unsupported platform.'
     fi
 
     # Detect if running as root or not provisioning extra users
     if [[ $(id -u) -eq 0 ]]; then
-        error_ignorable "Running as root"
+        error_ignorable "Running as root is not generally recommended."
     fi
 
     if [[ -z "${PROVISIONED_USER:-}" || "${PROVISIONED_USER:-}" == "root" ]]; then
-        error_ignorable "Not provisioning additional user"
+        error_ignorable "Not provisioning any additional user, suggestion is to provide a dedicated user."
     fi
 
     if id "$PROVISIONED_USER" &> /dev/null; then
         info "$PROVISIONED_USER user found"
     else
-        error_ignorable "$PROVISIONED_USER user not found"
+        error_ignorable "$PROVISIONED_USER user not found, please create in advance."
     fi
 
     if getent group "$PROVISIONED_GROUP" &> /dev/null; then
         info "$PROVISIONED_GROUP group found"
     else
-        error_ignorable "$PROVISIONED_GROUP group not found"
+        error_ignorable "$PROVISIONED_GROUP group not found, please create in advance."
     fi
 
     if [[ -d "$CALYPTIA_CORE_DIR" ]]; then
-        error_ignorable "Found existing directory: $CALYPTIA_CORE_DIR"
+        error_ignorable "Found existing Calyptia Core directory: $CALYPTIA_CORE_DIR"
     fi
     
     info "Basic system checks complete"
@@ -142,7 +143,7 @@ function verify_crypto() {
                 info "Crypto policy set to $current_policy"
                 ;;
             *)
-                error_ignorable "Crypto policy set to $current_policy, may fail to download components"
+                error_ignorable "Crypto policy set to $current_policy, may fail to download components."
                 ;;
         esac
     fi
@@ -152,7 +153,7 @@ function verify_fips() {
     if [[ ! -f /proc/sys/crypto/fips_enabled ]]; then
         info "FIPS mode not enabled"
     elif grep -q "1" /proc/sys/crypto/fips_enabled; then
-        error_ignorable "FIPS mode enabled"
+        error_ignorable "FIPS mode enabled."
     else 
         info "FIPS mode not enabled"
     fi
@@ -163,10 +164,13 @@ function verify_firewall() {
         if "$SUDO" ufw status | grep -qi "inactive"; then
             info "Firewall disabled"
         else
-            error_ignorable "Firewall is enabled, this may prevent traffic without the correct rules"
+            error_ignorable "Firewall is enabled, please ensure outbound rules are correctly configured from docs."
         fi
-    elif systemctl is-enabled firewalld &> /dev/null || systemctl is-enabled netfilter-persistent &> /dev/null; then 
-        error_ignorable "Firewall is enabled, this may prevent traffic without the correct rules"
+    elif systemctl is-enabled firewalld &> /dev/null || \
+         systemctl is-enabled netfilter-persistent &> /dev/null || \
+         systemctl is-active firewalld &> /dev/null || \
+         systemctl is-active netfilter-persistent &> /dev/null ; then 
+        error_ignorable "Firewall is enabled, please ensure outbound rules are correctly configured from docs."
     else
         info "Firewall not detected"
     fi
