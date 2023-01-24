@@ -184,20 +184,6 @@ function verify_k3s_reqs() {
         else
             info "RHEL-compatible OS checks complete"
         fi
-    elif [[ -r /etc/os-release ]]; then
-        # https://docs.k3s.io/advanced#additional-preparation-for-debian-buster-based-distributions
-        if grep -q 'ID=debian' /etc/os-release && grep -q 'VERSION_CODENAME=buster' /etc/os-release; then
-            if [[ -x /usr/sbin/iptables ]]; then
-                local iptables_version
-                # extract the version number from e.g. 'iptables v1.8.7 (nf_tables)'
-                iptables_version=$(/usr/sbin/iptables --version 2>&1 | sed -n 's/^.*v\(.*\) .*/\1/p')
-                if dpkg --compare-versions "$iptables_version" "lt" "1.8.4" &> /dev/null ; then 
-                    error_ignorable "iptables version is too low: https://docs.k3s.io/advanced#additional-preparation-for-debian-buster-based-distributions"
-                else 
-                    info "iptables version acceptable: $iptables_version"
-                fi
-            fi
-        fi
     fi
 }
 
