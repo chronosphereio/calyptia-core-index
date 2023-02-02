@@ -11,11 +11,22 @@ SCHEMA_FILENAME=${SCHEMA_FILENAME:-core-fluent-bit}
 GHCR_TOKEN=$(echo "$GITHUB_TOKEN" | base64)
 
 TAGS=$(curl --silent -H "Authorization: Bearer $GHCR_TOKEN" https://ghcr.io/v2/"${CONTAINER_PACKAGE}"/tags/list?n=100000 | \
-    jq -r '.tags | map(select(.| test("^(22\\.|v)(.*)")))|flatten[]') 
-# Test for tags beginning with v* or 22.*: https://github.com/stedolan/jq/issues/1250#issuecomment-252396642
+    jq -r '.tags | map(select(.| test("^([0-9]+\\.|v)(.*)")))|flatten[]') 
+# Test for tags beginning with v* or XX.*: https://github.com/stedolan/jq/issues/1250#issuecomment-252396642
 
 for TAG in $TAGS; do
     mkdir -p "${SCHEMA_DIR}/${TAG}"
+    # Get Fluent Bit schema
     "$CONTAINER_RUNTIME" run --pull=always --rm -t "ghcr.io/${CONTAINER_PACKAGE}:${TAG}" -J > "${SCHEMA_DIR}/${TAG}/${SCHEMA_FILENAME}.json"
     jq -M . "${SCHEMA_DIR}/${TAG}/${SCHEMA_FILENAME}.json" > "${SCHEMA_DIR}/${TAG}/${SCHEMA_FILENAME}-pretty.json"
+
+    # Get LUA modules schema - has to be copied out
+    "$CONTAINER_RUNTIME" rm --force "test" &> /dev/null
+    "$CONTAINER_RUNTIME" create --name=test "ghcr.io/${CONTAINER_PACKAGE}:${TAG}"
+    if ! "$CONTAINER_RUNTIME" cp "test:/schema.json" "${SCHEMA_DIR}/${TAG}/${SCHEMA_FILENAME}-lua.json" ; then
+        echo "Unable to find LUA schema"
+    else
+        jq -M . "${SCHEMA_DIR}/${TAG}/${SCHEMA_FILENAME}-lua.json" > "${SCHEMA_DIR}/${TAG}/${SCHEMA_FILENAME}-lua-pretty.json"
+    fi
+    "$CONTAINER_RUNTIME" rm --force "test" &> /dev/null
 done
