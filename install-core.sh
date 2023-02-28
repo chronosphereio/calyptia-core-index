@@ -9,7 +9,7 @@ PROVISIONED_USER=${INSTALL_CALYPTIA_PROVISIONED_USER:-$USER}
 # The group to install Calyptia Core as, it must pre-exist.
 PROVISIONED_GROUP=${INSTALL_CALYPTIA_PROVISIONED_GROUP:-$(id -gn)}
 # The version of Calyptia Core to install.
-RELEASE_VERSION=${INSTALL_CALYPTIA_RELEASE_VERSION:-1.1.0}
+RELEASE_VERSION=${INSTALL_CALYPTIA_RELEASE_VERSION:-1.1.1}
 # Optionally just run the checks and do not install by setting to 'yes'.
 DRY_RUN=${INSTALL_CALYPTIA_DRY_RUN:-no}
 # Equivalent to '--force' to ignore errors as warnings and continue after checks even if they fail.
@@ -240,11 +240,11 @@ function setup() {
                 RELEASE_VERSION="${i#*=}"
                 shift
                 ;;
-            --dry-run)
+            --dryrun|--dry-run)
                 DRY_RUN=yes
                 shift
                 ;;
-            --disable-colour|--disable-color)
+            --no-colour|--no-color|--disable-colour|--disable-color)
                 Color_Off=''
                 Red=''
                 Green=''
@@ -282,6 +282,29 @@ function setup() {
     esac
 }
 
+function handle_installer_config() {
+    # We detain any configuration the package can pick up in its pre/post install/uninstall helpers
+    local config="$CALYPTIA_CORE_DIR/.install/settings.conf"
+
+    if [[ -f "$config" ]]; then
+        info "Existing installation configuration file found: $config"
+    else
+        info "Creating installation configuration file: $config"
+        "$SUDO" mkdir -p "$(dirname "$config")"
+        # Beware of sudo redirection failures so use a temporary file and copy it
+        tempConfig=$(mktemp)
+        cat > "$tempConfig" <<EOF
+NO_PREFLIGHT_CHECKS=yes
+IGNORE_ERRORS=${IGNORE_ERRORS}
+PROVISIONED_USER=${PROVISIONED_USER}
+PROVISIONED_GROUP=${PROVISIONED_GROUP}
+EOF
+        "$SUDO" mv -f "$tempConfig" "$config"
+        "$SUDO" chown -R "${PROVISIONED_USER}:${PROVISIONED_GROUP}" "$(dirname "$config")"
+        "$SUDO" chmod -R a+r "$(dirname "$config")"
+    fi
+}
+
 setup "$@"
 
 info "==================================="
@@ -305,6 +328,9 @@ if [[ "$DRY_RUN" == "yes" ]]; then
     info "==================================="
     exit 0
 fi
+
+# Detain installer configuration (or load existing)
+handle_installer_config
 
 # Do any OS-specific stuff first
 # TODO: handle upgrade
@@ -354,8 +380,15 @@ elif command -v rpm &> /dev/null ; then
         curl -o "/tmp/calyptia-core-${RELEASE_VERSION}.${PACKAGE_ARCH}.rpm" -sSfL $CURL_PARAMETERS "$URL"
         LOCAL_PACKAGE="/tmp/calyptia-core-${RELEASE_VERSION}.${PACKAGE_ARCH}.rpm"
     fi
+
     info "Installing RHEL-derived OS dependencies"
+
+    if grep -q '^\s*SELINUX=enforcing' /etc/selinux/config &> /dev/null; then
+        info "SELinux enabled, ensure we have met the requirements to allow for it: install container-selinux"
+    fi
+
     "$SUDO" rpm -ivh "${LOCAL_PACKAGE}"
+
 elif command -v apk &> /dev/null ; then
     if [[ -d "$LOCAL_PACKAGE" ]]; then
         info "Using local package directory: $LOCAL_PACKAGE"
