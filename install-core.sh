@@ -22,6 +22,8 @@ ARCH=${ARCH:-$(uname -m)}
 LOCAL_PACKAGE=${LOCAL_PACKAGE:-}
 # Base URL to download packages from if required
 BASE_URL=${BASE_URL:-https://core-packages.calyptia.com/core/$RELEASE_VERSION}
+# Custom SUDO command override
+SUDO_OVERRIDE=${SUDO_OVERRIDE:-}
 
 # Internal variables
 CURL_PARAMETERS=""
@@ -87,11 +89,11 @@ function verify_system() {
 
     # Detect if running as root or not provisioning extra users
     if [[ $(id -u) -eq 0 ]]; then
-        error_ignorable "Running as root is not generally recommended."
+        warn "Running as root is not generally recommended."
     fi
 
     if [[ -z "${PROVISIONED_USER:-}" || "${PROVISIONED_USER:-}" == "root" ]]; then
-        error_ignorable "Not provisioning any additional user, suggestion is to provide a dedicated user."
+        warn "Not provisioning any additional user, suggestion is to provide a dedicated user."
     fi
 
     if id "$PROVISIONED_USER" &> /dev/null; then
@@ -180,7 +182,7 @@ function verify_k3s_reqs() {
     if [[ -r /etc/redhat-release ]] || [[ -r /etc/centos-release ]] || [[ -r /etc/oracle-release ]]; then
         # https://docs.k3s.io/advanced#additional-preparation-for-red-hatcentos-enterprise-linux
         if systemctl is-enabled nm-cloud-setup.service nm-cloud-setup.timer &> /dev/null ; then
-            error_ignorable "nm-cloud-setup enabled: # https://docs.k3s.io/advanced#additional-preparation-for-red-hatcentos-enterprise-linux"
+            error_ignorable "nm-cloud-setup enabled: # https://docs.k3s.io/advanced#red-hat-enterprise-linux--centos"
         else
             info "RHEL-compatible OS checks complete"
         fi
@@ -215,32 +217,47 @@ function check_prerequisites() {
     verify_urls_reachable
 }
 
-function verify_cluster_dns(){
+function remove_cluster_dns_pod() {
+    if kubectl delete pod nslookup-check --wait=false  &> /dev/null; then
+        info "Cleaned up check pod"
+    fi
+}
+
+# This function is run after installation
+function verify_cluster_dns() {
     while true; do
         if kubectl get serviceaccount default &> /dev/null; then
+            info "ServiceAccount default available"
             break
         fi
-        echo "waiting for ServiceAccount default to be created"
+        info "Waiting for ServiceAccount default to be created"
         sleep 1
     done
+
+    # Always remove
+    remove_cluster_dns_pod
 
     kubectl run nslookup-check --image=busybox:1.28 --command "sleep" "3600"
     kubectl wait --for=condition=Ready pod/nslookup-check --timeout=60s
     
     for i in "${ALLOWED_URLS[@]}"
     do
-        if [[ "$i" != "https://ghcr.io/calyptia/core" ]] ; then ## Skipping container registry for resolution checks as it will fail regardless
+        # Skipping container registry for resolution checks as it will fail regardless
+        if [[ "$i" != "https://ghcr.io/calyptia/core" ]] ; then
             # shellcheck disable=SC2086
             if kubectl exec -i -t nslookup-check -- nslookup ${i#*//} &> /dev/null ; then
                 info "${i#*//} - OK"
             else
-                kubectl delete pod nslookup-check --wait=false ## remove even when the check failed
-                error_ignorable "${i#*//} - Failed" 
+                # Get logs
+                kubectl exec -i -t nslookup-check -- nslookup ${i#*//}
+                # Always clean up
+                remove_cluster_dns_pod
+                fatal "${i#*//} - Failed" 
             fi
         fi
     done
 
-    kubectl delete pod nslookup-check --wait=false
+    remove_cluster_dns_pod
     info "Verify cluster DNS - OK"
 }
 
@@ -289,7 +306,9 @@ function setup() {
 
     # use sudo if we are not already root
     SUDO=sudo
-    if [[ $(id -u) -eq 0 ]]; then
+    if [[ "${SUDO_OVERRIDE:-}" != "" ]]; then
+        SUDO="$SUDO_OVERRIDE"
+    elif [[ $(id -u) -eq 0 ]]; then
         SUDO=''
     fi
 
@@ -413,7 +432,7 @@ elif command -v rpm &> /dev/null ; then
     info "Installing RHEL-derived OS dependencies"
 
     if grep -q '^\s*SELINUX=enforcing' /etc/selinux/config &> /dev/null; then
-        info "SELinux enabled, ensure we have met the requirements to allow for it: install container-selinux"
+        warn "SELinux enabled, ensure we have met the requirements to allow for it: install container-selinux and k3s SELinux config"
     fi
 
     "$SUDO" rpm -ivh "${LOCAL_PACKAGE}"
@@ -441,14 +460,17 @@ fi
 
 # Ensure our various directories are correctly set up to allow users to access everything
 export KUBECONFIG="$CALYPTIA_CORE_DIR"/kubeconfig
-"$SUDO" mkdir -p "/home/${PROVISIONED_USER}/.kube"
-"$SUDO" cp -fv "$KUBECONFIG" "/home/${PROVISIONED_USER}/.kube/config"
-"$SUDO" chown -R "${PROVISIONED_USER}:${PROVISIONED_GROUP}" "/home/${PROVISIONED_USER}/.kube" "$CALYPTIA_CORE_DIR"/
+if [[ "$PROVISIONED_USER" != "root" ]]; then
+    "$SUDO" mkdir -p "/home/${PROVISIONED_USER}/.kube"
+    "$SUDO" cp -fv "$KUBECONFIG" "/home/${PROVISIONED_USER}/.kube/config"
+    "$SUDO" chown -R "${PROVISIONED_USER}:${PROVISIONED_GROUP}" "/home/${PROVISIONED_USER}/.kube" "$CALYPTIA_CORE_DIR"/
+fi
 "$SUDO" chmod -R a+r "$CALYPTIA_CORE_DIR"/
 
 info "Calyptia Core installation completed: $("$CALYPTIA_CORE_DIR"/calyptia-core -v)"
 info "Calyptia CLI installation completed: $(calyptia --version)"
 info "K3S cluster info: $(kubectl cluster-info)"
+info "Provisioned as: $PROVISIONED_USER"
 
 if [[ -e "/usr/local/bin/jq" ]]; then
     info "Existing jq detected so not updating"
