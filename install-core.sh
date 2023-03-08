@@ -215,6 +215,35 @@ function check_prerequisites() {
     verify_urls_reachable
 }
 
+function verify_cluster_dns(){
+    while true; do
+        if kubectl get serviceaccount default &> /dev/null; then
+            break
+        fi
+        echo "waiting for ServiceAccount default to be created"
+        sleep 1
+    done
+
+    kubectl run nslookup-check --image=busybox:1.28 --command "sleep" "3600"
+    kubectl wait --for=condition=Ready pod/nslookup-check --timeout=60s
+    
+    for i in "${ALLOWED_URLS[@]}"
+    do
+        if [[ "$i" != "https://ghcr.io/calyptia/core" ]] ; then ## Skipping container registry for resolution checks as it will fail regardless
+            # shellcheck disable=SC2086
+            if kubectl exec -i -t nslookup-check -- nslookup ${i#*//} &> /dev/null ; then
+                info "${i#*//} - OK"
+            else
+                kubectl delete pod nslookup-check --wait=false ## remove even when the check failed
+                error_ignorable "${i#*//} - Failed" 
+            fi
+        fi
+    done
+
+    kubectl delete pod nslookup-check --wait=false
+    info "Verify cluster DNS - OK"
+}
+
 function setup() {
     # Handle command line arguments
     # We use equals-separated arguments, i.e. --key=value, and not space separated, i.e. --key value
@@ -427,5 +456,6 @@ else
     info "Creating jq symlink"
     "$SUDO" ln -s /opt/calyptia/jq /usr/local/bin/jq
 fi
+verify_cluster_dns
 
 info "==================================="
