@@ -14,6 +14,14 @@ RELEASE_VERSION=${INSTALL_CALYPTIA_RELEASE_VERSION:-1.1.1}
 DRY_RUN=${INSTALL_CALYPTIA_DRY_RUN:-no}
 # Equivalent to '--force' to ignore errors as warnings and continue after checks even if they fail.
 IGNORE_ERRORS=${INSTALL_CALYPTIA_IGNORE_ERRORS:-no}
+# Skip post-install checks
+SKIP_POST_INSTALL=${INSTALL_CALYPTIA_SKIP_POST_INSTALL:-no}
+# Custom CIDR ranges for K3S and their defaults: https://docs.k3s.io/reference/server-config#networking
+CLUSTER_CIDR=${INSTALL_CALYPTIA_CLUSTER_CIDR:-10.42.0.0/16}
+SERVICE_CIDR=${INSTALL_CALYPTIA_SERVICE_CIDR:-10.43.0.0/16}
+CLUSTER_DNS=${INSTALL_CALYPTIA_CLUSTER_DNS:-10.42.0.10}
+SERVICE_NODE_PORT_RANGE=${INSTALL_CALYPTIA_SERVICE_NODE_PORT_RANGE:-30000-32767}
+CLUSTER_DOMAIN=${INSTALL_CALYPTIA_CLUSTER_DOMAIN:-cluster.local}
 
 # The architecture to install.
 ARCH=${ARCH:-$(uname -m)}
@@ -52,7 +60,7 @@ function fatal()
 }
 
 function error_ignorable() {
-    if [[ "$IGNORE_ERRORS" == "yes" ]]; then
+    if [[ "$IGNORE_ERRORS" != "no" ]]; then
         warn "$@"
     else
         fatal "$@" "(ignore with '--force' or set 'INSTALL_CALYPTIA_IGNORE_ERRORS=yes')"
@@ -207,6 +215,51 @@ function verify_urls_reachable() {
     done
 }
 
+function verify_cidr() {
+    if ! command -v nslookup &> /dev/null ; then
+        warn "Unable to find nslookup to check resolution of 8.8.8.8 for Core DNS"
+    elif nslookup 8.8.8.8 &> /dev/null ; then
+        # This can be ignored if we have internal DNS servers that function
+        warn "Unable to use 8.8.8.8 as a DNS server for Core DNS"
+    fi
+
+    # Assumption is we provide a /16 address range for all checks
+    # Assumption is we only check for first two groups in IP range, i.e. a.b.*.*
+    CLUSTER_CIDR_PREFIX=''
+    if [[ "$CLUSTER_CIDR" =~ ([0-9])+\.([0-9])+\.* ]]; then
+        CLUSTER_CIDR_PREFIX="${BASH_REMATCH[0]}"
+    else
+        error_ignorable "Invalid cluster CIDR: $CLUSTER_CIDR"
+    fi
+
+    SERVICE_CIDR_PREFIX=''
+    if [[ "$SERVICE_CIDR" =~ ([0-9])+\.([0-9])+\.* ]]; then
+        SERVICE_CIDR_PREFIX="${BASH_REMATCH[0]}"
+    else
+        error_ignorable "Invalid service CIDR: $SERVICE_CIDR"
+    fi
+        
+    # Need to check for conflicts between our address ranges and the local DNS resolver
+    if grep -q "$CLUSTER_CIDR_PREFIX" /etc/resolv.conf ; then
+        error_ignorable "Detected conflicting address range for cluster cidr ($CLUSTER_CIDR_PREFIX) in /etc/resolv.conf"
+    fi
+    if grep -q "$SERVICE_CIDR_PREFIX" /etc/resolv.conf ; then
+        error_ignorable "Detected conflicting address range for service cidr ($SERVICE_CIDR_PREFIX) in /etc/resolv.conf"
+    fi
+    
+    # Verify our cluster DNS value is within the range of the cluster CIDR
+    if [[ "$CLUSTER_DNS" =~ ([0-9])+\.([0-9])+\.([0-9])+\.([0-9])+ ]]; then
+        # Now check the first two IPs 
+        if [[ "$CLUSTER_DNS" =~ ([0-9])+\.([0-9])+\.* ]]; then
+            if [[ "$CLUSTER_CIDR_PREFIX" != "${BASH_REMATCH[0]}" ]]; then
+                error_ignorable "Cluster DNS ($CLUSTER_DNS) is not in the CIDR range ($CLUSTER_CIDR)"
+            fi
+        fi
+    else
+        error_ignorable "Invalid cluster DNS: $CLUSTER_DNS"
+    fi
+}
+
 function check_prerequisites() {
     verify_system
     verify_selinux
@@ -215,50 +268,75 @@ function check_prerequisites() {
     verify_firewall
     verify_k3s_reqs
     verify_urls_reachable
+    verify_cidr
 }
 
-function remove_cluster_dns_pod() {
-    if kubectl delete pod nslookup-check --wait=false  &> /dev/null; then
-        info "Cleaned up check pod"
-    fi
-}
-
-# This function is run after installation
-function verify_cluster_dns() {
-    while true; do
-        if kubectl get serviceaccount default &> /dev/null; then
-            info "ServiceAccount default available"
-            break
-        fi
-        info "Waiting for ServiceAccount default to be created"
-        sleep 1
+# After install, wait for the cluster to be minimally ready
+function wait_for_cluster() {
+    # Ensure the cluster is stable for DNS checks
+    until kubectl rollout status -n kube-system deployment/coredns &> /dev/null; do
+        info "Waiting for Core DNS to be running"
+        sleep 10
     done
+    info "Core DNS running"
 
-    # Always remove
-    remove_cluster_dns_pod
+    until kubectl rollout status -n kube-system deployment/traefik &> /dev/null; do
+        info "Waiting for Traefik to be running"
+        sleep 10
+    done
+    info "Traefik running"
 
-    kubectl run nslookup-check --image=busybox:1.28 --command "sleep" "3600"
-    kubectl wait --for=condition=Ready pod/nslookup-check --timeout=60s
-    
+    # Ensure we have a service account in the default namespace to run the pod
+    until kubectl get serviceaccount default &> /dev/null; do
+        info "Waiting for ServiceAccount default to be created"
+        sleep 10
+    done
+    info "ServiceAccount default available"
+}
+
+# After installation, verify DNS resolution
+function verify_cluster_dns() {
+    # Later versions fail: https://github.com/coredns/coredns/issues/2026
+    local nslookup_image="busybox:1.28"
+
     for i in "${ALLOWED_URLS[@]}"
     do
         # Skipping container registry for resolution checks as it will fail regardless
-        if [[ "$i" != "https://ghcr.io/calyptia/core" ]] ; then
-            # shellcheck disable=SC2086
-            if kubectl exec -i -t nslookup-check -- nslookup ${i#*//} &> /dev/null ; then
-                info "${i#*//} - OK"
-            else
+        [[ "$i" == "https://ghcr.io/calyptia/core" ]] && continue
+
+        local count=0
+        until kubectl run -i --rm --restart=Never --timeout=30s --image="$nslookup_image" nslookup-test-$RANDOM -- nslookup "${i#*//}" &> /dev/null ; do
+            count=$((count + 1))
+            if [[ $count -gt 3 ]]; then 
                 # Get logs
-                kubectl exec -i -t nslookup-check -- nslookup ${i#*//}
-                # Always clean up
-                remove_cluster_dns_pod
+                kubectl get pods --all-namespaces
+                kubectl logs deployment/coredns -n kube-system
+                kubectl run -i --rm --restart=Never --timeout=30s --image="$nslookup_image" nslookup-test-$RANDOM -- nslookup "${i#*//}"
                 fatal "${i#*//} - Failed" 
             fi
-        fi
+
+            warn "Retrying DNS resolution for: ${i#*//}"
+            sleep 10
+        done
+        info "${i#*//} - OK"
     done
 
-    remove_cluster_dns_pod
     info "Verify cluster DNS - OK"
+}
+
+function usage() {
+    echo "usage: $0 [--force|--disable-tls-verify] "
+    echo "Optional parameters:"
+    echo "--force|-f : treat errors as warnings for pre-installation checks, only use once errors are understood to not be an issue"
+    echo "--disable-tls-verify|-k : disable TLS verification for downloads via curl"
+    echo "--user=<UID/username>|-u=<UID/username> : provision as specific user, defaults to the user who invokes this script"
+    echo "--group=<GID/groupname>|-g=<GID/groupname> : provision as specific group, defaults to $(id -gn)"
+    echo "--core-version=<release> : install specific Calyptia Core version, defaults to the latest"
+    echo "--dry-run : run pre-installation checks only"
+    echo "--disable-colour|--disable-color : disable ANSI control codes in output"
+    echo "--disable-post-install-checks : do not run post-installation checks"
+    echo
+    exit 0
 }
 
 function setup() {
@@ -296,6 +374,13 @@ function setup() {
                 Green=''
                 Yellow=''
                 shift
+                ;;
+            --disable-post-install-checks|--disablepostinstallchecks)
+                SKIP_POST_INSTALL=yes
+                shift
+                ;;
+            --help|-h)
+                usage
                 ;;
             *)
                 warn "Ignoring unknown option '$i', ensure to use equal-separated key-value pairs: --key=value"
@@ -346,6 +431,11 @@ NO_PREFLIGHT_CHECKS=yes
 IGNORE_ERRORS=${IGNORE_ERRORS}
 PROVISIONED_USER=${PROVISIONED_USER}
 PROVISIONED_GROUP=${PROVISIONED_GROUP}
+CLUSTER_CIDR=${CLUSTER_CIDR}
+SERVICE_CIDR=${SERVICE_CIDR}
+CLUSTER_DNS=${CLUSTER_DNS}
+SERVICE_NODE_PORT_RANGE=${SERVICE_NODE_PORT_RANGE}
+CLUSTER_DOMAIN=${CLUSTER_DOMAIN}
 EOF
         "$SUDO" mv -f "$tempConfig" "$config"
         "$SUDO" chown -R "${PROVISIONED_USER}:${PROVISIONED_GROUP}" "$(dirname "$config")"
@@ -468,16 +558,23 @@ fi
 "$SUDO" chmod -R a+r "$CALYPTIA_CORE_DIR"/
 
 info "Calyptia Core installation completed: $("$CALYPTIA_CORE_DIR"/calyptia-core -v)"
-info "Calyptia CLI installation completed: $(calyptia --version)"
+info "Calyptia CLI installation completed: $(calyptia version)"
 info "K3S cluster info: $(kubectl cluster-info)"
 info "Provisioned as: $PROVISIONED_USER"
 
-if [[ -e "/usr/local/bin/jq" ]]; then
+if command -v jq &>/dev/null ; then
     info "Existing jq detected so not updating"
 else
-    info "Creating jq symlink"
-    "$SUDO" ln -s /opt/calyptia/jq /usr/local/bin/jq
+    info "Installing jq"
+    "$SUDO" install -D -v -m 755 /opt/calyptia/jq /usr/local/bin/jq
 fi
-verify_cluster_dns
 
+wait_for_cluster
+if [[ "$SKIP_POST_INSTALL" != "no" ]]; then
+    warn "Skipping post installation checks"
+else
+    verify_cluster_dns
+fi
+
+info "Completed Calyptia Core provisioning successfully"
 info "==================================="
