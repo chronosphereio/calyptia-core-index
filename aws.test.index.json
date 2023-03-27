@@ -102,9 +102,9 @@
     "release": "0.4.5"
   },
   {
-    "CreationDate": "2022-12-15T16:45:29.000Z",
-    "ImageId": "ami-0dab438ae798c624e",
-    "Name": "core-test-4834ff61309ed16ae60f5f6b22a4d87d8ac3c257",
+    "CreationDate": "2023-01-10T17:42:06.000Z",
+    "ImageId": "ami-0a2013997758572eb",
+    "Name": "core-test-pr-205-calyptia-core",
     "Tags": [
       {
         "Key": "calyptia-core-release",
@@ -121,6 +121,69 @@
     ],
     "region": "ap-northeast-1",
     "release": "0.4.6"
+  },
+  {
+    "CreationDate": "2023-01-24T16:32:09.000Z",
+    "ImageId": "ami-04bdd4f20bc08cbf1",
+    "Name": "core-test-3fb6eb538b96af23b58e2da52acdadfdf471a0d8",
+    "Tags": [
+      {
+        "Key": "source-image",
+        "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20230112"
+      },
+      {
+        "Key": "Amazon_AMI_Management_Identifier",
+        "Value": "private-0.5.1"
+      },
+      {
+        "Key": "calyptia-core-release",
+        "Value": "0.5.1"
+      }
+    ],
+    "region": "ap-northeast-1",
+    "release": "0.5.1"
+  },
+  {
+    "CreationDate": "2023-02-17T16:38:31.000Z",
+    "ImageId": "ami-0620b97c1e4235db0",
+    "Name": "core-test-1f0158bb927ce9628f93061b1126350adccb86d2",
+    "Tags": [
+      {
+        "Key": "source-image",
+        "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20230213"
+      },
+      {
+        "Key": "calyptia-core-release",
+        "Value": "1.1.0"
+      },
+      {
+        "Key": "Amazon_AMI_Management_Identifier",
+        "Value": "private-1.1.0"
+      }
+    ],
+    "region": "ap-northeast-1",
+    "release": "1.1.0"
+  },
+  {
+    "CreationDate": "2023-03-08T14:45:08.000Z",
+    "ImageId": "ami-07087e28fd24811f3",
+    "Name": "core-test-cfed36628f44b15fc089ea4388990d293e17d558",
+    "Tags": [
+      {
+        "Key": "source-image",
+        "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20230302"
+      },
+      {
+        "Key": "Amazon_AMI_Management_Identifier",
+        "Value": "private-1.1.1"
+      },
+      {
+        "Key": "calyptia-core-release",
+        "Value": "1.1.1"
+      }
+    ],
+    "region": "ap-northeast-1",
+    "release": "1.1.1"
   },
   {
     "CreationDate": "2022-09-08T12:32:28.000Z",
@@ -225,9 +288,9 @@
     "release": "0.4.5"
   },
   {
-    "CreationDate": "2022-12-15T16:45:29.000Z",
-    "ImageId": "ami-0aaa4054b95cf2462",
-    "Name": "core-test-4834ff61309ed16ae60f5f6b22a4d87d8ac3c257",
+    "CreationDate": "2023-01-10T17:42:06.000Z",
+    "ImageId": "ami-0a91a76a8709b76a0",
+    "Name": "core-test-pr-205-calyptia-core",
     "Tags": [
       {
         "Key": "Amazon_AMI_Management_Identifier",
@@ -244,6 +307,69 @@
     ],
     "region": "ap-northeast-2",
     "release": "0.4.6"
+  },
+  {
+    "CreationDate": "2023-01-24T16:32:09.000Z",
+    "ImageId": "ami-0df870bb3c2e917d6",
+    "Name": "core-test-3fb6eb538b96af23b58e2da52acdadfdf471a0d8",
+    "Tags": [
+      {
+        "Key": "calyptia-core-release",
+        "Value": "0.5.1"
+      },
+      {
+        "Key": "Amazon_AMI_Management_Identifier",
+        "Value": "private-0.5.1"
+      },
+      {
+        "Key": "source-image",
+        "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20230112"
+      }
+    ],
+    "region": "ap-northeast-2",
+    "release": "0.5.1"
+  },
+  {
+    "CreationDate": "2023-02-17T16:38:31.000Z",
+    "ImageId": "ami-0ed95c3588c8d80c4",
+    "Name": "core-test-1f0158bb927ce9628f93061b1126350adccb86d2",
+    "Tags": [
+      {
+        "Key": "Amazon_AMI_Management_Identifier",
+        "Value": "private-1.1.0"
+      },
+      {
+        "Key": "calyptia-core-release",
+        "Value": "1.1.0"
+      },
+      {
+        "Key": "source-image",
+        "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20230213"
+      }
+    ],
+    "region": "ap-northeast-2",
+    "release": "1.1.0"
+  },
+  {
+    "CreationDate": "2023-03-08T14:45:08.000Z",
+    "ImageId": "ami-00eae88fa0f5c627c",
+    "Name": "core-test-cfed36628f44b15fc089ea4388990d293e17d558",
+    "Tags": [
+      {
+        "Key": "calyptia-core-release",
+        "Value": "1.1.1"
+      },
+      {
+        "Key": "source-image",
+        "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20230302"
+      },
+      {
+        "Key": "Amazon_AMI_Management_Identifier",
+        "Value": "private-1.1.1"
+      }
+    ],
+    "region": "ap-northeast-2",
+    "release": "1.1.1"
   },
   {
     "CreationDate": "2022-09-08T12:32:28.000Z",
@@ -348,10 +474,14 @@
     "release": "0.4.5"
   },
   {
-    "CreationDate": "2022-12-15T16:45:29.000Z",
-    "ImageId": "ami-0a2680637f94e181e",
-    "Name": "core-test-4834ff61309ed16ae60f5f6b22a4d87d8ac3c257",
+    "CreationDate": "2023-01-10T17:42:07.000Z",
+    "ImageId": "ami-0dd4b687a4ac2e43c",
+    "Name": "core-test-pr-205-calyptia-core",
     "Tags": [
+      {
+        "Key": "Amazon_AMI_Management_Identifier",
+        "Value": "private-0.4.6"
+      },
       {
         "Key": "source-image",
         "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20221212"
@@ -359,14 +489,73 @@
       {
         "Key": "calyptia-core-release",
         "Value": "0.4.6"
-      },
-      {
-        "Key": "Amazon_AMI_Management_Identifier",
-        "Value": "private-0.4.6"
       }
     ],
     "region": "ap-south-1",
     "release": "0.4.6"
+  },
+  {
+    "CreationDate": "2023-01-24T16:32:09.000Z",
+    "ImageId": "ami-0bbfcf25992e9bf6f",
+    "Name": "core-test-3fb6eb538b96af23b58e2da52acdadfdf471a0d8",
+    "Tags": [
+      {
+        "Key": "calyptia-core-release",
+        "Value": "0.5.1"
+      },
+      {
+        "Key": "Amazon_AMI_Management_Identifier",
+        "Value": "private-0.5.1"
+      },
+      {
+        "Key": "source-image",
+        "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20230112"
+      }
+    ],
+    "region": "ap-south-1",
+    "release": "0.5.1"
+  },
+  {
+    "CreationDate": "2023-02-17T16:38:32.000Z",
+    "ImageId": "ami-059d3923719f5cd40",
+    "Name": "core-test-1f0158bb927ce9628f93061b1126350adccb86d2",
+    "Tags": [
+      {
+        "Key": "Amazon_AMI_Management_Identifier",
+        "Value": "private-1.1.0"
+      },
+      {
+        "Key": "source-image",
+        "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20230213"
+      },
+      {
+        "Key": "calyptia-core-release",
+        "Value": "1.1.0"
+      }
+    ],
+    "region": "ap-south-1",
+    "release": "1.1.0"
+  },
+  {
+    "CreationDate": "2023-03-08T14:45:08.000Z",
+    "ImageId": "ami-0d9d0e0c82c606bab",
+    "Name": "core-test-cfed36628f44b15fc089ea4388990d293e17d558",
+    "Tags": [
+      {
+        "Key": "source-image",
+        "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20230302"
+      },
+      {
+        "Key": "Amazon_AMI_Management_Identifier",
+        "Value": "private-1.1.1"
+      },
+      {
+        "Key": "calyptia-core-release",
+        "Value": "1.1.1"
+      }
+    ],
+    "region": "ap-south-1",
+    "release": "1.1.1"
   },
   {
     "CreationDate": "2022-09-08T12:32:28.000Z",
@@ -471,10 +660,14 @@
     "release": "0.4.5"
   },
   {
-    "CreationDate": "2022-12-15T16:45:29.000Z",
-    "ImageId": "ami-014bf7fcb357bc77d",
-    "Name": "core-test-4834ff61309ed16ae60f5f6b22a4d87d8ac3c257",
+    "CreationDate": "2023-01-10T17:42:07.000Z",
+    "ImageId": "ami-0250afa6d8e1bd5d9",
+    "Name": "core-test-pr-205-calyptia-core",
     "Tags": [
+      {
+        "Key": "calyptia-core-release",
+        "Value": "0.4.6"
+      },
       {
         "Key": "Amazon_AMI_Management_Identifier",
         "Value": "private-0.4.6"
@@ -482,14 +675,73 @@
       {
         "Key": "source-image",
         "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20221212"
-      },
-      {
-        "Key": "calyptia-core-release",
-        "Value": "0.4.6"
       }
     ],
     "region": "ap-southeast-1",
     "release": "0.4.6"
+  },
+  {
+    "CreationDate": "2023-01-24T16:32:09.000Z",
+    "ImageId": "ami-05d640702e2e5d27e",
+    "Name": "core-test-3fb6eb538b96af23b58e2da52acdadfdf471a0d8",
+    "Tags": [
+      {
+        "Key": "calyptia-core-release",
+        "Value": "0.5.1"
+      },
+      {
+        "Key": "Amazon_AMI_Management_Identifier",
+        "Value": "private-0.5.1"
+      },
+      {
+        "Key": "source-image",
+        "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20230112"
+      }
+    ],
+    "region": "ap-southeast-1",
+    "release": "0.5.1"
+  },
+  {
+    "CreationDate": "2023-02-17T16:38:32.000Z",
+    "ImageId": "ami-091b1f952e0b654bd",
+    "Name": "core-test-1f0158bb927ce9628f93061b1126350adccb86d2",
+    "Tags": [
+      {
+        "Key": "source-image",
+        "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20230213"
+      },
+      {
+        "Key": "Amazon_AMI_Management_Identifier",
+        "Value": "private-1.1.0"
+      },
+      {
+        "Key": "calyptia-core-release",
+        "Value": "1.1.0"
+      }
+    ],
+    "region": "ap-southeast-1",
+    "release": "1.1.0"
+  },
+  {
+    "CreationDate": "2023-03-08T14:45:08.000Z",
+    "ImageId": "ami-002eb6cf543837a04",
+    "Name": "core-test-cfed36628f44b15fc089ea4388990d293e17d558",
+    "Tags": [
+      {
+        "Key": "Amazon_AMI_Management_Identifier",
+        "Value": "private-1.1.1"
+      },
+      {
+        "Key": "calyptia-core-release",
+        "Value": "1.1.1"
+      },
+      {
+        "Key": "source-image",
+        "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20230302"
+      }
+    ],
+    "region": "ap-southeast-1",
+    "release": "1.1.1"
   },
   {
     "CreationDate": "2022-09-08T12:32:28.000Z",
@@ -594,9 +846,9 @@
     "release": "0.4.5"
   },
   {
-    "CreationDate": "2022-12-15T16:45:29.000Z",
-    "ImageId": "ami-0a5ca61c5a8fa79ab",
-    "Name": "core-test-4834ff61309ed16ae60f5f6b22a4d87d8ac3c257",
+    "CreationDate": "2023-01-10T17:42:06.000Z",
+    "ImageId": "ami-0cd5a5493bef166f6",
+    "Name": "core-test-pr-205-calyptia-core",
     "Tags": [
       {
         "Key": "Amazon_AMI_Management_Identifier",
@@ -613,6 +865,69 @@
     ],
     "region": "ap-southeast-2",
     "release": "0.4.6"
+  },
+  {
+    "CreationDate": "2023-01-24T16:32:09.000Z",
+    "ImageId": "ami-09ece16e5ce791788",
+    "Name": "core-test-3fb6eb538b96af23b58e2da52acdadfdf471a0d8",
+    "Tags": [
+      {
+        "Key": "calyptia-core-release",
+        "Value": "0.5.1"
+      },
+      {
+        "Key": "source-image",
+        "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20230112"
+      },
+      {
+        "Key": "Amazon_AMI_Management_Identifier",
+        "Value": "private-0.5.1"
+      }
+    ],
+    "region": "ap-southeast-2",
+    "release": "0.5.1"
+  },
+  {
+    "CreationDate": "2023-02-17T16:38:31.000Z",
+    "ImageId": "ami-0c89cbce19063633c",
+    "Name": "core-test-1f0158bb927ce9628f93061b1126350adccb86d2",
+    "Tags": [
+      {
+        "Key": "Amazon_AMI_Management_Identifier",
+        "Value": "private-1.1.0"
+      },
+      {
+        "Key": "source-image",
+        "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20230213"
+      },
+      {
+        "Key": "calyptia-core-release",
+        "Value": "1.1.0"
+      }
+    ],
+    "region": "ap-southeast-2",
+    "release": "1.1.0"
+  },
+  {
+    "CreationDate": "2023-03-08T14:45:08.000Z",
+    "ImageId": "ami-0df411b9d5076681a",
+    "Name": "core-test-cfed36628f44b15fc089ea4388990d293e17d558",
+    "Tags": [
+      {
+        "Key": "calyptia-core-release",
+        "Value": "1.1.1"
+      },
+      {
+        "Key": "source-image",
+        "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20230302"
+      },
+      {
+        "Key": "Amazon_AMI_Management_Identifier",
+        "Value": "private-1.1.1"
+      }
+    ],
+    "region": "ap-southeast-2",
+    "release": "1.1.1"
   },
   {
     "CreationDate": "2022-09-08T12:29:25.000Z",
@@ -717,17 +1032,17 @@
     "release": "0.4.5"
   },
   {
-    "CreationDate": "2022-12-15T16:43:56.000Z",
-    "ImageId": "ami-0c853a4ace0fef985",
-    "Name": "core-test-4834ff61309ed16ae60f5f6b22a4d87d8ac3c257",
+    "CreationDate": "2023-01-10T17:39:01.000Z",
+    "ImageId": "ami-02cdd0c96643bbb19",
+    "Name": "core-test-pr-205-calyptia-core",
     "Tags": [
-      {
-        "Key": "Amazon_AMI_Management_Identifier",
-        "Value": "private-0.4.6"
-      },
       {
         "Key": "calyptia-core-release",
         "Value": "0.4.6"
+      },
+      {
+        "Key": "Amazon_AMI_Management_Identifier",
+        "Value": "private-0.4.6"
       },
       {
         "Key": "source-image",
@@ -736,6 +1051,69 @@
     ],
     "region": "us-east-1",
     "release": "0.4.6"
+  },
+  {
+    "CreationDate": "2023-01-24T16:30:35.000Z",
+    "ImageId": "ami-03bf0fc76390e73d1",
+    "Name": "core-test-3fb6eb538b96af23b58e2da52acdadfdf471a0d8",
+    "Tags": [
+      {
+        "Key": "calyptia-core-release",
+        "Value": "0.5.1"
+      },
+      {
+        "Key": "source-image",
+        "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20230112"
+      },
+      {
+        "Key": "Amazon_AMI_Management_Identifier",
+        "Value": "private-0.5.1"
+      }
+    ],
+    "region": "us-east-1",
+    "release": "0.5.1"
+  },
+  {
+    "CreationDate": "2023-02-17T16:35:25.000Z",
+    "ImageId": "ami-05786a153f335dc84",
+    "Name": "core-test-1f0158bb927ce9628f93061b1126350adccb86d2",
+    "Tags": [
+      {
+        "Key": "Amazon_AMI_Management_Identifier",
+        "Value": "private-1.1.0"
+      },
+      {
+        "Key": "calyptia-core-release",
+        "Value": "1.1.0"
+      },
+      {
+        "Key": "source-image",
+        "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20230213"
+      }
+    ],
+    "region": "us-east-1",
+    "release": "1.1.0"
+  },
+  {
+    "CreationDate": "2023-03-08T14:39:45.000Z",
+    "ImageId": "ami-025d6ee2fe77d2bc7",
+    "Name": "core-test-cfed36628f44b15fc089ea4388990d293e17d558",
+    "Tags": [
+      {
+        "Key": "calyptia-core-release",
+        "Value": "1.1.1"
+      },
+      {
+        "Key": "Amazon_AMI_Management_Identifier",
+        "Value": "private-1.1.1"
+      },
+      {
+        "Key": "source-image",
+        "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20230302"
+      }
+    ],
+    "region": "us-east-1",
+    "release": "1.1.1"
   },
   {
     "CreationDate": "2022-09-08T12:32:27.000Z",
@@ -840,25 +1218,88 @@
     "release": "0.4.5"
   },
   {
-    "CreationDate": "2022-12-15T16:45:28.000Z",
-    "ImageId": "ami-0b3f3c1a2939afbea",
-    "Name": "core-test-4834ff61309ed16ae60f5f6b22a4d87d8ac3c257",
+    "CreationDate": "2023-01-10T17:42:05.000Z",
+    "ImageId": "ami-0224d6acddf47b204",
+    "Name": "core-test-pr-205-calyptia-core",
     "Tags": [
       {
         "Key": "calyptia-core-release",
         "Value": "0.4.6"
       },
       {
-        "Key": "source-image",
-        "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20221212"
-      },
-      {
         "Key": "Amazon_AMI_Management_Identifier",
         "Value": "private-0.4.6"
+      },
+      {
+        "Key": "source-image",
+        "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20221212"
       }
     ],
     "region": "us-east-2",
     "release": "0.4.6"
+  },
+  {
+    "CreationDate": "2023-01-24T16:32:08.000Z",
+    "ImageId": "ami-042686285e1e6ce39",
+    "Name": "core-test-3fb6eb538b96af23b58e2da52acdadfdf471a0d8",
+    "Tags": [
+      {
+        "Key": "Amazon_AMI_Management_Identifier",
+        "Value": "private-0.5.1"
+      },
+      {
+        "Key": "source-image",
+        "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20230112"
+      },
+      {
+        "Key": "calyptia-core-release",
+        "Value": "0.5.1"
+      }
+    ],
+    "region": "us-east-2",
+    "release": "0.5.1"
+  },
+  {
+    "CreationDate": "2023-02-17T16:38:30.000Z",
+    "ImageId": "ami-0f2008965e2cf742f",
+    "Name": "core-test-1f0158bb927ce9628f93061b1126350adccb86d2",
+    "Tags": [
+      {
+        "Key": "Amazon_AMI_Management_Identifier",
+        "Value": "private-1.1.0"
+      },
+      {
+        "Key": "calyptia-core-release",
+        "Value": "1.1.0"
+      },
+      {
+        "Key": "source-image",
+        "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20230213"
+      }
+    ],
+    "region": "us-east-2",
+    "release": "1.1.0"
+  },
+  {
+    "CreationDate": "2023-03-08T14:45:07.000Z",
+    "ImageId": "ami-00e09358d38effd54",
+    "Name": "core-test-cfed36628f44b15fc089ea4388990d293e17d558",
+    "Tags": [
+      {
+        "Key": "source-image",
+        "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20230302"
+      },
+      {
+        "Key": "Amazon_AMI_Management_Identifier",
+        "Value": "private-1.1.1"
+      },
+      {
+        "Key": "calyptia-core-release",
+        "Value": "1.1.1"
+      }
+    ],
+    "region": "us-east-2",
+    "release": "1.1.1"
   },
   {
     "CreationDate": "2022-09-08T12:32:27.000Z",
@@ -963,25 +1404,88 @@
     "release": "0.4.5"
   },
   {
-    "CreationDate": "2022-12-15T16:45:28.000Z",
-    "ImageId": "ami-02b37b6e18b889d6e",
-    "Name": "core-test-4834ff61309ed16ae60f5f6b22a4d87d8ac3c257",
+    "CreationDate": "2023-01-10T17:42:05.000Z",
+    "ImageId": "ami-08118a1f44e024830",
+    "Name": "core-test-pr-205-calyptia-core",
     "Tags": [
       {
         "Key": "Amazon_AMI_Management_Identifier",
         "Value": "private-0.4.6"
       },
       {
-        "Key": "source-image",
-        "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20221212"
-      },
-      {
         "Key": "calyptia-core-release",
         "Value": "0.4.6"
+      },
+      {
+        "Key": "source-image",
+        "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20221212"
       }
     ],
     "region": "us-west-1",
     "release": "0.4.6"
+  },
+  {
+    "CreationDate": "2023-01-24T16:32:08.000Z",
+    "ImageId": "ami-05a4474ce8083fe9f",
+    "Name": "core-test-3fb6eb538b96af23b58e2da52acdadfdf471a0d8",
+    "Tags": [
+      {
+        "Key": "calyptia-core-release",
+        "Value": "0.5.1"
+      },
+      {
+        "Key": "Amazon_AMI_Management_Identifier",
+        "Value": "private-0.5.1"
+      },
+      {
+        "Key": "source-image",
+        "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20230112"
+      }
+    ],
+    "region": "us-west-1",
+    "release": "0.5.1"
+  },
+  {
+    "CreationDate": "2023-02-17T16:38:30.000Z",
+    "ImageId": "ami-0a5bc556b248462d4",
+    "Name": "core-test-1f0158bb927ce9628f93061b1126350adccb86d2",
+    "Tags": [
+      {
+        "Key": "calyptia-core-release",
+        "Value": "1.1.0"
+      },
+      {
+        "Key": "source-image",
+        "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20230213"
+      },
+      {
+        "Key": "Amazon_AMI_Management_Identifier",
+        "Value": "private-1.1.0"
+      }
+    ],
+    "region": "us-west-1",
+    "release": "1.1.0"
+  },
+  {
+    "CreationDate": "2023-03-08T14:45:07.000Z",
+    "ImageId": "ami-0635dd6a992d57744",
+    "Name": "core-test-cfed36628f44b15fc089ea4388990d293e17d558",
+    "Tags": [
+      {
+        "Key": "source-image",
+        "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20230302"
+      },
+      {
+        "Key": "Amazon_AMI_Management_Identifier",
+        "Value": "private-1.1.1"
+      },
+      {
+        "Key": "calyptia-core-release",
+        "Value": "1.1.1"
+      }
+    ],
+    "region": "us-west-1",
+    "release": "1.1.1"
   },
   {
     "CreationDate": "2022-11-03T18:47:50.000Z",
@@ -1018,9 +1522,9 @@
     "release": "0.4.5"
   },
   {
-    "CreationDate": "2022-12-15T16:45:28.000Z",
-    "ImageId": "ami-0313878c38350b6fc",
-    "Name": "core-test-4834ff61309ed16ae60f5f6b22a4d87d8ac3c257",
+    "CreationDate": "2023-01-10T17:42:05.000Z",
+    "ImageId": "ami-03d355a65ff269096",
+    "Name": "core-test-pr-205-calyptia-core",
     "Tags": [
       {
         "Key": "calyptia-core-release",
@@ -1037,5 +1541,68 @@
     ],
     "region": "us-west-2",
     "release": "0.4.6"
+  },
+  {
+    "CreationDate": "2023-01-24T16:32:08.000Z",
+    "ImageId": "ami-0b714c0a84a879453",
+    "Name": "core-test-3fb6eb538b96af23b58e2da52acdadfdf471a0d8",
+    "Tags": [
+      {
+        "Key": "calyptia-core-release",
+        "Value": "0.5.1"
+      },
+      {
+        "Key": "source-image",
+        "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20230112"
+      },
+      {
+        "Key": "Amazon_AMI_Management_Identifier",
+        "Value": "private-0.5.1"
+      }
+    ],
+    "region": "us-west-2",
+    "release": "0.5.1"
+  },
+  {
+    "CreationDate": "2023-02-17T16:38:30.000Z",
+    "ImageId": "ami-0353977c19b70c1c2",
+    "Name": "core-test-1f0158bb927ce9628f93061b1126350adccb86d2",
+    "Tags": [
+      {
+        "Key": "source-image",
+        "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20230213"
+      },
+      {
+        "Key": "calyptia-core-release",
+        "Value": "1.1.0"
+      },
+      {
+        "Key": "Amazon_AMI_Management_Identifier",
+        "Value": "private-1.1.0"
+      }
+    ],
+    "region": "us-west-2",
+    "release": "1.1.0"
+  },
+  {
+    "CreationDate": "2023-03-08T14:45:07.000Z",
+    "ImageId": "ami-0fcca4b1e62338457",
+    "Name": "core-test-cfed36628f44b15fc089ea4388990d293e17d558",
+    "Tags": [
+      {
+        "Key": "Amazon_AMI_Management_Identifier",
+        "Value": "private-1.1.1"
+      },
+      {
+        "Key": "source-image",
+        "Value": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20230302"
+      },
+      {
+        "Key": "calyptia-core-release",
+        "Value": "1.1.1"
+      }
+    ],
+    "region": "us-west-2",
+    "release": "1.1.1"
   }
 ]
