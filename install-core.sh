@@ -171,7 +171,7 @@ function verify_fips() {
 
 function verify_firewall() {
     if command -v ufw &> /dev/null ; then
-        if "$SUDO" ufw status | grep -qi "inactive"; then
+        if $SUDO ufw status | grep -qi "inactive"; then
             info "Firewall disabled"
         else
             error_ignorable "Firewall is enabled, please ensure outbound rules are correctly configured from docs."
@@ -423,7 +423,7 @@ function handle_installer_config() {
         info "Existing installation configuration file found: $config"
     else
         info "Creating installation configuration file: $config"
-        "$SUDO" mkdir -p "$(dirname "$config")"
+        $SUDO mkdir -p "$(dirname "$config")"
         # Beware of sudo redirection failures so use a temporary file and copy it
         tempConfig=$(mktemp)
         cat > "$tempConfig" <<EOF
@@ -437,9 +437,9 @@ CLUSTER_DNS=${CLUSTER_DNS}
 SERVICE_NODE_PORT_RANGE=${SERVICE_NODE_PORT_RANGE}
 CLUSTER_DOMAIN=${CLUSTER_DOMAIN}
 EOF
-        "$SUDO" mv -f "$tempConfig" "$config"
-        "$SUDO" chown -R "${PROVISIONED_USER}:${PROVISIONED_GROUP}" "$(dirname "$config")"
-        "$SUDO" chmod -R a+r "$(dirname "$config")"
+        $SUDO mv -f "$tempConfig" "$config"
+        $SUDO chown -R "${PROVISIONED_USER}:${PROVISIONED_GROUP}" "$(dirname "$config")"
+        $SUDO chmod -R a+r "$(dirname "$config")"
     fi
 }
 
@@ -490,7 +490,7 @@ if command -v dpkg &> /dev/null ; then
         LOCAL_PACKAGE="/tmp/calyptia-core_${RELEASE_VERSION}_${ARCH}.deb"
     fi
     info "Installing Debian-derived OS dependencies"
-    "$SUDO" dpkg --install "${LOCAL_PACKAGE}"
+    $SUDO dpkg --install "${LOCAL_PACKAGE}"
 elif command -v rpm &> /dev/null ; then
     # RPMs use the other defaults
     case $ARCH in
@@ -525,7 +525,7 @@ elif command -v rpm &> /dev/null ; then
         warn "SELinux enabled, ensure we have met the requirements to allow for it: install container-selinux and k3s SELinux config"
     fi
 
-    "$SUDO" rpm -ivh "${LOCAL_PACKAGE}"
+    $SUDO rpm -ivh "${LOCAL_PACKAGE}"
 
 elif command -v apk &> /dev/null ; then
     if [[ -d "$LOCAL_PACKAGE" ]]; then
@@ -543,7 +543,7 @@ elif command -v apk &> /dev/null ; then
         LOCAL_PACKAGE="/tmp/calyptia-core_${RELEASE_VERSION}_${ARCH}.apk"
     fi
     info "Installing APK-derived OS dependencies"
-    "$SUDO" apk add --allow-untrusted "${LOCAL_PACKAGE}"
+    $SUDO apk add --allow-untrusted "${LOCAL_PACKAGE}"
 else
     fatal "Unsupported platform"
 fi
@@ -551,11 +551,11 @@ fi
 # Ensure our various directories are correctly set up to allow users to access everything
 export KUBECONFIG="$CALYPTIA_CORE_DIR"/kubeconfig
 if [[ "$PROVISIONED_USER" != "root" ]]; then
-    "$SUDO" mkdir -p "/home/${PROVISIONED_USER}/.kube"
-    "$SUDO" cp -fv "$KUBECONFIG" "/home/${PROVISIONED_USER}/.kube/config"
-    "$SUDO" chown -R "${PROVISIONED_USER}:${PROVISIONED_GROUP}" "/home/${PROVISIONED_USER}/.kube" "$CALYPTIA_CORE_DIR"/
+    $SUDO mkdir -p "/home/${PROVISIONED_USER}/.kube"
+    $SUDO cp -fv "$KUBECONFIG" "/home/${PROVISIONED_USER}/.kube/config"
+    $SUDO chown -R "${PROVISIONED_USER}:${PROVISIONED_GROUP}" "/home/${PROVISIONED_USER}/.kube" "$CALYPTIA_CORE_DIR"/
 fi
-"$SUDO" chmod -R a+r "$CALYPTIA_CORE_DIR"/
+$SUDO chmod -R a+r "$CALYPTIA_CORE_DIR"/
 
 info "Calyptia Core installation completed: $("$CALYPTIA_CORE_DIR"/calyptia-core -v)"
 info "Calyptia CLI installation completed: $(calyptia version)"
@@ -566,7 +566,7 @@ if command -v jq &>/dev/null ; then
     info "Existing jq detected so not updating"
 else
     info "Installing jq"
-    "$SUDO" install -D -v -m 755 /opt/calyptia/jq /usr/local/bin/jq
+    $SUDO install -D -v -m 755 /opt/calyptia/jq /usr/local/bin/jq
 fi
 
 wait_for_cluster
