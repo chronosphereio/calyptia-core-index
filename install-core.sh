@@ -9,7 +9,7 @@ PROVISIONED_USER=${INSTALL_CALYPTIA_PROVISIONED_USER:-$USER}
 # The group to install Calyptia Core as, it must pre-exist.
 PROVISIONED_GROUP=${INSTALL_CALYPTIA_PROVISIONED_GROUP:-$(id -gn)}
 # The version of Calyptia Core to install.
-RELEASE_VERSION=${INSTALL_CALYPTIA_RELEASE_VERSION:-1.1.2}
+RELEASE_VERSION=${INSTALL_CALYPTIA_RELEASE_VERSION:-1.1.1}
 # Optionally just run the checks and do not install by setting to 'yes'.
 DRY_RUN=${INSTALL_CALYPTIA_DRY_RUN:-no}
 # Equivalent to '--force' to ignore errors as warnings and continue after checks even if they fail.
@@ -218,7 +218,7 @@ function verify_urls_reachable() {
 function verify_cidr() {
     if ! command -v nslookup &> /dev/null ; then
         warn "Unable to find nslookup to check resolution of 8.8.8.8 for Core DNS"
-    elif nslookup 8.8.8.8 &> /dev/null ; then
+    elif ! nslookup 8.8.8.8 &> /dev/null ; then
         # This can be ignored if we have internal DNS servers that function
         warn "Unable to use 8.8.8.8 as a DNS server for Core DNS"
     fi
@@ -294,34 +294,52 @@ function wait_for_cluster() {
     info "ServiceAccount default available"
 }
 
+# After installation, check if we require SELinux configuration to execute commands as root
+function verify_binaries() {
+    if $SUDO command -v kubectl &> /dev/null ; then
+        info "Verified kubectl is available to root"
+    else
+        warn "Missing kubectl for root - update path and/or SELinux configuration"
+    fi
+    if $SUDO command -v calyptia &> /dev/null ; then
+        info "Verified Calyptia CLI is available to root"
+    else
+        warn "Missing Calyptia CLI for root - update path and/or SELinux configuration"
+    fi
+}
+
 # After installation, verify DNS resolution
 function verify_cluster_dns() {
-    # Later versions fail: https://github.com/coredns/coredns/issues/2026
-    local nslookup_image="busybox:1.28"
+    if ! command -v kubectl &> /dev/null ; then
+        warn "Unable to use kubectl so skipping checks for cluster DNS"
+    else 
+        # Later versions fail: https://github.com/coredns/coredns/issues/2026
+        local nslookup_image="busybox:1.28"
 
-    for i in "${ALLOWED_URLS[@]}"
-    do
-        # Skipping container registry for resolution checks as it will fail regardless
-        [[ "$i" == "https://ghcr.io/calyptia/core" ]] && continue
+        for i in "${ALLOWED_URLS[@]}"
+        do
+            # Skipping container registry for resolution checks as it will fail regardless
+            [[ "$i" == "https://ghcr.io/calyptia/core" ]] && continue
 
-        local count=0
-        until kubectl run -i --rm --restart=Never --timeout=30s --image="$nslookup_image" nslookup-test-$RANDOM -- nslookup "${i#*//}" &> /dev/null ; do
-            count=$((count + 1))
-            if [[ $count -gt 3 ]]; then 
-                # Get logs
-                kubectl get pods --all-namespaces
-                kubectl logs deployment/coredns -n kube-system
-                kubectl run -i --rm --restart=Never --timeout=30s --image="$nslookup_image" nslookup-test-$RANDOM -- nslookup "${i#*//}"
-                fatal "${i#*//} - Failed" 
-            fi
+            local count=0
+            until kubectl run -i --rm --restart=Never --timeout=30s --image="$nslookup_image" nslookup-test-$RANDOM -- nslookup "${i#*//}" &> /dev/null ; do
+                count=$((count + 1))
+                if [[ $count -gt 3 ]]; then 
+                    # Get logs
+                    kubectl get pods --all-namespaces
+                    kubectl logs deployment/coredns -n kube-system
+                    kubectl run -i --rm --restart=Never --timeout=30s --image="$nslookup_image" nslookup-test-$RANDOM -- nslookup "${i#*//}"
+                    fatal "${i#*//} - Failed" 
+                fi
 
-            warn "Retrying DNS resolution for: ${i#*//}"
-            sleep 10
+                warn "Retrying DNS resolution for: ${i#*//}"
+                sleep 10
+            done
+            info "${i#*//} - OK"
         done
-        info "${i#*//} - OK"
-    done
 
-    info "Verify cluster DNS - OK"
+        info "Verify cluster DNS - OK"
+    fi
 }
 
 function usage() {
@@ -557,8 +575,20 @@ if [[ "$PROVISIONED_USER" != "root" ]]; then
 fi
 $SUDO chmod -R a+r "$CALYPTIA_CORE_DIR"/
 
+wait_for_cluster
+if [[ "$SKIP_POST_INSTALL" != "no" ]]; then
+    warn "Skipping post installation checks"
+else
+    verify_binaries
+    verify_cluster_dns
+fi
+
 info "Calyptia Core installation completed: $("$CALYPTIA_CORE_DIR"/calyptia-core -v)"
-info "Calyptia CLI installation completed: $(calyptia version)"
+if calyptia --version &> /dev/null; then
+    info "Calyptia CLI installation completed: $(calyptia --version)"
+else
+    info "Calyptia CLI installation completed: $(calyptia version)"
+fi
 info "K3S cluster info: $(kubectl cluster-info)"
 info "Provisioned as: $PROVISIONED_USER"
 
@@ -567,13 +597,6 @@ if command -v jq &>/dev/null ; then
 else
     info "Installing jq"
     $SUDO install -D -v -m 755 /opt/calyptia/jq /usr/local/bin/jq
-fi
-
-wait_for_cluster
-if [[ "$SKIP_POST_INSTALL" != "no" ]]; then
-    warn "Skipping post installation checks"
-else
-    verify_cluster_dns
 fi
 
 info "Completed Calyptia Core provisioning successfully"
