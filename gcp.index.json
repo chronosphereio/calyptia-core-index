@@ -550,34 +550,67 @@
     ]
   },
   {
-    "creationTimestamp": "2023-03-08T06:37:56.636-08:00",
+    "creationTimestamp": "2023-03-27T08:13:43.330-07:00",
     "labels": {
       "calyptia-core-release": "1-1-1",
-      "source-image": "ubuntu-2004-lts"
+      "source-image": "ubuntu-2204-lts"
     },
-    "name": "gold-calyptia-core-20230308143447-asia",
+    "name": "gold-calyptia-core-20230327151029-asia",
     "storageLocations": [
       "asia"
     ]
   },
   {
-    "creationTimestamp": "2023-03-08T06:38:25.444-08:00",
+    "creationTimestamp": "2023-03-27T08:13:47.746-07:00",
     "labels": {
       "calyptia-core-release": "1-1-1",
-      "source-image": "ubuntu-2004-lts"
+      "source-image": "ubuntu-2204-lts"
     },
-    "name": "gold-calyptia-core-20230308143447-eu",
+    "name": "gold-calyptia-core-20230327151029-eu",
     "storageLocations": [
       "eu"
     ]
   },
   {
-    "creationTimestamp": "2023-03-08T06:38:34.713-08:00",
+    "creationTimestamp": "2023-03-27T08:13:46.783-07:00",
     "labels": {
       "calyptia-core-release": "1-1-1",
-      "source-image": "ubuntu-2004-lts"
+      "source-image": "ubuntu-2204-lts"
     },
-    "name": "gold-calyptia-core-20230308143447-us",
+    "name": "gold-calyptia-core-20230327151029-us",
+    "storageLocations": [
+      "us"
+    ]
+  },
+  {
+    "creationTimestamp": "2023-03-31T03:04:09.253-07:00",
+    "labels": {
+      "calyptia-core-release": "1-1-2",
+      "source-image": "ubuntu-2204-lts"
+    },
+    "name": "gold-calyptia-core-20230331100103-asia",
+    "storageLocations": [
+      "asia"
+    ]
+  },
+  {
+    "creationTimestamp": "2023-03-31T03:04:30.342-07:00",
+    "labels": {
+      "calyptia-core-release": "1-1-2",
+      "source-image": "ubuntu-2204-lts"
+    },
+    "name": "gold-calyptia-core-20230331100103-eu",
+    "storageLocations": [
+      "eu"
+    ]
+  },
+  {
+    "creationTimestamp": "2023-03-31T03:04:14.905-07:00",
+    "labels": {
+      "calyptia-core-release": "1-1-2",
+      "source-image": "ubuntu-2204-lts"
+    },
+    "name": "gold-calyptia-core-20230331100103-us",
     "storageLocations": [
       "us"
     ]
