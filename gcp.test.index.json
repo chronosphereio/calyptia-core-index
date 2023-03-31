@@ -363,34 +363,67 @@
     ]
   },
   {
-    "creationTimestamp": "2023-03-08T06:38:33.210-08:00",
+    "creationTimestamp": "2023-03-27T08:14:16.854-07:00",
     "labels": {
       "calyptia-core-release": "1-1-1",
-      "source-image": "ubuntu-2004-lts"
+      "source-image": "ubuntu-2204-lts"
     },
-    "name": "core-test-cfed36628f44b15fc089ea4388990d293e17d558-asia",
+    "name": "core-test-cdb72b063f5eb41908051ed3466c97a5785ac4b3-asia",
     "storageLocations": [
       "asia"
     ]
   },
   {
-    "creationTimestamp": "2023-03-08T06:38:39.222-08:00",
+    "creationTimestamp": "2023-03-27T08:14:14.597-07:00",
     "labels": {
       "calyptia-core-release": "1-1-1",
-      "source-image": "ubuntu-2004-lts"
+      "source-image": "ubuntu-2204-lts"
     },
-    "name": "core-test-cfed36628f44b15fc089ea4388990d293e17d558-eu",
+    "name": "core-test-cdb72b063f5eb41908051ed3466c97a5785ac4b3-eu",
     "storageLocations": [
       "eu"
     ]
   },
   {
-    "creationTimestamp": "2023-03-08T06:38:29.163-08:00",
+    "creationTimestamp": "2023-03-27T08:14:08.869-07:00",
     "labels": {
       "calyptia-core-release": "1-1-1",
-      "source-image": "ubuntu-2004-lts"
+      "source-image": "ubuntu-2204-lts"
     },
-    "name": "core-test-cfed36628f44b15fc089ea4388990d293e17d558-us",
+    "name": "core-test-cdb72b063f5eb41908051ed3466c97a5785ac4b3-us",
+    "storageLocations": [
+      "us"
+    ]
+  },
+  {
+    "creationTimestamp": "2023-03-31T03:17:16.501-07:00",
+    "labels": {
+      "calyptia-core-release": "1-1-2",
+      "source-image": "ubuntu-2204-lts"
+    },
+    "name": "core-test-pr-242-calyptia-core-asia",
+    "storageLocations": [
+      "asia"
+    ]
+  },
+  {
+    "creationTimestamp": "2023-03-31T03:17:05.482-07:00",
+    "labels": {
+      "calyptia-core-release": "1-1-2",
+      "source-image": "ubuntu-2204-lts"
+    },
+    "name": "core-test-pr-242-calyptia-core-eu",
+    "storageLocations": [
+      "eu"
+    ]
+  },
+  {
+    "creationTimestamp": "2023-03-31T03:17:15.093-07:00",
+    "labels": {
+      "calyptia-core-release": "1-1-2",
+      "source-image": "ubuntu-2204-lts"
+    },
+    "name": "core-test-pr-242-calyptia-core-us",
     "storageLocations": [
       "us"
     ]
