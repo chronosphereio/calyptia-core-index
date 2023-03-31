@@ -9,7 +9,7 @@ PROVISIONED_USER=${INSTALL_CALYPTIA_PROVISIONED_USER:-$USER}
 # The group to install Calyptia Core as, it must pre-exist.
 PROVISIONED_GROUP=${INSTALL_CALYPTIA_PROVISIONED_GROUP:-$(id -gn)}
 # The version of Calyptia Core to install.
-RELEASE_VERSION=${INSTALL_CALYPTIA_RELEASE_VERSION:-1.1.1}
+RELEASE_VERSION=${INSTALL_CALYPTIA_RELEASE_VERSION:-1.1.2}
 # Optionally just run the checks and do not install by setting to 'yes'.
 DRY_RUN=${INSTALL_CALYPTIA_DRY_RUN:-no}
 # Equivalent to '--force' to ignore errors as warnings and continue after checks even if they fail.
@@ -19,7 +19,7 @@ SKIP_POST_INSTALL=${INSTALL_CALYPTIA_SKIP_POST_INSTALL:-no}
 # Custom CIDR ranges for K3S and their defaults: https://docs.k3s.io/reference/server-config#networking
 CLUSTER_CIDR=${INSTALL_CALYPTIA_CLUSTER_CIDR:-10.42.0.0/16}
 SERVICE_CIDR=${INSTALL_CALYPTIA_SERVICE_CIDR:-10.43.0.0/16}
-CLUSTER_DNS=${INSTALL_CALYPTIA_CLUSTER_DNS:-10.42.0.10}
+CLUSTER_DNS=${INSTALL_CALYPTIA_CLUSTER_DNS:-10.43.0.10}
 SERVICE_NODE_PORT_RANGE=${INSTALL_CALYPTIA_SERVICE_NODE_PORT_RANGE:-30000-32767}
 CLUSTER_DOMAIN=${INSTALL_CALYPTIA_CLUSTER_DOMAIN:-cluster.local}
 
@@ -251,8 +251,8 @@ function verify_cidr() {
     if [[ "$CLUSTER_DNS" =~ ([0-9])+\.([0-9])+\.([0-9])+\.([0-9])+ ]]; then
         # Now check the first two IPs 
         if [[ "$CLUSTER_DNS" =~ ([0-9])+\.([0-9])+\.* ]]; then
-            if [[ "$CLUSTER_CIDR_PREFIX" != "${BASH_REMATCH[0]}" ]]; then
-                error_ignorable "Cluster DNS ($CLUSTER_DNS) is not in the CIDR range ($CLUSTER_CIDR)"
+            if [[ "$SERVICE_CIDR_PREFIX" != "${BASH_REMATCH[0]}" ]]; then
+                error_ignorable "Cluster DNS ($CLUSTER_DNS) is not in the service CIDR range ($SERVICE_CIDR)"
             fi
         fi
     else
@@ -273,25 +273,29 @@ function check_prerequisites() {
 
 # After install, wait for the cluster to be minimally ready
 function wait_for_cluster() {
-    # Ensure the cluster is stable for DNS checks
-    until kubectl rollout status -n kube-system deployment/coredns &> /dev/null; do
-        info "Waiting for Core DNS to be running"
-        sleep 10
-    done
-    info "Core DNS running"
+    if ! command -v kubectl &> /dev/null ; then
+        warn "Unable to use kubectl so skipping wait for cluster ready"
+    else 
+        # Ensure the cluster is stable for DNS checks
+        until kubectl rollout status -n kube-system deployment/coredns &> /dev/null; do
+            info "Waiting for Core DNS to be running"
+            sleep 10
+        done
+        info "Core DNS running"
 
-    until kubectl rollout status -n kube-system deployment/traefik &> /dev/null; do
-        info "Waiting for Traefik to be running"
-        sleep 10
-    done
-    info "Traefik running"
+        until kubectl rollout status -n kube-system deployment/traefik &> /dev/null; do
+            info "Waiting for Traefik to be running"
+            sleep 10
+        done
+        info "Traefik running"
 
-    # Ensure we have a service account in the default namespace to run the pod
-    until kubectl get serviceaccount default &> /dev/null; do
-        info "Waiting for ServiceAccount default to be created"
-        sleep 10
-    done
-    info "ServiceAccount default available"
+        # Ensure we have a service account in the default namespace to run the pod
+        until kubectl get serviceaccount default &> /dev/null; do
+            info "Waiting for ServiceAccount default to be created"
+            sleep 10
+        done
+        info "ServiceAccount default available"
+    fi
 }
 
 # After installation, check if we require SELinux configuration to execute commands as root
