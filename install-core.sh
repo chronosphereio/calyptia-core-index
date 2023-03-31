@@ -217,10 +217,10 @@ function verify_urls_reachable() {
 
 function verify_cidr() {
     if ! command -v nslookup &> /dev/null ; then
-        warn "Unable to find nslookup to check resolution of 8.8.8.8 for Core DNS"
+        warn "Unable to find nslookup to check resolution of 8.8.8.8 for Core DNS - only relevant in some situations (see k3s docs)"
     elif ! nslookup 8.8.8.8 &> /dev/null ; then
         # This can be ignored if we have internal DNS servers that function
-        warn "Unable to use 8.8.8.8 as a DNS server for Core DNS"
+        warn "Unable to use 8.8.8.8 as a DNS server for Core DNS - only relevant in some situations (see k3s docs)"
     fi
 
     # Assumption is we provide a /16 address range for all checks
@@ -300,12 +300,12 @@ function wait_for_cluster() {
 
 # After installation, check if we require SELinux configuration to execute commands as root
 function verify_binaries() {
-    if $SUDO command -v kubectl &> /dev/null ; then
+    if $SUDO kubectl version &> /dev/null ; then
         info "Verified kubectl is available to root"
     else
         warn "Missing kubectl for root - update path and/or SELinux configuration"
     fi
-    if $SUDO command -v calyptia &> /dev/null ; then
+    if $SUDO calyptia version &> /dev/null ; then
         info "Verified Calyptia CLI is available to root"
     else
         warn "Missing Calyptia CLI for root - update path and/or SELinux configuration"
