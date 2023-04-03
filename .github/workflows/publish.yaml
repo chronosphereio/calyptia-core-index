@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - calyptia-*.yaml
+      - .github/workflows/publish.yaml
   workflow_dispatch:
     
 jobs:
@@ -20,8 +21,10 @@ jobs:
 
       - name: Push to S3 latest and per-commit
         run: |
-          aws s3 cp 'calyptia-*.yaml' s3://$AWS_BUCKET/cloudformation/ --no-progress
-          aws s3 cp 'calyptia-*.yaml' s3://$AWS_BUCKET/cloudformation/$COMMIT/ --no-progress
+          aws s3 cp 'calyptia-ssh.yaml' s3://$AWS_BUCKET/cloudformation/ --no-progress
+          aws s3 cp 'calyptia-ssh.yaml' s3://$AWS_BUCKET/cloudformation/$COMMIT/ --no-progress
+          aws s3 cp 'calyptia-ssm.yaml' s3://$AWS_BUCKET/cloudformation/$COMMIT/ --no-progress
+          aws s3 cp 'calyptia-ssm.yaml' s3://$AWS_BUCKET/cloudformation/$COMMIT/ --no-progress
         shell: bash
         env:
           COMMIT: ${{ github.sha }}
