@@ -23,7 +23,8 @@ jobs:
         run: |
           aws s3 cp 'calyptia-ssh.yaml' s3://$AWS_S3_BUCKET/cloudformation/ --no-progress
           aws s3 cp 'calyptia-ssh.yaml' s3://$AWS_S3_BUCKET/cloudformation/$COMMIT/ --no-progress
-          aws s3 cp 'calyptia-ssm.yaml' s3://$AWS_S3_BUCKET/cloudformation/$COMMIT/ --no-progress
+          
+          aws s3 cp 'calyptia-ssm.yaml' s3://$AWS_S3_BUCKET/cloudformation/ --no-progress
           aws s3 cp 'calyptia-ssm.yaml' s3://$AWS_S3_BUCKET/cloudformation/$COMMIT/ --no-progress
         shell: bash
         env:
