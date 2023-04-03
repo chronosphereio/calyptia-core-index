@@ -1,0 +1,32 @@
+name: Publish to S3 bucket
+
+on:
+  push:
+    branches: 
+      - main
+    paths:
+      - calyptia-*.yaml
+  workflow_dispatch:
+    
+jobs:
+  publish-cloud-formation-templates:
+    name: Update Cloud Formation templates in S3 bucket
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Push to S3 latest and per-commit
+        run: |
+          aws s3 cp 'calyptia-*.yaml' s3://$AWS_BUCKET/cloudformation/ --no-progress
+          aws s3 cp 'calyptia-*.yaml' s3://$AWS_BUCKET/cloudformation/$COMMIT/ --no-progress
+        shell: bash
+        env:
+          COMMIT: ${{ github.sha }}
+          AWS_S3_BUCKET: calyptia-core
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_CORE_ACCESS_KEY }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_CORE_SECRET_KEY }}
+          AWS_REGION: us-east-1
+          AWS_EC2_METADATA_DISABLED: true
