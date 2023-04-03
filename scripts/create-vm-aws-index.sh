@@ -1,8 +1,9 @@
 #!/bin/bash
 set -u
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 IMAGE_KEY=${IMAGE_KEY:-calyptia-core-release}
-AWS_INDEX_FILE=${AWS_INDEX_FILE:-aws.index.json}
+AWS_INDEX_FILE=${AWS_INDEX_FILE:-$SCRIPT_DIR/../aws.index.json}
 IMAGE_NAME_PREFIX=${IMAGE_NAME_PREFIX:-gold-calyptia-core}
 
 # Assumption for GCP is authentication is complete prior to this script
@@ -33,3 +34,8 @@ done
 # Now combine our region files into a single array
 jq -s . aws-region-*.json | tee "$AWS_INDEX_FILE"
 rm -f aws-region-*.json
+
+if command -v python3 &> /dev/null ; then
+    pip install -r "$SCRIPT_DIR"/aws/requirements.txt
+    python3 "$SCRIPT_DIR"/aws/ec2-instance-templates.py
+fi
