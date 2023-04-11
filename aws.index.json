@@ -424,7 +424,7 @@
     "release": "0.3.2"
   },
   {
-    "CreationDate": "2022-08-19T14:38:52.507Z",
+    "CreationDate": "2022-08-19T14:38:53.000Z",
     "ImageId": "ami-0720a16751950d06d",
     "Name": "gold-calyptia-core-20220819143440",
     "Tags": [
@@ -441,7 +441,7 @@
     "release": "0.3.3"
   },
   {
-    "CreationDate": "2022-08-31T17:59:20.008Z",
+    "CreationDate": "2022-08-31T17:59:20.000Z",
     "ImageId": "ami-00145b7a01848f0f7",
     "Name": "gold-calyptia-core-20220831175340",
     "Tags": [
@@ -458,7 +458,7 @@
     "release": "0.3.4"
   },
   {
-    "CreationDate": "2022-09-08T12:30:33.080Z",
+    "CreationDate": "2022-09-08T12:30:33.000Z",
     "ImageId": "ami-0d3ced829005ca17f",
     "Name": "gold-calyptia-core-20220908122705",
     "Tags": [
@@ -475,7 +475,7 @@
     "release": "0.3.6"
   },
   {
-    "CreationDate": "2022-09-20T10:56:53.108Z",
+    "CreationDate": "2022-09-20T10:56:53.000Z",
     "ImageId": "ami-0c1d68f80e0cd014e",
     "Name": "gold-calyptia-core-20220920105242",
     "Tags": [
@@ -492,7 +492,7 @@
     "release": "0.3.7"
   },
   {
-    "CreationDate": "2022-09-24T20:27:10.436Z",
+    "CreationDate": "2022-09-24T20:27:10.000Z",
     "ImageId": "ami-0ea409e014d8cd90d",
     "Name": "gold-calyptia-core-20220924202111",
     "Tags": [
@@ -509,7 +509,7 @@
     "release": "0.4.0"
   },
   {
-    "CreationDate": "2022-10-21T21:00:57.540Z",
+    "CreationDate": "2022-10-21T21:00:58.000Z",
     "ImageId": "ami-0217871da2e2285d8",
     "Name": "gold-calyptia-core-20221021205557",
     "Tags": [
@@ -526,7 +526,7 @@
     "release": "0.4.1"
   },
   {
-    "CreationDate": "2022-11-03T18:49:56.192Z",
+    "CreationDate": "2022-11-03T18:49:56.000Z",
     "ImageId": "ami-0ab921b82e3b2428d",
     "Name": "gold-calyptia-core-20221103184128",
     "Tags": [
@@ -543,7 +543,7 @@
     "release": "0.4.4"
   },
   {
-    "CreationDate": "2022-11-14T15:26:24.447Z",
+    "CreationDate": "2022-11-14T15:26:24.000Z",
     "ImageId": "ami-052953497c7ab3155",
     "Name": "gold-calyptia-core-20221114152057",
     "Tags": [
@@ -560,7 +560,7 @@
     "release": "0.4.5"
   },
   {
-    "CreationDate": "2022-12-23T13:50:17.603Z",
+    "CreationDate": "2022-12-23T13:50:18.000Z",
     "ImageId": "ami-09065c571226897ae",
     "Name": "gold-calyptia-core-20221223134501",
     "Tags": [
@@ -581,7 +581,7 @@
     "release": "0.4.6"
   },
   {
-    "CreationDate": "2023-02-01T11:29:08.257Z",
+    "CreationDate": "2023-02-01T11:29:08.000Z",
     "ImageId": "ami-05bc0001f6bd74055",
     "Name": "gold-calyptia-core-20230201112442",
     "Tags": [
@@ -746,7 +746,7 @@
     "release": "0.3.2"
   },
   {
-    "CreationDate": "2022-08-19T14:38:52.596Z",
+    "CreationDate": "2022-08-19T14:38:53.000Z",
     "ImageId": "ami-069318bbe0d3ce545",
     "Name": "gold-calyptia-core-20220819143440",
     "Tags": [
@@ -763,7 +763,7 @@
     "release": "0.3.3"
   },
   {
-    "CreationDate": "2022-08-31T17:59:20.904Z",
+    "CreationDate": "2022-08-31T17:59:21.000Z",
     "ImageId": "ami-0a50b98ea255ea1fe",
     "Name": "gold-calyptia-core-20220831175340",
     "Tags": [
@@ -780,7 +780,7 @@
     "release": "0.3.4"
   },
   {
-    "CreationDate": "2022-09-08T12:30:33.138Z",
+    "CreationDate": "2022-09-08T12:30:33.000Z",
     "ImageId": "ami-03a6663b1c99c7fa7",
     "Name": "gold-calyptia-core-20220908122705",
     "Tags": [
@@ -797,7 +797,7 @@
     "release": "0.3.6"
   },
   {
-    "CreationDate": "2022-09-20T10:56:53.280Z",
+    "CreationDate": "2022-09-20T10:56:53.000Z",
     "ImageId": "ami-0c770d19db6d702e1",
     "Name": "gold-calyptia-core-20220920105242",
     "Tags": [
@@ -814,7 +814,7 @@
     "release": "0.3.7"
   },
   {
-    "CreationDate": "2022-09-24T20:27:10.875Z",
+    "CreationDate": "2022-09-24T20:27:11.000Z",
     "ImageId": "ami-0aaaa6fee89adcad1",
     "Name": "gold-calyptia-core-20220924202111",
     "Tags": [
@@ -831,7 +831,7 @@
     "release": "0.4.0"
   },
   {
-    "CreationDate": "2022-10-21T21:00:57.773Z",
+    "CreationDate": "2022-10-21T21:00:58.000Z",
     "ImageId": "ami-04be63412e853af0d",
     "Name": "gold-calyptia-core-20221021205557",
     "Tags": [
@@ -848,7 +848,7 @@
     "release": "0.4.1"
   },
   {
-    "CreationDate": "2022-11-03T18:49:56.275Z",
+    "CreationDate": "2022-11-03T18:49:56.000Z",
     "ImageId": "ami-0caa2cc1e09a47cb4",
     "Name": "gold-calyptia-core-20221103184128",
     "Tags": [
@@ -865,7 +865,7 @@
     "release": "0.4.4"
   },
   {
-    "CreationDate": "2022-11-14T15:26:24.479Z",
+    "CreationDate": "2022-11-14T15:26:24.000Z",
     "ImageId": "ami-09c1dab84db779d11",
     "Name": "gold-calyptia-core-20221114152057",
     "Tags": [
@@ -882,7 +882,7 @@
     "release": "0.4.5"
   },
   {
-    "CreationDate": "2022-12-23T13:50:17.884Z",
+    "CreationDate": "2022-12-23T13:50:18.000Z",
     "ImageId": "ami-043d41df0dedb6969",
     "Name": "gold-calyptia-core-20221223134501",
     "Tags": [
@@ -903,7 +903,7 @@
     "release": "0.4.6"
   },
   {
-    "CreationDate": "2023-02-01T11:29:08.692Z",
+    "CreationDate": "2023-02-01T11:29:09.000Z",
     "ImageId": "ami-0d632d0f6ec983e3d",
     "Name": "gold-calyptia-core-20230201112442",
     "Tags": [
@@ -924,7 +924,7 @@
     "release": "0.5.1"
   },
   {
-    "CreationDate": "2023-03-27T15:17:52.834Z",
+    "CreationDate": "2023-03-27T15:17:53.000Z",
     "ImageId": "ami-05e81756e3fc0cb32",
     "Name": "gold-calyptia-core-20230327151029",
     "Tags": [
@@ -1068,7 +1068,7 @@
     "release": "0.3.2"
   },
   {
-    "CreationDate": "2022-08-19T14:38:52.619Z",
+    "CreationDate": "2022-08-19T14:38:53.000Z",
     "ImageId": "ami-04e3556843087a938",
     "Name": "gold-calyptia-core-20220819143440",
     "Tags": [
@@ -1085,7 +1085,7 @@
     "release": "0.3.3"
   },
   {
-    "CreationDate": "2022-08-31T17:59:20.181Z",
+    "CreationDate": "2022-08-31T17:59:20.000Z",
     "ImageId": "ami-0b6c3e4dbbea682c8",
     "Name": "gold-calyptia-core-20220831175340",
     "Tags": [
@@ -1102,7 +1102,7 @@
     "release": "0.3.4"
   },
   {
-    "CreationDate": "2022-09-08T12:30:33.199Z",
+    "CreationDate": "2022-09-08T12:30:33.000Z",
     "ImageId": "ami-0ff88df2498978fea",
     "Name": "gold-calyptia-core-20220908122705",
     "Tags": [
@@ -1119,7 +1119,7 @@
     "release": "0.3.6"
   },
   {
-    "CreationDate": "2022-09-20T10:56:53.363Z",
+    "CreationDate": "2022-09-20T10:56:53.000Z",
     "ImageId": "ami-0d9393fb8183daa53",
     "Name": "gold-calyptia-core-20220920105242",
     "Tags": [
@@ -1136,7 +1136,7 @@
     "release": "0.3.7"
   },
   {
-    "CreationDate": "2022-09-24T20:27:10.634Z",
+    "CreationDate": "2022-09-24T20:27:11.000Z",
     "ImageId": "ami-069fbacd38837d173",
     "Name": "gold-calyptia-core-20220924202111",
     "Tags": [
@@ -1153,7 +1153,7 @@
     "release": "0.4.0"
   },
   {
-    "CreationDate": "2022-10-21T21:00:57.759Z",
+    "CreationDate": "2022-10-21T21:00:58.000Z",
     "ImageId": "ami-005e5bf82c2939a3f",
     "Name": "gold-calyptia-core-20221021205557",
     "Tags": [
@@ -1170,7 +1170,7 @@
     "release": "0.4.1"
   },
   {
-    "CreationDate": "2022-11-03T18:49:56.474Z",
+    "CreationDate": "2022-11-03T18:49:56.000Z",
     "ImageId": "ami-00a7de899258274dd",
     "Name": "gold-calyptia-core-20221103184128",
     "Tags": [
@@ -1187,7 +1187,7 @@
     "release": "0.4.4"
   },
   {
-    "CreationDate": "2022-11-14T15:26:24.649Z",
+    "CreationDate": "2022-11-14T15:26:25.000Z",
     "ImageId": "ami-07968bdb3aca84892",
     "Name": "gold-calyptia-core-20221114152057",
     "Tags": [
@@ -1204,7 +1204,7 @@
     "release": "0.4.5"
   },
   {
-    "CreationDate": "2022-12-23T13:50:17.927Z",
+    "CreationDate": "2022-12-23T13:50:18.000Z",
     "ImageId": "ami-05345f8543b8ba9dd",
     "Name": "gold-calyptia-core-20221223134501",
     "Tags": [
@@ -1526,7 +1526,7 @@
     "release": "0.4.5"
   },
   {
-    "CreationDate": "2022-12-23T13:50:17.174Z",
+    "CreationDate": "2022-12-23T13:50:17.000Z",
     "ImageId": "ami-0930e444c91f97efb",
     "Name": "gold-calyptia-core-20221223134501",
     "Tags": [
@@ -1547,7 +1547,7 @@
     "release": "0.4.6"
   },
   {
-    "CreationDate": "2023-02-01T11:29:08.386Z",
+    "CreationDate": "2023-02-01T11:29:08.000Z",
     "ImageId": "ami-00aaddc58ab7d2f5f",
     "Name": "gold-calyptia-core-20230201112442",
     "Tags": [
