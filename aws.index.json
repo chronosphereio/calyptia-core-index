@@ -602,7 +602,7 @@
     "release": "0.5.1"
   },
   {
-    "CreationDate": "2023-03-27T15:17:52.832Z",
+    "CreationDate": "2023-03-27T15:17:53.000Z",
     "ImageId": "ami-0d91787406a260459",
     "Name": "gold-calyptia-core-20230327151029",
     "Tags": [
@@ -623,7 +623,7 @@
     "release": "1.1.1"
   },
   {
-    "CreationDate": "2023-03-31T11:01:41.002Z",
+    "CreationDate": "2023-03-31T11:01:41.000Z",
     "ImageId": "ami-0844650b7562187ad",
     "Name": "gold-calyptia-core-20230331105528",
     "Tags": [
@@ -945,7 +945,7 @@
     "release": "1.1.1"
   },
   {
-    "CreationDate": "2023-03-31T11:01:40.508Z",
+    "CreationDate": "2023-03-31T11:01:41.000Z",
     "ImageId": "ami-00f2d29f3c4045b4a",
     "Name": "gold-calyptia-core-20230331105528",
     "Tags": [
@@ -1225,7 +1225,7 @@
     "release": "0.4.6"
   },
   {
-    "CreationDate": "2023-02-01T11:29:07.899Z",
+    "CreationDate": "2023-02-01T11:29:08.000Z",
     "ImageId": "ami-037b9458f5103b4a0",
     "Name": "gold-calyptia-core-20230201112442",
     "Tags": [
@@ -1246,7 +1246,7 @@
     "release": "0.5.1"
   },
   {
-    "CreationDate": "2023-03-27T15:17:52.978Z",
+    "CreationDate": "2023-03-27T15:17:53.000Z",
     "ImageId": "ami-0e95020379b25e1c1",
     "Name": "gold-calyptia-core-20230327151029",
     "Tags": [
@@ -1267,7 +1267,7 @@
     "release": "1.1.1"
   },
   {
-    "CreationDate": "2023-03-31T11:01:40.633Z",
+    "CreationDate": "2023-03-31T11:01:41.000Z",
     "ImageId": "ami-0257851596186f7b1",
     "Name": "gold-calyptia-core-20230331105528",
     "Tags": [
@@ -1568,7 +1568,7 @@
     "release": "0.5.1"
   },
   {
-    "CreationDate": "2023-03-27T15:17:52.889Z",
+    "CreationDate": "2023-03-27T15:17:53.000Z",
     "ImageId": "ami-020e74b0f87d581a8",
     "Name": "gold-calyptia-core-20230327151029",
     "Tags": [
@@ -1589,7 +1589,7 @@
     "release": "1.1.1"
   },
   {
-    "CreationDate": "2023-03-31T11:01:40.518Z",
+    "CreationDate": "2023-03-31T11:01:41.000Z",
     "ImageId": "ami-041f8eaf206d9f9ba",
     "Name": "gold-calyptia-core-20230331105528",
     "Tags": [
