@@ -24,9 +24,17 @@ for TAG in $TAGS; do
     "$CONTAINER_RUNTIME" rm --force "test" &> /dev/null
     "$CONTAINER_RUNTIME" create --name=test "ghcr.io/${CONTAINER_PACKAGE}:${TAG}"
     if ! "$CONTAINER_RUNTIME" cp "test:/schema.json" "${SCHEMA_DIR}/${TAG}/${SCHEMA_FILENAME}-lua.json" ; then
-        echo "Unable to find LUA schema"
+        echo "WARNING: Unable to find LUA schema for ghcr.io/${CONTAINER_PACKAGE}:${TAG}"
     else
         jq -M . "${SCHEMA_DIR}/${TAG}/${SCHEMA_FILENAME}-lua.json" > "${SCHEMA_DIR}/${TAG}/${SCHEMA_FILENAME}-lua-pretty.json"
     fi
+
+    # Get Enterprise plugins schema
+    if ! "$CONTAINER_RUNTIME" cp "test:/opt/calyptia-fluent-bit/etc/plugins.json" "${SCHEMA_DIR}/${TAG}/${SCHEMA_FILENAME}-plugins.json" ; then
+        echo "WARNING: Unable to find plugins schema for ghcr.io/${CONTAINER_PACKAGE}:${TAG}"
+    else
+        jq -M . "${SCHEMA_DIR}/${TAG}/${SCHEMA_FILENAME}-plugins.json" > "${SCHEMA_DIR}/${TAG}/${SCHEMA_FILENAME}-plugins-pretty.json"
+    fi
+
     "$CONTAINER_RUNTIME" rm --force "test" &> /dev/null
 done

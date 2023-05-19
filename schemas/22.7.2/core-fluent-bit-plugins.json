@@ -1,0 +1,16 @@
+{
+    "plugins": [
+        {
+            "name": "lts-advanced-plugin-s3-replay",
+            "version": "v0.1.3"
+        },
+        {
+            "name": "lts-advanced-plugin-dummy",
+            "version": "v0.0.4"
+        },
+        {
+            "name": "lts-advanced-plugin-gsuite-reporter",
+            "version": "v0.0.1"
+        }
+    ]
+}
