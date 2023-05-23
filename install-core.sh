@@ -5,7 +5,7 @@ set -eu
 # Each handles a specific option that may also then be overridden via a command line argument too.
 
 # The user to install Calyptia Core as, it must pre-exist.
-PROVISIONED_USER=${INSTALL_CALYPTIA_PROVISIONED_USER:-$USER}
+PROVISIONED_USER=${INSTALL_CALYPTIA_PROVISIONED_USER:-$(id -un)}
 # The group to install Calyptia Core as, it must pre-exist.
 PROVISIONED_GROUP=${INSTALL_CALYPTIA_PROVISIONED_GROUP:-$(id -gn)}
 # The version of Calyptia Core to install.
