@@ -1,0 +1,37 @@
+name: Update go-fluentbit-config schema
+
+on:
+    push:
+        branches: [main]
+        paths: ["schemas/**"]
+    workflow_dispatch:
+
+jobs:
+    update_go_fluentbit_config:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout to go-fluentbit-config repository.
+              uses: actions/checkout@v3
+              with:
+                  repository: calyptia/go-fluentbit-config
+
+            - name: Checkout to core-images-index repository.
+              uses: actions/checkout@v3
+              with:
+                  path: /core-images-index
+
+            #   This lists all the directories inside schemas/ then removes the "v" prefix and the trailing slash
+            #   from the directory name. Then it sorts the versions in reverse order and gets the first one.
+            - name: Get latest schema version from core-images-index.
+              id: get_latest_schema_from_index
+              run: |
+                  cd /core-images-index/schemas/
+                  echo "version=$(ls -d */ | sed 's/^v//' | sed 's/\/$//' | sort -rV | head -n 1)" >> $GITHUB_OUTPUT
+
+            - name: Print latest schema version.
+              run: |
+                  echo "Using version `${{ steps.get_latest_schema_from_index.outputs.version }}`" >> $GITHUB_STEP_SUMMARY
+
+            - name: Copy latest schema from core-images-index to go-fluentbit-config.
+              run: |
+                  cp "/core-images-index/schemas/${{ steps.get_latest_schema_from_index.outputs.version }}/core-fluent-bit-pretty.json" "schemas/latest.json"
