@@ -23,5 +23,5 @@ latest_version=$(find "$REPO_ROOT/schemas/" -maxdepth 1 -type d | sed -E "s|$REP
 echo "Found latest version: $latest_version"
 
 pushd "$OUTPUT_DIR/schemas/"
-    ln -sfv "$latest_version".json latest.json
+    ln -sfv "$latest_version".json latest.txt
 popd
