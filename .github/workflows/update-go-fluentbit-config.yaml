@@ -35,3 +35,14 @@ jobs:
             - name: Copy latest schema from core-images-index to go-fluentbit-config.
               run: |
                   cp "/core-images-index/schemas/${{ steps.get_latest_schema_from_index.outputs.version }}/core-fluent-bit-pretty.json" "schemas/latest.json"
+
+            - name: Create PR on go-fluentbit-config repository.
+              uses: peter-evans/create-pull-request@v5
+              with:
+                  token: ${{ secrets.CI_PAT }}
+                  title: "Update schema to ${{ steps.get_latest_schema_from_index.outputs.version }}"
+                  body: "Automated change from core-images-index/.github/workflows/update-go-fluentbit-config.yaml."
+                  branch: "update-latest-schema"
+                  delete-branch: true
+                  branch-suffix: short-commit-hash
+                  commit-message: "Update schema to ${{ steps.get_latest_schema_from_index.outputs.version }}"
