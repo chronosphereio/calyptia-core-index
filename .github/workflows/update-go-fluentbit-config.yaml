@@ -35,12 +35,12 @@ jobs:
               uses: peter-evans/create-pull-request@v5
               with:
                 token: ${{ secrets.CI_PAT }}
-                title: "Update schema to ${{ steps.get_latest_schema_from_index.outputs.version }}"
+                title: "Update schema to to latest"
                 branch: "update-latest-schema"
                 delete-branch: true
                 signoff: true
                 branch-suffix: short-commit-hash
-                commit-message: "Update schema to ${{ steps.get_latest_schema_from_index.outputs.version }}"
+                commit-message: "Update schema to latest"
                 body: |
                     Update schema after push on index repo.
 
