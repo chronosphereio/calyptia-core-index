@@ -598,7 +598,7 @@ info "Provisioned as: $PROVISIONED_USER"
 
 if command -v jq &>/dev/null ; then
     info "Existing jq detected so not updating"
-else
+elif [[ -f '/opt/calyptia/jq' ]]; then
     info "Installing jq"
     $SUDO install -D -v -m 755 /opt/calyptia/jq /usr/local/bin/jq
 fi
