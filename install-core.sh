@@ -23,6 +23,9 @@ CLUSTER_DNS=${INSTALL_CALYPTIA_CLUSTER_DNS:-10.43.0.10}
 SERVICE_NODE_PORT_RANGE=${INSTALL_CALYPTIA_SERVICE_NODE_PORT_RANGE:-30000-32767}
 CLUSTER_DOMAIN=${INSTALL_CALYPTIA_CLUSTER_DOMAIN:-cluster.local}
 
+# Choose whether to install the operator or legacy Core package
+PACKAGE_NAME_PREFIX=${INSTALL_CALYPTIA_PACKAGE_NAME_PREFIX:-calyptia-core-operator}
+
 # The architecture to install.
 ARCH=${ARCH:-$(uname -m)}
 # Provide a local package to use in preference by setting this, otherwise the package will be downloaded for RELEASE_VERSION.
@@ -366,6 +369,14 @@ function setup() {
     # We use equals-separated arguments, i.e. --key=value, and not space separated, i.e. --key value
     for i in "$@"; do
         case $i in
+            -o|--operator)
+                PACKAGE_NAME_PREFIX="calyptia-core-operator"
+                shift
+                ;;
+            -l|--legacy)
+                PACKAGE_NAME_PREFIX="calyptia-core"
+                shift
+                ;;
             -f|--force)
                 IGNORE_ERRORS=yes
                 shift
@@ -493,23 +504,22 @@ fi
 handle_installer_config
 
 # Do any OS-specific stuff first
-# TODO: handle upgrade
 if command -v dpkg &> /dev/null ; then
     # If we provide a directory then attempt to select the package within that directory
     if [[ -d "$LOCAL_PACKAGE" ]]; then
         info "Using local package directory: $LOCAL_PACKAGE"
-        LOCAL_PACKAGE="${LOCAL_PACKAGE}/calyptia-core_${RELEASE_VERSION}_${ARCH}.deb"
+        LOCAL_PACKAGE="${LOCAL_PACKAGE}/$PACKAGE_NAME_PREFIX_${RELEASE_VERSION}_${ARCH}.deb"
     fi
 
     # Now check if we have a package or not, if not we download one
     if [[ -f "$LOCAL_PACKAGE" ]]; then
         info "Using local package: $LOCAL_PACKAGE"
     else
-        URL="${BASE_URL}/calyptia-core_${RELEASE_VERSION}_${ARCH}.deb"
+        URL="${BASE_URL}/$PACKAGE_NAME_PREFIX_${RELEASE_VERSION}_${ARCH}.deb"
         info "Downloading $URL"
         # shellcheck disable=SC2086
-        curl -o "/tmp/calyptia-core_${RELEASE_VERSION}_${ARCH}.deb" -sSfL $CURL_PARAMETERS "$URL"
-        LOCAL_PACKAGE="/tmp/calyptia-core_${RELEASE_VERSION}_${ARCH}.deb"
+        curl -o "/tmp/$PACKAGE_NAME_PREFIX_${RELEASE_VERSION}_${ARCH}.deb" -sSfL $CURL_PARAMETERS "$URL"
+        LOCAL_PACKAGE="/tmp/$PACKAGE_NAME_PREFIX_${RELEASE_VERSION}_${ARCH}.deb"
     fi
     info "Installing Debian-derived OS dependencies"
     $SUDO dpkg --install "${LOCAL_PACKAGE}"
@@ -528,17 +538,17 @@ elif command -v rpm &> /dev/null ; then
 
     if [[ -d "$LOCAL_PACKAGE" ]]; then
         info "Using local package directory: $LOCAL_PACKAGE"
-        LOCAL_PACKAGE="${LOCAL_PACKAGE}/calyptia-core-${RELEASE_VERSION}.${PACKAGE_ARCH}.rpm"
+        LOCAL_PACKAGE="${LOCAL_PACKAGE}/$PACKAGE_NAME_PREFIX-${RELEASE_VERSION}.${PACKAGE_ARCH}.rpm"
     fi
 
     if [[ -f "$LOCAL_PACKAGE" ]]; then
         info "Using local package: $LOCAL_PACKAGE"
     else
-        URL="${BASE_URL}/calyptia-core-${RELEASE_VERSION}.${PACKAGE_ARCH}.rpm"
+        URL="${BASE_URL}/$PACKAGE_NAME_PREFIX-${RELEASE_VERSION}.${PACKAGE_ARCH}.rpm"
         info "Downloading $URL"
         # shellcheck disable=SC2086
-        curl -o "/tmp/calyptia-core-${RELEASE_VERSION}.${PACKAGE_ARCH}.rpm" -sSfL $CURL_PARAMETERS "$URL"
-        LOCAL_PACKAGE="/tmp/calyptia-core-${RELEASE_VERSION}.${PACKAGE_ARCH}.rpm"
+        curl -o "/tmp/$PACKAGE_NAME_PREFIX-${RELEASE_VERSION}.${PACKAGE_ARCH}.rpm" -sSfL $CURL_PARAMETERS "$URL"
+        LOCAL_PACKAGE="/tmp/$PACKAGE_NAME_PREFIX-${RELEASE_VERSION}.${PACKAGE_ARCH}.rpm"
     fi
 
     info "Installing RHEL-derived OS dependencies"
@@ -552,17 +562,17 @@ elif command -v rpm &> /dev/null ; then
 elif command -v apk &> /dev/null ; then
     if [[ -d "$LOCAL_PACKAGE" ]]; then
         info "Using local package directory: $LOCAL_PACKAGE"
-        LOCAL_PACKAGE="${LOCAL_PACKAGE}/calyptia-core_${RELEASE_VERSION}_${ARCH}.apk"
+        LOCAL_PACKAGE="${LOCAL_PACKAGE}/$PACKAGE_NAME_PREFIX_${RELEASE_VERSION}_${ARCH}.apk"
     fi
 
     if [[ -f "$LOCAL_PACKAGE" ]]; then
         info "Using local package: $LOCAL_PACKAGE"
     else
-        URL="${BASE_URL}/calyptia-core_${RELEASE_VERSION}_${ARCH}.apk"
+        URL="${BASE_URL}/$PACKAGE_NAME_PREFIX_${RELEASE_VERSION}_${ARCH}.apk"
         info "Downloading $URL"
         # shellcheck disable=SC2086
-        curl -o "/tmp/calyptia-core_${RELEASE_VERSION}_${ARCH}.apk" -sSfL $CURL_PARAMETERS "$URL"
-        LOCAL_PACKAGE="/tmp/calyptia-core_${RELEASE_VERSION}_${ARCH}.apk"
+        curl -o "/tmp/$PACKAGE_NAME_PREFIX_${RELEASE_VERSION}_${ARCH}.apk" -sSfL $CURL_PARAMETERS "$URL"
+        LOCAL_PACKAGE="/tmp/$PACKAGE_NAME_PREFIX_${RELEASE_VERSION}_${ARCH}.apk"
     fi
     info "Installing APK-derived OS dependencies"
     $SUDO apk add --allow-untrusted "${LOCAL_PACKAGE}"
@@ -587,7 +597,11 @@ else
     verify_cluster_dns
 fi
 
-info "Calyptia Core installation completed: $("$CALYPTIA_CORE_DIR"/calyptia-core -v)"
+if [[ -x "$CALYPTIA_CORE_DIR"/calyptia-core ]]; then
+    info "Calyptia Core installation (legacy) completed: $("$CALYPTIA_CORE_DIR"/calyptia-core -v)"
+else
+    info 'Calyptia Core Operator installation completed.'
+fi
 if calyptia --version &> /dev/null; then
     info "Calyptia CLI installation completed: $(calyptia --version)"
 else
