@@ -9,7 +9,7 @@ PROVISIONED_USER=${INSTALL_CALYPTIA_PROVISIONED_USER:-$(id -un)}
 # The group to install Calyptia Core as, it must pre-exist.
 PROVISIONED_GROUP=${INSTALL_CALYPTIA_PROVISIONED_GROUP:-$(id -gn)}
 # The version of Calyptia Core to install.
-RELEASE_VERSION=${INSTALL_CALYPTIA_RELEASE_VERSION:-1.1.2}
+RELEASE_VERSION=${INSTALL_CALYPTIA_RELEASE_VERSION:-1.2.1}
 # Optionally just run the checks and do not install by setting to 'yes'.
 DRY_RUN=${INSTALL_CALYPTIA_DRY_RUN:-no}
 # Equivalent to '--force' to ignore errors as warnings and continue after checks even if they fail.
@@ -22,6 +22,12 @@ SERVICE_CIDR=${INSTALL_CALYPTIA_SERVICE_CIDR:-10.43.0.0/16}
 CLUSTER_DNS=${INSTALL_CALYPTIA_CLUSTER_DNS:-10.43.0.10}
 SERVICE_NODE_PORT_RANGE=${INSTALL_CALYPTIA_SERVICE_NODE_PORT_RANGE:-30000-32767}
 CLUSTER_DOMAIN=${INSTALL_CALYPTIA_CLUSTER_DOMAIN:-cluster.local}
+
+# Determine whether to use the operator package or the legacy one
+PACKAGE_NAME_PREFIX=${INSTALL_CALYPTIA_PACKAGE_NAME_PREFIX:-calyptia-core}
+
+# Disable package download (force it to use local)
+SKIP_DOWNLOAD=${INSTALL_CALYPTIA_SKIP_DOWNLOAD:-no}
 
 # The architecture to install.
 ARCH=${ARCH:-$(uname -m)}
@@ -353,10 +359,14 @@ function usage() {
     echo "--disable-tls-verify|-k : disable TLS verification for downloads via curl"
     echo "--user=<UID/username>|-u=<UID/username> : provision as specific user, defaults to the user who invokes this script"
     echo "--group=<GID/groupname>|-g=<GID/groupname> : provision as specific group, defaults to $(id -gn)"
-    echo "--core-version=<release> : install specific Calyptia Core version, defaults to the latest"
+    echo "--core-version=<release> : install specific Calyptia Core version, defaults to $RELEASE_VERSION"
     echo "--dry-run : run pre-installation checks only"
     echo "--disable-colour|--disable-color : disable ANSI control codes in output"
+    echo "--disable-download : disable remote package download, must use local"
     echo "--disable-post-install-checks : do not run post-installation checks"
+    echo "--package-name-prefix=<prefix> : the prefix name for the package to use."
+    echo "--operator: install the Calyptia Core Operator"
+    echo "--legacy: install the legacy Calyptia Core version"
     echo
     exit 0
 }
@@ -366,6 +376,18 @@ function setup() {
     # We use equals-separated arguments, i.e. --key=value, and not space separated, i.e. --key value
     for i in "$@"; do
         case $i in
+            --operator)
+                PACKAGE_NAME_PREFIX=calyptia-core-operator
+                shift
+                ;;
+            --legacy)
+                PACKAGE_NAME_PREFIX=calyptia-core
+                shift
+                ;;
+            --package-name-prefix=*)
+                PACKAGE_NAME_PREFIX="${i#*=}"
+                shift
+                ;;
             -f|--force)
                 IGNORE_ERRORS=yes
                 shift
@@ -399,6 +421,10 @@ function setup() {
                 ;;
             --disable-post-install-checks|--disablepostinstallchecks)
                 SKIP_POST_INSTALL=yes
+                shift
+                ;;
+            --disable-download|--disabledownload|--no-download|--nodownload)
+                SKIP_DOWNLOAD=yes
                 shift
                 ;;
             --help|-h)
@@ -493,23 +519,24 @@ fi
 handle_installer_config
 
 # Do any OS-specific stuff first
-# TODO: handle upgrade
 if command -v dpkg &> /dev/null ; then
     # If we provide a directory then attempt to select the package within that directory
     if [[ -d "$LOCAL_PACKAGE" ]]; then
         info "Using local package directory: $LOCAL_PACKAGE"
-        LOCAL_PACKAGE="${LOCAL_PACKAGE}/calyptia-core_${RELEASE_VERSION}_${ARCH}.deb"
+        LOCAL_PACKAGE="${LOCAL_PACKAGE}/${PACKAGE_NAME_PREFIX}_${RELEASE_VERSION}_${ARCH}.deb"
     fi
 
     # Now check if we have a package or not, if not we download one
     if [[ -f "$LOCAL_PACKAGE" ]]; then
         info "Using local package: $LOCAL_PACKAGE"
+    elif [[ "$SKIP_DOWNLOAD" != "no" ]]; then
+        fatal "Missing package and unable to download: $LOCAL_PACKAGE"
     else
-        URL="${BASE_URL}/calyptia-core_${RELEASE_VERSION}_${ARCH}.deb"
+        URL="${BASE_URL}/${PACKAGE_NAME_PREFIX}_${RELEASE_VERSION}_${ARCH}.deb"
         info "Downloading $URL"
         # shellcheck disable=SC2086
-        curl -o "/tmp/calyptia-core_${RELEASE_VERSION}_${ARCH}.deb" -sSfL $CURL_PARAMETERS "$URL"
-        LOCAL_PACKAGE="/tmp/calyptia-core_${RELEASE_VERSION}_${ARCH}.deb"
+        curl -o "/tmp/${PACKAGE_NAME_PREFIX}_${RELEASE_VERSION}_${ARCH}.deb" -sSfL $CURL_PARAMETERS "$URL"
+        LOCAL_PACKAGE="/tmp/${PACKAGE_NAME_PREFIX}_${RELEASE_VERSION}_${ARCH}.deb"
     fi
     info "Installing Debian-derived OS dependencies"
     $SUDO dpkg --install "${LOCAL_PACKAGE}"
@@ -528,17 +555,19 @@ elif command -v rpm &> /dev/null ; then
 
     if [[ -d "$LOCAL_PACKAGE" ]]; then
         info "Using local package directory: $LOCAL_PACKAGE"
-        LOCAL_PACKAGE="${LOCAL_PACKAGE}/calyptia-core-${RELEASE_VERSION}.${PACKAGE_ARCH}.rpm"
+        LOCAL_PACKAGE="${LOCAL_PACKAGE}/${PACKAGE_NAME_PREFIX}-${RELEASE_VERSION}.${PACKAGE_ARCH}.rpm"
     fi
 
     if [[ -f "$LOCAL_PACKAGE" ]]; then
         info "Using local package: $LOCAL_PACKAGE"
+    elif [[ "$SKIP_DOWNLOAD" != "no" ]]; then
+        fatal "Missing package and unable to download: $LOCAL_PACKAGE"
     else
-        URL="${BASE_URL}/calyptia-core-${RELEASE_VERSION}.${PACKAGE_ARCH}.rpm"
+        URL="${BASE_URL}/${PACKAGE_NAME_PREFIX}-${RELEASE_VERSION}.${PACKAGE_ARCH}.rpm"
         info "Downloading $URL"
         # shellcheck disable=SC2086
-        curl -o "/tmp/calyptia-core-${RELEASE_VERSION}.${PACKAGE_ARCH}.rpm" -sSfL $CURL_PARAMETERS "$URL"
-        LOCAL_PACKAGE="/tmp/calyptia-core-${RELEASE_VERSION}.${PACKAGE_ARCH}.rpm"
+        curl -o "/tmp/${PACKAGE_NAME_PREFIX}-${RELEASE_VERSION}.${PACKAGE_ARCH}.rpm" -sSfL $CURL_PARAMETERS "$URL"
+        LOCAL_PACKAGE="/tmp/${PACKAGE_NAME_PREFIX}-${RELEASE_VERSION}.${PACKAGE_ARCH}.rpm"
     fi
 
     info "Installing RHEL-derived OS dependencies"
@@ -552,17 +581,19 @@ elif command -v rpm &> /dev/null ; then
 elif command -v apk &> /dev/null ; then
     if [[ -d "$LOCAL_PACKAGE" ]]; then
         info "Using local package directory: $LOCAL_PACKAGE"
-        LOCAL_PACKAGE="${LOCAL_PACKAGE}/calyptia-core_${RELEASE_VERSION}_${ARCH}.apk"
+        LOCAL_PACKAGE="${LOCAL_PACKAGE}/${PACKAGE_NAME_PREFIX}_${RELEASE_VERSION}_${ARCH}.apk"
     fi
 
     if [[ -f "$LOCAL_PACKAGE" ]]; then
         info "Using local package: $LOCAL_PACKAGE"
+    elif [[ "$SKIP_DOWNLOAD" != "no" ]]; then
+        fatal "Missing package and unable to download: $LOCAL_PACKAGE"
     else
-        URL="${BASE_URL}/calyptia-core_${RELEASE_VERSION}_${ARCH}.apk"
+        URL="${BASE_URL}/${PACKAGE_NAME_PREFIX}_${RELEASE_VERSION}_${ARCH}.apk"
         info "Downloading $URL"
         # shellcheck disable=SC2086
-        curl -o "/tmp/calyptia-core_${RELEASE_VERSION}_${ARCH}.apk" -sSfL $CURL_PARAMETERS "$URL"
-        LOCAL_PACKAGE="/tmp/calyptia-core_${RELEASE_VERSION}_${ARCH}.apk"
+        curl -o "/tmp/${PACKAGE_NAME_PREFIX}_${RELEASE_VERSION}_${ARCH}.apk" -sSfL $CURL_PARAMETERS "$URL"
+        LOCAL_PACKAGE="/tmp/${PACKAGE_NAME_PREFIX}_${RELEASE_VERSION}_${ARCH}.apk"
     fi
     info "Installing APK-derived OS dependencies"
     $SUDO apk add --allow-untrusted "${LOCAL_PACKAGE}"
@@ -587,7 +618,11 @@ else
     verify_cluster_dns
 fi
 
-info "Calyptia Core installation completed: $("$CALYPTIA_CORE_DIR"/calyptia-core -v)"
+if [[ -x "$CALYPTIA_CORE_DIR"/calyptia-core ]]; then
+    info "Calyptia Core (legacy) installation completed: $("$CALYPTIA_CORE_DIR"/calyptia-core -v)"
+else
+    info 'Calyptia Core Operator installation completed.'
+fi
 if calyptia --version &> /dev/null; then
     info "Calyptia CLI installation completed: $(calyptia --version)"
 else
