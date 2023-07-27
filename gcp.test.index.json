@@ -495,9 +495,42 @@
     ]
   },
   {
-    "creationTimestamp": "2023-07-20T06:00:24.173-07:00",
+    "creationTimestamp": "2023-07-20T05:53:37.061-07:00",
     "labels": {
       "calyptia-core-release": "1-1-8",
+      "source-image": "ubuntu-2204-lts"
+    },
+    "name": "core-test-2a0f75b7cd74ef8ff77975cbe9ecd912a117b4fb-asia",
+    "storageLocations": [
+      "asia"
+    ]
+  },
+  {
+    "creationTimestamp": "2023-07-20T05:53:16.342-07:00",
+    "labels": {
+      "calyptia-core-release": "1-1-8",
+      "source-image": "ubuntu-2204-lts"
+    },
+    "name": "core-test-2a0f75b7cd74ef8ff77975cbe9ecd912a117b4fb-eu",
+    "storageLocations": [
+      "eu"
+    ]
+  },
+  {
+    "creationTimestamp": "2023-07-20T05:53:19.559-07:00",
+    "labels": {
+      "calyptia-core-release": "1-1-8",
+      "source-image": "ubuntu-2204-lts"
+    },
+    "name": "core-test-2a0f75b7cd74ef8ff77975cbe9ecd912a117b4fb-us",
+    "storageLocations": [
+      "us"
+    ]
+  },
+  {
+    "creationTimestamp": "2023-07-25T10:44:34.464-07:00",
+    "labels": {
+      "calyptia-core-release": "1-2-1",
       "source-image": "ubuntu-2204-lts"
     },
     "name": "core-test-pr-280-calyptia-core-asia",
@@ -506,9 +539,9 @@
     ]
   },
   {
-    "creationTimestamp": "2023-07-20T06:00:20.882-07:00",
+    "creationTimestamp": "2023-07-25T10:44:46.931-07:00",
     "labels": {
-      "calyptia-core-release": "1-1-8",
+      "calyptia-core-release": "1-2-1",
       "source-image": "ubuntu-2204-lts"
     },
     "name": "core-test-pr-280-calyptia-core-eu",
@@ -517,9 +550,9 @@
     ]
   },
   {
-    "creationTimestamp": "2023-07-20T06:00:20.859-07:00",
+    "creationTimestamp": "2023-07-25T10:44:14.982-07:00",
     "labels": {
-      "calyptia-core-release": "1-1-8",
+      "calyptia-core-release": "1-2-1",
       "source-image": "ubuntu-2204-lts"
     },
     "name": "core-test-pr-280-calyptia-core-us",
@@ -528,34 +561,67 @@
     ]
   },
   {
-    "creationTimestamp": "2023-07-24T02:43:17.456-07:00",
+    "creationTimestamp": "2023-07-25T11:52:39.593-07:00",
     "labels": {
-      "calyptia-core-release": "1-2-1",
+      "calyptia-core-release": "1-2-2",
       "source-image": "ubuntu-2204-lts"
     },
-    "name": "core-test-3db66ecef753fb822da6bd71455d09a87642899c-asia",
+    "name": "core-test-4dbe978ba0ca14e55451bd632601a8f7279ef1e6-asia",
     "storageLocations": [
       "asia"
     ]
   },
   {
-    "creationTimestamp": "2023-07-24T02:42:50.674-07:00",
+    "creationTimestamp": "2023-07-25T11:52:27.522-07:00",
     "labels": {
-      "calyptia-core-release": "1-2-1",
+      "calyptia-core-release": "1-2-2",
       "source-image": "ubuntu-2204-lts"
     },
-    "name": "core-test-3db66ecef753fb822da6bd71455d09a87642899c-eu",
+    "name": "core-test-4dbe978ba0ca14e55451bd632601a8f7279ef1e6-eu",
     "storageLocations": [
       "eu"
     ]
   },
   {
-    "creationTimestamp": "2023-07-24T02:42:43.535-07:00",
+    "creationTimestamp": "2023-07-25T11:52:28.580-07:00",
     "labels": {
-      "calyptia-core-release": "1-2-1",
+      "calyptia-core-release": "1-2-2",
       "source-image": "ubuntu-2204-lts"
     },
-    "name": "core-test-3db66ecef753fb822da6bd71455d09a87642899c-us",
+    "name": "core-test-4dbe978ba0ca14e55451bd632601a8f7279ef1e6-us",
+    "storageLocations": [
+      "us"
+    ]
+  },
+  {
+    "creationTimestamp": "2023-07-27T02:42:24.371-07:00",
+    "labels": {
+      "calyptia-core-release": "1-2-3",
+      "source-image": "ubuntu-2204-lts"
+    },
+    "name": "core-test-f6d62a2c1104de0c3cd2c50ff617930f5b3b4e62-asia",
+    "storageLocations": [
+      "asia"
+    ]
+  },
+  {
+    "creationTimestamp": "2023-07-27T02:41:59.997-07:00",
+    "labels": {
+      "calyptia-core-release": "1-2-3",
+      "source-image": "ubuntu-2204-lts"
+    },
+    "name": "core-test-f6d62a2c1104de0c3cd2c50ff617930f5b3b4e62-eu",
+    "storageLocations": [
+      "eu"
+    ]
+  },
+  {
+    "creationTimestamp": "2023-07-27T02:42:15.077-07:00",
+    "labels": {
+      "calyptia-core-release": "1-2-3",
+      "source-image": "ubuntu-2204-lts"
+    },
+    "name": "core-test-f6d62a2c1104de0c3cd2c50ff617930f5b3b4e62-us",
     "storageLocations": [
       "us"
     ]
