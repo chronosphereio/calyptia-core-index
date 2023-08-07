@@ -1,0 +1,28 @@
+{
+  "plugins": [
+    {
+      "name": "lts-advanced-plugin-s3-replay",
+      "version": "v2.0.1"
+    },
+    {
+      "name": "lts-advanced-plugin-dummy",
+      "version": "v2.0.1"
+    },
+    {
+      "name": "lts-advanced-plugin-gsuite-reporter",
+      "version": "v2.0.2"
+    },
+    {
+      "name": "core-fluent-bit-plugin-http-scraper",
+      "version": "v0.0.2"
+    },
+    {
+      "name": "core-fluent-bit-plugin-http-loader",
+      "version": "v0.0.3"
+    },
+    {
+      "name": "core-fluent-bit-aws-kinesis-stream-input",
+      "version": "v0.0.3"
+    }
+  ]
+}
