@@ -9,7 +9,7 @@ PROVISIONED_USER=${INSTALL_CALYPTIA_PROVISIONED_USER:-$(id -un)}
 # The group to install Calyptia Core as, it must pre-exist.
 PROVISIONED_GROUP=${INSTALL_CALYPTIA_PROVISIONED_GROUP:-$(id -gn)}
 # The version of Calyptia Core to install.
-RELEASE_VERSION=${INSTALL_CALYPTIA_RELEASE_VERSION:-1.2.1}
+RELEASE_VERSION=${INSTALL_CALYPTIA_RELEASE_VERSION:-1.2.4}
 # Optionally just run the checks and do not install by setting to 'yes'.
 DRY_RUN=${INSTALL_CALYPTIA_DRY_RUN:-no}
 # Equivalent to '--force' to ignore errors as warnings and continue after checks even if they fail.
@@ -30,14 +30,14 @@ PACKAGE_NAME_PREFIX=${INSTALL_CALYPTIA_PACKAGE_NAME_PREFIX:-calyptia-core}
 SKIP_DOWNLOAD=${INSTALL_CALYPTIA_SKIP_DOWNLOAD:-no}
 
 # The architecture to install.
-ARCH=${ARCH:-$(uname -m)}
+ARCH=${INSTALL_CALYPTIA_ARCH:-$(uname -m)}
 # Provide a local package to use in preference by setting this, otherwise the package will be downloaded for RELEASE_VERSION.
 # This can also be a local directory to cope with packages for different OS/arch types.
-LOCAL_PACKAGE=${LOCAL_PACKAGE:-}
+LOCAL_PACKAGE=${INSTALL_CALYPTIA_LOCAL_PACKAGE:-}
 # Base URL to download packages from if required
-BASE_URL=${BASE_URL:-https://core-packages.calyptia.com/core/$RELEASE_VERSION}
+BASE_URL=${INSTALL_CALYPTIA_BASE_URL:-https://core-packages.calyptia.com/core/$RELEASE_VERSION}
 # Custom SUDO command override
-SUDO_OVERRIDE=${SUDO_OVERRIDE:-}
+SUDO_OVERRIDE=${INSTALL_CALYPTIA_SUDO_OVERRIDE:-}
 
 # Internal variables
 CURL_PARAMETERS=""
@@ -125,7 +125,7 @@ function verify_system() {
     if [[ -d "$CALYPTIA_CORE_DIR" ]]; then
         error_ignorable "Found existing Calyptia Core directory: $CALYPTIA_CORE_DIR"
     fi
-    
+
     info "Basic system checks complete"
 }
 
@@ -139,7 +139,7 @@ function verify_selinux() {
             warn "SELinux enabled but not in enforcing mode"
         fi
     else
-        if grep '^\s*SELINUX=enforcing' /etc/selinux/config &>/dev/null ; then 
+        if grep '^\s*SELINUX=enforcing' /etc/selinux/config &>/dev/null ; then
             error_ignorable "SELinux enabled in enforcing mode"
         else
             info "SELinux disabled"
@@ -170,7 +170,7 @@ function verify_fips() {
         info "FIPS mode not enabled"
     elif grep -q "1" /proc/sys/crypto/fips_enabled; then
         error_ignorable "FIPS mode enabled."
-    else 
+    else
         info "FIPS mode not enabled"
     fi
 }
@@ -185,7 +185,7 @@ function verify_firewall() {
     elif systemctl is-enabled firewalld &> /dev/null || \
          systemctl is-enabled netfilter-persistent &> /dev/null || \
          systemctl is-active firewalld &> /dev/null || \
-         systemctl is-active netfilter-persistent &> /dev/null ; then 
+         systemctl is-active netfilter-persistent &> /dev/null ; then
         error_ignorable "Firewall is enabled, please ensure outbound rules are correctly configured from docs."
     else
         info "Firewall not detected"
@@ -204,9 +204,9 @@ function verify_k3s_reqs() {
 }
 
 # The bucket set up for the aggregator is strange so requires a specific URL that exists
-declare -a ALLOWED_URLS=("https://cloud-api.calyptia.com" 
+declare -a ALLOWED_URLS=("https://cloud-api.calyptia.com"
                          "https://core-packages.calyptia.com"
-                         "https://ghcr.io/calyptia/core" 
+                         "https://ghcr.io/calyptia/core"
                         )
 
 function verify_urls_reachable() {
@@ -244,7 +244,7 @@ function verify_cidr() {
     else
         error_ignorable "Invalid service CIDR: $SERVICE_CIDR"
     fi
-        
+
     # Need to check for conflicts between our address ranges and the local DNS resolver
     if grep -q "$CLUSTER_CIDR_PREFIX" /etc/resolv.conf ; then
         error_ignorable "Detected conflicting address range for cluster cidr ($CLUSTER_CIDR_PREFIX) in /etc/resolv.conf"
@@ -252,10 +252,10 @@ function verify_cidr() {
     if grep -q "$SERVICE_CIDR_PREFIX" /etc/resolv.conf ; then
         error_ignorable "Detected conflicting address range for service cidr ($SERVICE_CIDR_PREFIX) in /etc/resolv.conf"
     fi
-    
+
     # Verify our cluster DNS value is within the range of the cluster CIDR
     if [[ "$CLUSTER_DNS" =~ ([0-9])+\.([0-9])+\.([0-9])+\.([0-9])+ ]]; then
-        # Now check the first two IPs 
+        # Now check the first two IPs
         if [[ "$CLUSTER_DNS" =~ ([0-9])+\.([0-9])+\.* ]]; then
             if [[ "$SERVICE_CIDR_PREFIX" != "${BASH_REMATCH[0]}" ]]; then
                 error_ignorable "Cluster DNS ($CLUSTER_DNS) is not in the service CIDR range ($SERVICE_CIDR)"
@@ -263,6 +263,44 @@ function verify_cidr() {
         fi
     else
         error_ignorable "Invalid cluster DNS: $CLUSTER_DNS"
+    fi
+}
+
+function verify_local_packages() {
+    if [[ -f "${LOCAL_PACKAGE}" ]]; then
+        info "Local package file found: $LOCAL_PACKAGE"
+    elif [[ -d "${LOCAL_PACKAGE}" ]]; then
+        info "Local package directory found: $LOCAL_PACKAGE"
+        # Check we have the relevant files inside the directory
+
+        local expected_file="${LOCAL_PACKAGE}/${PACKAGE_NAME_PREFIX}_${RELEASE_VERSION}_${ARCH}.deb"
+        if command -v dpkg &> /dev/null ; then
+            expected_file="${LOCAL_PACKAGE}/${PACKAGE_NAME_PREFIX}_${RELEASE_VERSION}_${ARCH}.deb"
+        elif command -v rpm &> /dev/null ; then
+            local package_arch=x86_64
+            case $ARCH in
+                amd64)
+                    package_arch=x86_64
+                    ;;
+                arm64)
+                    package_arch=aarch64
+                    ;;
+                *)
+                    fatal "Unknown architecture: $ARCH"
+                    ;;
+            esac
+            expected_file="${LOCAL_PACKAGE}/${PACKAGE_NAME_PREFIX}-${RELEASE_VERSION}.${package_arch}.rpm"
+        elif command -v apk &> /dev/null ; then
+            expected_file="${LOCAL_PACKAGE}/${PACKAGE_NAME_PREFIX}_${RELEASE_VERSION}_${ARCH}.apk"
+        else
+            fatal "Unknown OS, no dpkg, rpm or apk tool"
+        fi
+
+        if [[ -f "$expected_file" ]]; then
+            info "Local package file found: $expected_file"
+        else
+            info "Unable to find local package file: $expected_file"
+        fi
     fi
 }
 
@@ -275,13 +313,14 @@ function check_prerequisites() {
     verify_k3s_reqs
     verify_urls_reachable
     verify_cidr
+    verify_local_packages
 }
 
 # After install, wait for the cluster to be minimally ready
 function wait_for_cluster() {
     if ! command -v kubectl &> /dev/null ; then
         warn "Unable to use kubectl so skipping wait for cluster ready"
-    else 
+    else
         # Ensure the cluster is stable for DNS checks
         until kubectl rollout status -n kube-system deployment/coredns &> /dev/null; do
             info "Waiting for Core DNS to be running"
@@ -322,7 +361,7 @@ function verify_binaries() {
 function verify_cluster_dns() {
     if ! command -v kubectl &> /dev/null ; then
         warn "Unable to use kubectl so skipping checks for cluster DNS"
-    else 
+    else
         # Later versions fail: https://github.com/coredns/coredns/issues/2026
         local nslookup_image="busybox:1.28"
 
@@ -334,12 +373,12 @@ function verify_cluster_dns() {
             local count=0
             until kubectl run -i --rm --restart=Never --timeout=30s --image="$nslookup_image" nslookup-test-$RANDOM -- nslookup "${i#*//}" &> /dev/null ; do
                 count=$((count + 1))
-                if [[ $count -gt 3 ]]; then 
+                if [[ $count -gt 3 ]]; then
                     # Get logs
                     kubectl get pods --all-namespaces
                     kubectl logs deployment/coredns -n kube-system
                     kubectl run -i --rm --restart=Never --timeout=30s --image="$nslookup_image" nslookup-test-$RANDOM -- nslookup "${i#*//}"
-                    fatal "${i#*//} - Failed" 
+                    fatal "${i#*//} - Failed"
                 fi
 
                 warn "Retrying DNS resolution for: ${i#*//}"
@@ -364,6 +403,7 @@ function usage() {
     echo "--disable-colour|--disable-color : disable ANSI control codes in output"
     echo "--disable-download : disable remote package download, must use local"
     echo "--disable-post-install-checks : do not run post-installation checks"
+    echo "--package=<package file/dir> : pick up the package to install locally, implies --disable-download. A directory can be specified if it includes the relevant package (useful for multi-arch/OS install)."
     echo "--package-name-prefix=<prefix> : the prefix name for the package to use."
     echo "--operator: install the Calyptia Core Operator"
     echo "--legacy: install the legacy Calyptia Core version"
@@ -386,6 +426,11 @@ function setup() {
                 ;;
             --package-name-prefix=*)
                 PACKAGE_NAME_PREFIX="${i#*=}"
+                shift
+                ;;
+            --package=*)
+                LOCAL_PACKAGE="${i#*=}"
+                SKIP_DOWNLOAD=yes
                 shift
                 ;;
             -f|--force)
