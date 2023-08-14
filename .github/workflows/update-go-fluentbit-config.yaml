@@ -54,5 +54,13 @@ jobs:
             - name: Check outputs
               if: ${{ steps.cpr.outputs.pull-request-number }}
               run: |
-                  echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
-                  echo "Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}"
+                echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
+                echo "Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}"
+              shell: bash
+
+            - name: Enable Pull Request Automerge
+              if: ${{ steps.cpr.outputs.pull-request-number }}
+              run: gh pr merge --squash --auto "${{ steps.cpr.outputs.pull-request-number }}"
+              working-directory: go-fluentbit-config
+              env:
+                GH_TOKEN: ${{ secrets.CI_PAT }}
