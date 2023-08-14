@@ -27,4 +27,4 @@ pushd "$OUTPUT_DIR/schemas/"
 popd
 
 # Update the embedded schema in Go code
-sed -i -E "s|//go:embed schemas/.*\.json|//go:embed schemas/$latest_version.json|g" schema.go
+sed -i -E "s|//go:embed schemas/.*\.json|//go:embed schemas/$latest_version.json|g" "$OUTPUT_DIR/schema.go"
