@@ -944,5 +944,38 @@
     "storageLocations": [
       "us"
     ]
+  },
+  {
+    "creationTimestamp": "2023-09-18T11:18:51.139-07:00",
+    "labels": {
+      "calyptia-core-release": "1-4-0",
+      "source-image": "ubuntu-2204-lts"
+    },
+    "name": "gold-calyptia-core-20230918181523-asia",
+    "storageLocations": [
+      "asia"
+    ]
+  },
+  {
+    "creationTimestamp": "2023-09-18T11:18:31.397-07:00",
+    "labels": {
+      "calyptia-core-release": "1-4-0",
+      "source-image": "ubuntu-2204-lts"
+    },
+    "name": "gold-calyptia-core-20230918181523-eu",
+    "storageLocations": [
+      "eu"
+    ]
+  },
+  {
+    "creationTimestamp": "2023-09-18T11:18:34.844-07:00",
+    "labels": {
+      "calyptia-core-release": "1-4-0",
+      "source-image": "ubuntu-2204-lts"
+    },
+    "name": "gold-calyptia-core-20230918181523-us",
+    "storageLocations": [
+      "us"
+    ]
   }
 ]
