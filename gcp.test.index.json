@@ -726,34 +726,67 @@
     ]
   },
   {
-    "creationTimestamp": "2023-08-18T14:22:10.831-07:00",
+    "creationTimestamp": "2023-09-18T08:24:33.408-07:00",
     "labels": {
       "calyptia-core-release": "1-2-7",
       "source-image": "ubuntu-2204-lts"
     },
-    "name": "core-test-63f6e0f14179709493ea35266812ad4ff38e1b18-asia",
+    "name": "core-test-pr-301-calyptia-core-asia",
     "storageLocations": [
       "asia"
     ]
   },
   {
-    "creationTimestamp": "2023-08-18T14:22:14.881-07:00",
+    "creationTimestamp": "2023-09-18T08:24:22.542-07:00",
     "labels": {
       "calyptia-core-release": "1-2-7",
       "source-image": "ubuntu-2204-lts"
     },
-    "name": "core-test-63f6e0f14179709493ea35266812ad4ff38e1b18-eu",
+    "name": "core-test-pr-301-calyptia-core-eu",
     "storageLocations": [
       "eu"
     ]
   },
   {
-    "creationTimestamp": "2023-08-18T14:21:52.275-07:00",
+    "creationTimestamp": "2023-09-18T08:24:25.348-07:00",
     "labels": {
       "calyptia-core-release": "1-2-7",
       "source-image": "ubuntu-2204-lts"
     },
-    "name": "core-test-63f6e0f14179709493ea35266812ad4ff38e1b18-us",
+    "name": "core-test-pr-301-calyptia-core-us",
+    "storageLocations": [
+      "us"
+    ]
+  },
+  {
+    "creationTimestamp": "2023-09-27T03:03:07.310-07:00",
+    "labels": {
+      "calyptia-core-release": "1-4-0",
+      "source-image": "ubuntu-2204-lts"
+    },
+    "name": "core-test-29a8552845c383c6fc1b7771e1d7f90f2ad44aea-asia",
+    "storageLocations": [
+      "asia"
+    ]
+  },
+  {
+    "creationTimestamp": "2023-09-27T03:03:09.086-07:00",
+    "labels": {
+      "calyptia-core-release": "1-4-0",
+      "source-image": "ubuntu-2204-lts"
+    },
+    "name": "core-test-29a8552845c383c6fc1b7771e1d7f90f2ad44aea-eu",
+    "storageLocations": [
+      "eu"
+    ]
+  },
+  {
+    "creationTimestamp": "2023-09-27T03:03:15.087-07:00",
+    "labels": {
+      "calyptia-core-release": "1-4-0",
+      "source-image": "ubuntu-2204-lts"
+    },
+    "name": "core-test-29a8552845c383c6fc1b7771e1d7f90f2ad44aea-us",
     "storageLocations": [
       "us"
     ]
