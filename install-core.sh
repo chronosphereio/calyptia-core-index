@@ -9,7 +9,7 @@ PROVISIONED_USER=${INSTALL_CALYPTIA_PROVISIONED_USER:-$(id -un)}
 # The group to install Calyptia Core as, it must pre-exist.
 PROVISIONED_GROUP=${INSTALL_CALYPTIA_PROVISIONED_GROUP:-$(id -gn)}
 # The version of Calyptia Core to install.
-RELEASE_VERSION=${INSTALL_CALYPTIA_RELEASE_VERSION:-1.4.0}
+RELEASE_VERSION=${INSTALL_CALYPTIA_RELEASE_VERSION:-2.0.1}
 # Optionally just run the checks and do not install by setting to 'yes'.
 DRY_RUN=${INSTALL_CALYPTIA_DRY_RUN:-no}
 # Equivalent to '--force' to ignore errors as warnings and continue after checks even if they fail.
@@ -24,7 +24,9 @@ SERVICE_NODE_PORT_RANGE=${INSTALL_CALYPTIA_SERVICE_NODE_PORT_RANGE:-30000-32767}
 CLUSTER_DOMAIN=${INSTALL_CALYPTIA_CLUSTER_DOMAIN:-cluster.local}
 
 # Determine whether to use the operator package or the legacy one
-PACKAGE_NAME_PREFIX=${INSTALL_CALYPTIA_PACKAGE_NAME_PREFIX:-calyptia-core}
+# Set to calyptia-core-operator for operator
+# Set to calyptia-core for "classic" Core
+PACKAGE_NAME_PREFIX=${INSTALL_CALYPTIA_PACKAGE_NAME_PREFIX:-calyptia-core-operator}
 
 # Disable package download (force it to use local)
 SKIP_DOWNLOAD=${INSTALL_CALYPTIA_SKIP_DOWNLOAD:-no}
@@ -289,7 +291,8 @@ function verify_local_packages() {
                     fatal "Unknown architecture: $ARCH"
                     ;;
             esac
-            expected_file="${LOCAL_PACKAGE}/${PACKAGE_NAME_PREFIX}-${RELEASE_VERSION}.${package_arch}.rpm"
+            local package_release_version=${RPM_RELEASE_VERSION:-"-1"}
+            expected_file="${LOCAL_PACKAGE}/${PACKAGE_NAME_PREFIX}-${RELEASE_VERSION}${package_release_version}.${package_arch}.rpm"
         elif command -v apk &> /dev/null ; then
             expected_file="${LOCAL_PACKAGE}/${PACKAGE_NAME_PREFIX}_${RELEASE_VERSION}_${ARCH}.apk"
         else
@@ -600,7 +603,7 @@ elif command -v rpm &> /dev/null ; then
 
     if [[ -d "$LOCAL_PACKAGE" ]]; then
         info "Using local package directory: $LOCAL_PACKAGE"
-        LOCAL_PACKAGE="${LOCAL_PACKAGE}/${PACKAGE_NAME_PREFIX}-${RELEASE_VERSION}.${PACKAGE_ARCH}.rpm"
+        LOCAL_PACKAGE="${LOCAL_PACKAGE}/${PACKAGE_NAME_PREFIX}-${RELEASE_VERSION}${RPM_RELEASE_VERSION:-"-1"}.${PACKAGE_ARCH}.rpm"
     fi
 
     if [[ -f "$LOCAL_PACKAGE" ]]; then
