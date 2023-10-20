@@ -532,21 +532,21 @@
     "release": "1.2.7"
   },
   {
-    "CreationDate": "2023-10-12T14:04:16.000Z",
-    "ImageId": "ami-046c758ccd7fd6d59",
-    "Name": "gold-calyptia-core-20231012135530",
+    "CreationDate": "2023-10-20T10:16:42.000Z",
+    "ImageId": "ami-053aa13ce0194168a",
+    "Name": "gold-calyptia-core-20231020100743",
     "Tags": [
       {
         "Key": "calyptia-core-release",
         "Value": "1.4.0"
       },
       {
-        "Key": "source-image",
-        "Value": "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-20230919"
-      },
-      {
         "Key": "Amazon_AMI_Management_Identifier",
         "Value": "1.4.0"
+      },
+      {
+        "Key": "source-image",
+        "Value": "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-20230919"
       }
     ],
     "region": "ap-northeast-1",
@@ -1085,10 +1085,14 @@
     "release": "1.2.7"
   },
   {
-    "CreationDate": "2023-10-12T14:04:17.000Z",
-    "ImageId": "ami-0dcd2844d2463f581",
-    "Name": "gold-calyptia-core-20231012135530",
+    "CreationDate": "2023-10-20T10:16:42.000Z",
+    "ImageId": "ami-0637a768f7f14da53",
+    "Name": "gold-calyptia-core-20231020100743",
     "Tags": [
+      {
+        "Key": "Amazon_AMI_Management_Identifier",
+        "Value": "1.4.0"
+      },
       {
         "Key": "calyptia-core-release",
         "Value": "1.4.0"
@@ -1096,10 +1100,6 @@
       {
         "Key": "source-image",
         "Value": "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-20230919"
-      },
-      {
-        "Key": "Amazon_AMI_Management_Identifier",
-        "Value": "1.4.0"
       }
     ],
     "region": "ap-northeast-2",
@@ -1638,17 +1638,17 @@
     "release": "1.2.7"
   },
   {
-    "CreationDate": "2023-10-12T14:04:17.000Z",
-    "ImageId": "ami-0cc979096ef1d24e2",
-    "Name": "gold-calyptia-core-20231012135530",
+    "CreationDate": "2023-10-20T10:16:43.000Z",
+    "ImageId": "ami-03e3b014436c740b6",
+    "Name": "gold-calyptia-core-20231020100743",
     "Tags": [
-      {
-        "Key": "Amazon_AMI_Management_Identifier",
-        "Value": "1.4.0"
-      },
       {
         "Key": "source-image",
         "Value": "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-20230919"
+      },
+      {
+        "Key": "Amazon_AMI_Management_Identifier",
+        "Value": "1.4.0"
       },
       {
         "Key": "calyptia-core-release",
@@ -2191,20 +2191,20 @@
     "release": "1.2.7"
   },
   {
-    "CreationDate": "2023-10-12T14:04:16.000Z",
-    "ImageId": "ami-072ffea7b9b211865",
-    "Name": "gold-calyptia-core-20231012135530",
+    "CreationDate": "2023-10-20T10:16:43.000Z",
+    "ImageId": "ami-0369f41db2d22817a",
+    "Name": "gold-calyptia-core-20231020100743",
     "Tags": [
-      {
-        "Key": "Amazon_AMI_Management_Identifier",
-        "Value": "1.4.0"
-      },
       {
         "Key": "source-image",
         "Value": "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-20230919"
       },
       {
         "Key": "calyptia-core-release",
+        "Value": "1.4.0"
+      },
+      {
+        "Key": "Amazon_AMI_Management_Identifier",
         "Value": "1.4.0"
       }
     ],
@@ -2744,10 +2744,14 @@
     "release": "1.2.7"
   },
   {
-    "CreationDate": "2023-10-12T14:04:16.000Z",
-    "ImageId": "ami-009935de8ff2017ed",
-    "Name": "gold-calyptia-core-20231012135530",
+    "CreationDate": "2023-10-20T10:16:43.000Z",
+    "ImageId": "ami-04661aa9ebed2908c",
+    "Name": "gold-calyptia-core-20231020100743",
     "Tags": [
+      {
+        "Key": "Amazon_AMI_Management_Identifier",
+        "Value": "1.4.0"
+      },
       {
         "Key": "calyptia-core-release",
         "Value": "1.4.0"
@@ -2755,10 +2759,6 @@
       {
         "Key": "source-image",
         "Value": "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-20230919"
-      },
-      {
-        "Key": "Amazon_AMI_Management_Identifier",
-        "Value": "1.4.0"
       }
     ],
     "region": "ap-southeast-2",
@@ -3297,12 +3297,12 @@
     "release": "1.2.7"
   },
   {
-    "CreationDate": "2023-10-12T14:01:11.000Z",
-    "ImageId": "ami-0a1c78431562cbc1e",
-    "Name": "gold-calyptia-core-20231012135530",
+    "CreationDate": "2023-10-20T10:13:37.000Z",
+    "ImageId": "ami-0b81274f411ff00c0",
+    "Name": "gold-calyptia-core-20231020100743",
     "Tags": [
       {
-        "Key": "calyptia-core-release",
+        "Key": "Amazon_AMI_Management_Identifier",
         "Value": "1.4.0"
       },
       {
@@ -3310,7 +3310,7 @@
         "Value": "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-20230919"
       },
       {
-        "Key": "Amazon_AMI_Management_Identifier",
+        "Key": "calyptia-core-release",
         "Value": "1.4.0"
       }
     ],
@@ -3850,12 +3850,12 @@
     "release": "1.2.7"
   },
   {
-    "CreationDate": "2023-10-12T14:04:16.000Z",
-    "ImageId": "ami-0fcfc87a31298d39d",
-    "Name": "gold-calyptia-core-20231012135530",
+    "CreationDate": "2023-10-20T10:16:41.000Z",
+    "ImageId": "ami-058996a0d7756d88e",
+    "Name": "gold-calyptia-core-20231020100743",
     "Tags": [
       {
-        "Key": "Amazon_AMI_Management_Identifier",
+        "Key": "calyptia-core-release",
         "Value": "1.4.0"
       },
       {
@@ -3863,7 +3863,7 @@
         "Value": "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-20230919"
       },
       {
-        "Key": "calyptia-core-release",
+        "Key": "Amazon_AMI_Management_Identifier",
         "Value": "1.4.0"
       }
     ],
@@ -4403,17 +4403,17 @@
     "release": "1.2.7"
   },
   {
-    "CreationDate": "2023-10-12T14:04:16.000Z",
-    "ImageId": "ami-0fa08a72b31e01d09",
-    "Name": "gold-calyptia-core-20231012135530",
+    "CreationDate": "2023-10-20T10:16:42.000Z",
+    "ImageId": "ami-0ed39df95284df37a",
+    "Name": "gold-calyptia-core-20231020100743",
     "Tags": [
-      {
-        "Key": "source-image",
-        "Value": "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-20230919"
-      },
       {
         "Key": "calyptia-core-release",
         "Value": "1.4.0"
+      },
+      {
+        "Key": "source-image",
+        "Value": "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-20230919"
       },
       {
         "Key": "Amazon_AMI_Management_Identifier",
@@ -4956,12 +4956,12 @@
     "release": "1.2.7"
   },
   {
-    "CreationDate": "2023-10-12T14:04:16.000Z",
-    "ImageId": "ami-0fa57c4f885e62b4c",
-    "Name": "gold-calyptia-core-20231012135530",
+    "CreationDate": "2023-10-20T10:16:42.000Z",
+    "ImageId": "ami-0db119ea1f9029317",
+    "Name": "gold-calyptia-core-20231020100743",
     "Tags": [
       {
-        "Key": "calyptia-core-release",
+        "Key": "Amazon_AMI_Management_Identifier",
         "Value": "1.4.0"
       },
       {
@@ -4969,7 +4969,7 @@
         "Value": "ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-20230919"
       },
       {
-        "Key": "Amazon_AMI_Management_Identifier",
+        "Key": "calyptia-core-release",
         "Value": "1.4.0"
       }
     ],
