@@ -611,11 +611,11 @@ elif command -v rpm &> /dev/null ; then
     elif [[ "$SKIP_DOWNLOAD" != "no" ]]; then
         fatal "Missing package and unable to download: $LOCAL_PACKAGE"
     else
-        URL="${BASE_URL}/${PACKAGE_NAME_PREFIX}-${RELEASE_VERSION}.${PACKAGE_ARCH}.rpm"
+        URL="${BASE_URL}/${PACKAGE_NAME_PREFIX}-${RELEASE_VERSION}${RPM_RELEASE_VERSION:-"-1"}.${PACKAGE_ARCH}.rpm"
         info "Downloading $URL"
         # shellcheck disable=SC2086
-        curl -o "/tmp/${PACKAGE_NAME_PREFIX}-${RELEASE_VERSION}.${PACKAGE_ARCH}.rpm" -sSfL $CURL_PARAMETERS "$URL"
-        LOCAL_PACKAGE="/tmp/${PACKAGE_NAME_PREFIX}-${RELEASE_VERSION}.${PACKAGE_ARCH}.rpm"
+        curl -o "/tmp/${PACKAGE_NAME_PREFIX}-${RELEASE_VERSION}${RPM_RELEASE_VERSION:-"-1"}.${PACKAGE_ARCH}.rpm" -sSfL $CURL_PARAMETERS "$URL"
+        LOCAL_PACKAGE="/tmp/${PACKAGE_NAME_PREFIX}-${RELEASE_VERSION}${RPM_RELEASE_VERSION:-"-1"}.${PACKAGE_ARCH}.rpm"
     fi
 
     info "Installing RHEL-derived OS dependencies"
