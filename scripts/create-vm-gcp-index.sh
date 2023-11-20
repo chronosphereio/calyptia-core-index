@@ -1,9 +1,10 @@
 #!/bin/bash
 set -u
+SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-IMAGE_KEY=${IMAGE_KEY:-calyptia-core-release}
-GCP_INDEX_FILE=${GCP_INDEX_FILE:-gcp.index.json}
-IMAGE_NAME_PREFIX=${IMAGE_NAME_PREFIX:-gold-calyptia-core}
+IMAGE_KEY=${IMAGE_KEY:-calyptia-core-operator-release}
+GCP_INDEX_FILE=${GCP_INDEX_FILE:-$SCRIPT_DIR/../operator.gcp.index.json}
+IMAGE_NAME_PREFIX=${IMAGE_NAME_PREFIX:-gold-calyptia-core-operator}
 
 if gcloud config get-value account | grep -q unset; then
     echo "ERROR: authenticate with gcloud first"

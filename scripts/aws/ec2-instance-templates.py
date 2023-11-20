@@ -250,7 +250,7 @@ def main():
     parser.add_argument(
         "--url",
         help="URL to the images index",
-        default="https://raw.githubusercontent.com/calyptia/core-images-index/main/aws.index.json",
+        default="https://raw.githubusercontent.com/calyptia/core-images-index/main/operator.aws.index.json",
     )
     parser.add_argument(
         "--outputssm", help="Output SSM template path", type=str, default="calyptia-ssm.yaml"
