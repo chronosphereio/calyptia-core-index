@@ -2,9 +2,9 @@
 set -u
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-IMAGE_KEY=${IMAGE_KEY:-calyptia-core-release}
-AWS_INDEX_FILE=${AWS_INDEX_FILE:-$SCRIPT_DIR/../aws.index.json}
-IMAGE_NAME_PREFIX=${IMAGE_NAME_PREFIX:-gold-calyptia-core}
+IMAGE_KEY=${IMAGE_KEY:-calyptia-core-operator-release}
+AWS_INDEX_FILE=${AWS_INDEX_FILE:-$SCRIPT_DIR/../operator.aws.index.json}
+IMAGE_NAME_PREFIX=${IMAGE_NAME_PREFIX:-gold-calyptia-core-operator}
 
 # Assumption for GCP is authentication is complete prior to this script
 AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:?}
@@ -16,7 +16,7 @@ for aws_region in $(aws ec2 describe-regions --output text | cut -f4)
 do
     # As we only want a single image per tag value we need to first get our tag values then query for each one and take the latest
     aws ec2 describe-tags --no-paginate --region "$aws_region" \
-        --filter "Name=key,Values=calyptia-core-release" --query 'Tags[*]' --output json | jq -cr 'unique_by(.Key,.Value)|.[].Value' > "$aws_region".tags
+        --filter "Name=key,Values=$IMAGE_KEY" --query 'Tags[*]' --output json | jq -cr 'unique_by(.Key,.Value)|.[].Value' > "$aws_region".tags
 
     # Get our images with this tag value and region, sort by creation date and select last for most recent
     # Add region + release info unless we have no release in that region (null response)
