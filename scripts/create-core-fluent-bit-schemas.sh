@@ -11,7 +11,7 @@ SCHEMA_FILENAME=${SCHEMA_FILENAME:-core-fluent-bit}
 GHCR_TOKEN=$(echo "$GITHUB_TOKEN" | base64)
 
 TAGS=$(curl --silent -H "Authorization: Bearer $GHCR_TOKEN" https://ghcr.io/v2/"${CONTAINER_PACKAGE}"/tags/list?n=100000 | \
-    jq -r '.tags | map(select(.| test("^([0-9]+\\.|v)(.*)")))|flatten[]') 
+    jq -r '.tags | map(select(.| test("^([0-9]+\\.|v)(.*)")))|flatten[]')
 # Test for tags beginning with v* or XX.*: https://github.com/stedolan/jq/issues/1250#issuecomment-252396642
 
 for TAG in $TAGS; do
@@ -38,3 +38,5 @@ for TAG in $TAGS; do
 
     "$CONTAINER_RUNTIME" rm --force "test" &> /dev/null
 done
+
+"$SCRIPT_DIR/create-operator-mappings.sh"
