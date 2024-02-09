@@ -4,7 +4,7 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 # Used to authenticate with gh api CLI
 export GH_TOKEN=${GITHUB_TOKEN:?}
-OPERATOR_REPO=${OPERATOR_REPO:-calyptia/core-operator-releases}
+OPERATOR_REPO=${OPERATOR_REPO:-chronosphereio/calyptia-core-operator-releases}
 SCHEMA_FILENAME=${SCHEMA_FILENAME:-$SCRIPT_DIR/../operator/core-fluent-bit-default-versions.json}
 
 TAGS=$(gh api \
