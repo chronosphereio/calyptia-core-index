@@ -12,7 +12,7 @@ linters-settings:
       - "32" #bitsize
       - "64" #bitsize
   goimports:
-    local-prefixes: github.com/calyptia/core-images-index/go-index
+    local-prefixes: github.com/chronosphereio/calyptia-core-index/go-index
   revive:
     min-confidence: 0.8
   gocyclo:

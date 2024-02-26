@@ -15,7 +15,7 @@ jobs:
             - name: Checkout to go-fluentbit-config repository.
               uses: actions/checkout@v4
               with:
-                  repository: calyptia/go-fluentbit-config
+                  repository: chronosphereio/calyptia-go-fluentbit-config
                   path: go-fluentbit-config
                   token: ${{ secrets.CI_PAT }}
 

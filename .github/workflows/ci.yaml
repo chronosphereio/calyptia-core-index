@@ -23,10 +23,3 @@ jobs:
           go test -v -covermode=atomic -coverprofile=../coverage.out ./...
         working-directory: go-index
 
-      - name: Upload coverage to Codecov
-        if: ${{ github.event_name != 'pull_request' }}
-        uses: codecov/codecov-action@v4.0.2
-        with:
-          file: ./coverage.out
-          flags: ${{ runner.os }}
-          token: ${{ secrets.CODECOV_TOKEN }}
