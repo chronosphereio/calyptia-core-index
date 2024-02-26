@@ -33,4 +33,3 @@ $ curl -sSfL https://raw.githubusercontent.com/chronosphereio/calyptia-core-inde
 [INFO]   Installing as root:root 
 [WARN]   Ignoring any errors during preflight checks 
 ```
-
