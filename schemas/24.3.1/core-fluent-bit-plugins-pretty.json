@@ -1,0 +1,42 @@
+{
+  "plugins": [
+    {
+      "name": "calyptia-core-fluent-bit-s3-replay",
+      "version": "v2.0.2",
+      "artefact_name": "lts-advanced-plugin-s3-replay"
+    },
+    {
+      "name": "calyptia-core-fluent-bit-dummy",
+      "version": "v3.0.1"
+    },
+    {
+      "name": "calyptia-core-fluent-bit-gsuite-reporter",
+      "version": "v2.0.3",
+      "artefact_name": "lts-advanced-plugin-gsuite-reporter"
+    },
+    {
+      "name": "calyptia-core-fluent-bit-plugin-http-scraper",
+      "version": "v0.0.2",
+      "artefact_name": "core-fluent-bit-plugin-http-scraper"
+    },
+    {
+      "name": "calyptia-core-fluent-bit-plugin-http-loader",
+      "version": "v0.7.0"
+    },
+    {
+      "name": "calyptia-core-fluent-bit-aws-kinesis-stream-input",
+      "version": "v0.0.3",
+      "artefact_name": "core-fluent-bit-aws-kinesis-stream-input"
+    },
+    {
+      "name": "calyptia-core-fluent-bit-plugin-input-s3-sqs",
+      "version": "v0.1.0",
+      "artefact_name": "core-fluent-bit-plugin-input-s3-sqs"
+    },
+    {
+      "name": "calyptia-core-fluent-bit-azure-event-grid",
+      "version": "v0.1.0",
+      "artefact_name": "core-fluent-bit-azure-event-grid"
+    }
+  ]
+}
