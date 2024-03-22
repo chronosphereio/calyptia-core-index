@@ -1,0 +1,1077 @@
+{
+  "processingRules": {
+    "aggregate": {
+      "description": "Aggregate records in a time window(specified in seconds), grouping by a set of keys and computing new keys on aggregated data. This processing rule is still in preview and might not work for all cases.",
+      "jsonSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "compute": {
+            "additionalProperties": {
+              "prefixItems": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "string"
+                }
+              ],
+              "type": "array"
+            },
+            "description": "Additional keys which will be computed for each group",
+            "type": "object"
+          },
+          "keys": {
+            "description": "Keys which will be used for grouping",
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "prefixItems": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "string"
+                    }
+                  ],
+                  "type": "array"
+                }
+              ]
+            },
+            "type": "array"
+          },
+          "window": {
+            "description": "Time window in seconds",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "keys",
+          "window",
+          "compute"
+        ],
+        "type": "object"
+      },
+      "label": "Aggregate records (preview)",
+      "uiSchema": {
+        "labels": {
+          "compute": "Compute keys (Should be formatted as a JSON object)",
+          "keys": "Select keys (Should be formatted as a JSON array of strings)",
+          "window": "Time window"
+        },
+        "ordering": [
+          "window",
+          "keys",
+          "compute"
+        ]
+      }
+    },
+    "allow_keys": {
+      "description": "Remove all keys that don't match a regular expression. If `matchCase` is set, the match will be case sensitive.",
+      "jsonSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "matchCase": {
+            "default": false,
+            "description": "Flag which controls if the regex match will be case-sensitive",
+            "type": "boolean"
+          },
+          "nestedPath": {
+            "default": "",
+            "description": "If set, this is a nested access pattern for matchin keys in a subrecord",
+            "type": "string"
+          },
+          "regex": {
+            "description": "Regular expression that will be used match allowed keys",
+            "type": "string"
+          },
+          "regexEngine": {
+            "default": "pcre2",
+            "description": "Regular expression engine to use",
+            "enum": [
+              "pcre2",
+              "onig",
+              "posix",
+              "tre",
+              "gnu"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "regex"
+        ],
+        "type": "object"
+      },
+      "label": "Allow keys"
+    },
+    "allow_records": {
+      "description": "Drop all record that have a key not matching a regular expression. If `matchCase` is set, the match will be case sensitive.",
+      "jsonSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "default": "log",
+            "description": "Key that will be checked",
+            "type": "string"
+          },
+          "matchCase": {
+            "default": false,
+            "description": "Flag which controls if the regex match will be case-sensitive",
+            "type": "boolean"
+          },
+          "regex": {
+            "description": "Regular expression that will be used match the key",
+            "type": "string"
+          },
+          "regexEngine": {
+            "default": "pcre2",
+            "description": "Regular expression engine to use",
+            "enum": [
+              "pcre2",
+              "onig",
+              "posix",
+              "tre",
+              "gnu"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "regex"
+        ],
+        "type": "object"
+      },
+      "label": "Allow records"
+    },
+    "block_keys": {
+      "description": "Remove all keys that match a regular expression. If `matchCase` is set, the match will be case sensitive.",
+      "jsonSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "matchCase": {
+            "default": false,
+            "description": "Flag which controls if the regex match will be case-sensitive",
+            "type": "boolean"
+          },
+          "nestedPath": {
+            "default": "",
+            "description": "If set, this is a nested access pattern for matchin keys in a subrecord",
+            "type": "string"
+          },
+          "regex": {
+            "description": "Regular expression that will be used match blocked keys",
+            "type": "string"
+          },
+          "regexEngine": {
+            "default": "pcre2",
+            "description": "Regular expression engine to use",
+            "enum": [
+              "pcre2",
+              "onig",
+              "posix",
+              "tre",
+              "gnu"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "regex"
+        ],
+        "type": "object"
+      },
+      "label": "Block keys"
+    },
+    "block_records": {
+      "description": "Drop all record that have a key matching a regular expression. If `matchCase` is set, the match will be case sensitive.",
+      "jsonSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "default": "log",
+            "description": "Key that will be checked",
+            "type": "string"
+          },
+          "matchCase": {
+            "default": false,
+            "description": "Flag which controls if the regex match will be case-sensitive",
+            "type": "boolean"
+          },
+          "regex": {
+            "description": "Regular expression that will be used match the key",
+            "type": "string"
+          },
+          "regexEngine": {
+            "default": "pcre2",
+            "description": "Regular expression engine to use",
+            "enum": [
+              "pcre2",
+              "onig",
+              "posix",
+              "tre",
+              "gnu"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "regex"
+        ],
+        "type": "object"
+      },
+      "label": "Block records"
+    },
+    "copy": {
+      "description": "Copy key `src` to `dst`. If `regexMode` is set, `src` is treated as a regular expression and `dst` as a substitution pattern. All keys that match the regex will be copied to new keys defined by the substitution pattern, which can reference captures in the regex.",
+      "jsonSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "dst": {
+            "description": "Destination key to which the value will be copied to. If `regexMode` is true, this can reference captured groups.",
+            "type": "string"
+          },
+          "regexEngine": {
+            "default": "pcre2",
+            "description": "Regular expression engine to use",
+            "enum": [
+              "pcre2",
+              "onig",
+              "posix",
+              "tre",
+              "gnu"
+            ],
+            "type": "string"
+          },
+          "regexMode": {
+            "default": false,
+            "description": "If set, `src` will be treated as a regex and `dst` as a substitution pattern.",
+            "type": "boolean"
+          },
+          "src": {
+            "description": "Source key from which the value will be copied from. If `regexMode` is true, this can match multiple keys.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "dst",
+          "src"
+        ],
+        "type": "object"
+      },
+      "label": "Copy keys"
+    },
+    "csv_decode": {
+      "description": "Decode CSV data in the key `src` into key `dst`. If `parseHeader` option is set, the first row of parsed CSV is treated as the header, and subsequent rows will be parsed as key/value pairs. If not, the data will be parsed as array of values.",
+      "jsonSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "dst": {
+            "default": "decoded_csv",
+            "description": "Destination key which will receive the parsed object.",
+            "type": "string"
+          },
+          "header": {
+            "default": "",
+            "description": "Preset header for the parsed CSV stream.",
+            "type": "string"
+          },
+          "parseHeader": {
+            "default": false,
+            "type": "boolean"
+          },
+          "src": {
+            "default": "log",
+            "description": "Source key which contains raw CSV data.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "label": "Decode CSV",
+      "uiSchema": {
+        "labels": {
+          "parseHeader": "Parse header"
+        }
+      }
+    },
+    "csv_encode": {
+      "description": "Encode object in the key `src` as CSV into the key `dst`. If `header` is set, then it will be used to extract keys/values from `src`, and the generated CSV stream will have the header. If not, then `src` must be an array of strings. This processing rule is still in preview and might not work for all cases.",
+      "jsonSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "dst": {
+            "default": "encoded_csv",
+            "description": "Destination key which will receive the serialized CSV.",
+            "type": "string"
+          },
+          "header": {
+            "description": "Preset header for the generated CSV stream",
+            "type": "string"
+          },
+          "src": {
+            "description": "Source key which contains the object to be converted to CSV. If `header` is not set, this must be an array of strings.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "label": "Encode CSV (preview)",
+      "uiSchema": {
+        "labels": {
+          "header": "Header (JSON array of strings)"
+        }
+      }
+    },
+    "custom_script": {
+      "description": "Inject a Lua script in the processing rule pipeline. The script must return a function that has the same interface as the one implemented by fluent-bit Lua filters.",
+      "jsonSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "script": {
+            "default": "-- The function below has an API similar to that of fluent-bit Lua scripts.\n-- The main exception is the extra paramenter `code`, which contains the value\n-- returned by the previous processing rule.\n--\n-- See https://docs.fluentbit.io/manual/pipeline/filters/lua for details.\nreturn function(tag, ts, record, code)\n  -- Add statements before the \"return\" line.\n  -- You can access a certain field (\"field_a\" for example) in\n  -- using \"record.field_a\" or \"record['field_a']\".\n  --\n  -- Here's a simple example that concatenates \"key_one\" and \"key_two\" to\n  -- a new field named \"key_three\"\n  --\n  --    record.key_three = tostring(record.key_one) .. tostring(record.key_two)\n  return code, ts, record\nend\n",
+            "description": "Lua script implemented similarly to fluent-bit Lua filters.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "label": "Custom Lua",
+      "uiSchema": {
+        "form": {
+          "script": "code:lua"
+        },
+        "labels": {
+          "script": "Lua script"
+        }
+      }
+    },
+    "deduplicate": {
+      "description": "Deduplicate records in a time window(specified in seconds), based on a single key.",
+      "jsonSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "description": "Key to use for deduplicating records",
+            "type": "string"
+          },
+          "window": {
+            "description": "Time window in seconds",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "window",
+          "key"
+        ],
+        "type": "object"
+      },
+      "label": "Deduplicate records",
+      "uiSchema": {
+        "labels": {
+          "key": "Select key",
+          "window": "Time window"
+        },
+        "ordering": [
+          "window",
+          "key"
+        ]
+      }
+    },
+    "delete": {
+      "description": "Delete `key` from the record.",
+      "jsonSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "description": "Key which will be deleted",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "label": "Delete key"
+    },
+    "extract_kv": {
+      "description": "Use regular expression to extract key/value pairs from the text in `src`. The regex must have two captures, which will be set as the key and value. The result is a map/object, which will be set to the key `dst`.",
+      "jsonSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "dst": {
+            "description": "Destination key which will contain the parsed object",
+            "type": "string"
+          },
+          "regex": {
+            "description": "Regular expression that will be used to extract keys/values. It must have two capture groups, which will be the key and value.",
+            "type": "string"
+          },
+          "regexEngine": {
+            "default": "pcre2",
+            "description": "Regular expression engine to use",
+            "enum": [
+              "pcre2",
+              "onig",
+              "posix",
+              "tre",
+              "gnu"
+            ],
+            "type": "string"
+          },
+          "src": {
+            "description": "Source key from which keys/values will be extracted from.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "dst",
+          "src",
+          "regex"
+        ],
+        "type": "object"
+      },
+      "label": "Extract keys/values"
+    },
+    "flatten": {
+      "description": "Flatten a submap in the key `key` by extracting all keys/values and setting into the record object, then deleting `key`. If `regex` is set, only keys that match will be transferred. If `keepOrig` is set, then the submap is not deleted.",
+      "jsonSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "keepOrig": {
+            "default": false,
+            "description": "If true, the flattened object will not be removed from the record.",
+            "type": "boolean"
+          },
+          "key": {
+            "description": "Key which contains the nested object to be merged.",
+            "type": "string"
+          },
+          "keyReplacement": {
+            "default": "%1",
+            "description": "Regex replacement for the flattened key (HINT: %1 matches the original key, so \"prefix.%1\" adds \"prefix\" to the key)",
+            "type": "string"
+          },
+          "regex": {
+            "default": "^.+$",
+            "description": "Regular expression that will be used match keys that will be merged",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "label": "Flatten subrecord",
+      "uiSchema": {
+        "labels": {
+          "keepOrig": "Keep original key/submap"
+        }
+      }
+    },
+    "hash": {
+      "description": "Compute hash of a `src`. By default the result will go into a key in the format \"[SOURCE_KEY]_[HASH_ALGORITHM]\", but it can be overriden by setting `dst`.",
+      "jsonSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "algo": {
+            "default": "sha256",
+            "description": "Hash algorithm",
+            "enum": [
+              "sha256",
+              "md5"
+            ],
+            "type": "string"
+          },
+          "dst": {
+            "description": "Destination key which will contain the computed hash. Defaults to \"[SOURCE_KEY]_[HASH_ALGORITHM]\".",
+            "type": "string"
+          },
+          "encoding": {
+            "default": "hex",
+            "description": "Encoding algorithm",
+            "enum": [
+              "hex",
+              "binary",
+              "base64"
+            ],
+            "type": "string"
+          },
+          "src": {
+            "description": "Source key from which will be used to compute the hash",
+            "type": "string"
+          }
+        },
+        "required": [
+          "src",
+          "algo",
+          "encoding"
+        ],
+        "type": "object"
+      },
+      "label": "Hash key",
+      "uiSchema": {
+        "labels": {
+          "base64": "Base64",
+          "binary": "Binary",
+          "hex": "Hexadecimal",
+          "md5": "MD5",
+          "sha256": "SHA256"
+        }
+      }
+    },
+    "json_decode": {
+      "description": "Decode JSON data in the key `src` into key `dst`.",
+      "jsonSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "dst": {
+            "default": "decoded_json",
+            "description": "Destination key which will receive the parsed object.",
+            "type": "string"
+          },
+          "src": {
+            "default": "log",
+            "description": "Source key which contains raw JSON data.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "label": "Decode JSON"
+    },
+    "json_encode": {
+      "description": "Encode the object in the key `src` as JSON into the key `dst`.",
+      "jsonSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "dst": {
+            "default": "encoded_json",
+            "description": "Destination key which will receive the serialized JSON.",
+            "type": "string"
+          },
+          "src": {
+            "description": "Source key which contains the object to be converted to JSON. If missing, the whole record will be serialized.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "label": "Encode JSON"
+    },
+    "lift": {
+      "description": "Lift a submap in the key `key` by extracting all keys/values and setting into the parent submap, then deleting `key`. If `regex` is set, only keys that match will be transferred. If `keepOrig` is set, then the submap is not deleted. The `levels` parameter configures how many times the lift is applied",
+      "jsonSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "keepOrig": {
+            "default": false,
+            "description": "If true, the original key will not be removed from the parent.",
+            "type": "boolean"
+          },
+          "key": {
+            "description": "Key which contains the nested object to be merged.",
+            "type": "string"
+          },
+          "keyReplacement": {
+            "default": "%1",
+            "description": "Regex replacement for the lifted key (HINT: %1 matches the original key, so \"prefix.%1\" adds \"prefix\" to the key)",
+            "type": "string"
+          },
+          "levels": {
+            "default": 1,
+            "description": "How many levels the keys will be lifted.",
+            "type": "integer"
+          },
+          "regex": {
+            "default": "^.+$",
+            "description": "Regular expression that will be used match keys that will be merged",
+            "type": "string"
+          },
+          "regexEngine": {
+            "default": "pcre2",
+            "description": "Regular expression engine to use",
+            "enum": [
+              "pcre2",
+              "onig",
+              "posix",
+              "tre",
+              "gnu"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "label": "Lift submap",
+      "uiSchema": {
+        "labels": {
+          "keepOrig": "Keep original key/submap"
+        }
+      }
+    },
+    "multiline_join": {
+      "description": "Use regular expression to match start of a new record and join previously buffered lines together.",
+      "jsonSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "lineLimit": {
+            "default": 1000,
+            "description": "Maximum number of lines to join.",
+            "minimum": 2,
+            "type": "integer"
+          },
+          "regex": {
+            "description": "Regular expression to match the start of a new record.",
+            "type": "string"
+          },
+          "regexEngine": {
+            "default": "pcre2",
+            "description": "Regular expression engine to use",
+            "enum": [
+              "pcre2",
+              "onig",
+              "posix",
+              "tre",
+              "gnu"
+            ],
+            "type": "string"
+          },
+          "src": {
+            "default": "log",
+            "description": "Source key from which lines will be joined.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "regex"
+        ],
+        "type": "object"
+      },
+      "label": "Multiline Join"
+    },
+    "nest": {
+      "description": "Nest keys listed in `src` under a new map in the key `dst`. If `regexMode` is set, `src` is interpreted as a regular expression, and all keys that match it will be included.",
+      "jsonSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "dst": {
+            "default": "nested",
+            "description": "Destination key which will receive the nested keys.",
+            "type": "string"
+          },
+          "matchCase": {
+            "default": false,
+            "description": "Flag which controls if the regex match will be case-sensitive (regexMode only).",
+            "type": "boolean"
+          },
+          "merge": {
+            "default": false,
+            "description": "If the destination map already exists, merge the nested keys.",
+            "type": "boolean"
+          },
+          "regexEngine": {
+            "default": "pcre2",
+            "description": "Regular expression engine to use",
+            "enum": [
+              "pcre2",
+              "onig",
+              "posix",
+              "tre",
+              "gnu"
+            ],
+            "type": "string"
+          },
+          "regexMode": {
+            "default": false,
+            "description": "If set, `src` will be interpreted as a regex.",
+            "type": "boolean"
+          },
+          "src": {
+            "description": "Source keys which will be nested. If missing, the whole record will be nested.",
+            "type": "string"
+          }
+        },
+        "type": "object"
+      },
+      "label": "Nest keys",
+      "uiSchema": {
+        "labels": {
+          "merge": "Merge to existing map"
+        }
+      }
+    },
+    "parse": {
+      "description": "Use regular expression to extract key/value pairs from the text in `src`. The regex must use named captures, which will be used as the key for the captured values. The result is a map/object, which will be set to the key `dst`.",
+      "jsonSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "dst": {
+            "default": "parsed",
+            "description": "Destination key which will contain the parsed object",
+            "type": "string"
+          },
+          "regex": {
+            "description": "Regular expression that will be used to extract keys/values. It must have named capture groups.",
+            "type": "string"
+          },
+          "regexEngine": {
+            "default": "pcre2",
+            "description": "Regular expression engine to use",
+            "enum": [
+              "pcre2",
+              "onig",
+              "posix",
+              "tre",
+              "gnu"
+            ],
+            "type": "string"
+          },
+          "src": {
+            "description": "Source key from which keys/values will be extracted from.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "src",
+          "regex"
+        ],
+        "type": "object"
+      },
+      "label": "Parse"
+    },
+    "parse_number": {
+      "description": "Parse numeric text in the key `key`. If `regex` is set, the pattern used to extract number text can be customized.",
+      "jsonSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "base": {
+            "default": 10,
+            "description": "Numeric base",
+            "type": "integer"
+          },
+          "key": {
+            "description": "Key from which a number will be extracted.",
+            "type": "string"
+          },
+          "regex": {
+            "default": "[+-]?([0-9]+([.][0-9]*)?|[.][0-9]+)",
+            "description": "Regular expression used to extract number from the value.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "label": "Parse number"
+    },
+    "put": {
+      "description": "Add or Set `key` = `value`. If the key already exists, it will be overriden.",
+      "jsonSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "description": "Key which will be added/updated",
+            "type": "string"
+          },
+          "value": {
+            "description": "New value for the key",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "value"
+        ],
+        "type": "object"
+      },
+      "label": "Add/Set key/value",
+      "uiSchema": {
+        "labels": {
+          "value": "Value"
+        },
+        "ordering": [
+          "key",
+          "value"
+        ]
+      }
+    },
+    "redact": {
+      "description": "Hide a pattern specified by `regex` in the `key` by replacing it with a certain characted such as \"*\"(default).",
+      "jsonSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "description": "Key which contains value to be redacted.",
+            "type": "string"
+          },
+          "matchCase": {
+            "default": false,
+            "description": "Flag which controls if the regex match will be case-sensitive",
+            "type": "boolean"
+          },
+          "regex": {
+            "description": "Pattern within the value which will be redacted.",
+            "type": "string"
+          },
+          "regexEngine": {
+            "default": "pcre2",
+            "description": "Regular expression engine to use",
+            "enum": [
+              "pcre2",
+              "onig",
+              "posix",
+              "tre",
+              "gnu"
+            ],
+            "type": "string"
+          },
+          "replaceChar": {
+            "default": "*",
+            "description": "Characters which will replace the value.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "regex"
+        ],
+        "type": "object"
+      },
+      "label": "Redact/mask value",
+      "uiSchema": {
+        "labels": {
+          "replaceChar": "Replacement characters"
+        },
+        "ordering": [
+          "key",
+          "regex",
+          "replaceChar"
+        ]
+      }
+    },
+    "rename": {
+      "description": "Move key `src` to `dst`. If `regexMode` is set, `src` is treated as a regular expression and `dst` as a substitution pattern. All keys that keys that match the regex will be moved to new keys defined by the substitution pattern, which can reference captures in the regex.",
+      "jsonSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "dst": {
+            "description": "Destination key to which the value will be moved to. If `regexMode` is true, this can reference captured groups.",
+            "type": "string"
+          },
+          "matchCase": {
+            "default": false,
+            "description": "Flag which controls if the regex match will be case-sensitive",
+            "type": "boolean"
+          },
+          "regexEngine": {
+            "default": "pcre2",
+            "description": "Regular expression engine to use",
+            "enum": [
+              "pcre2",
+              "onig",
+              "posix",
+              "tre",
+              "gnu"
+            ],
+            "type": "string"
+          },
+          "regexMode": {
+            "default": false,
+            "description": "If set, `src` will be treated as a regex and `dst` as a substitution pattern.",
+            "type": "boolean"
+          },
+          "src": {
+            "description": "Source key from which the value will be moved from. If `regexMode` is true, this can match multiple keys.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "src",
+          "dst"
+        ],
+        "type": "object"
+      },
+      "label": "Rename keys"
+    },
+    "replace": {
+      "description": "Use `regex` to do a global search/replace in the key specified by `key`. The `replacement` option can be used to specify a substitution pattern (which can reference captures). The `submax` option can be used to specify the maximum number of substitions done.",
+      "jsonSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "description": "Key which contains value to be replaced.",
+            "type": "string"
+          },
+          "matchCase": {
+            "default": false,
+            "description": "Flag which controls if the regex match will be case-sensitive",
+            "type": "boolean"
+          },
+          "regex": {
+            "description": "Pattern within the value which will be replaced.",
+            "type": "string"
+          },
+          "regexEngine": {
+            "default": "pcre2",
+            "description": "Regular expression engine to use",
+            "enum": [
+              "pcre2",
+              "onig",
+              "posix",
+              "tre",
+              "gnu"
+            ],
+            "type": "string"
+          },
+          "replacement": {
+            "description": "Replacement pattern. Can reference capture groups in the `regex`.",
+            "type": "string"
+          },
+          "submax": {
+            "description": "Maximum number of substitutions",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "key",
+          "regex",
+          "replacement"
+        ],
+        "type": "object"
+      },
+      "label": "Search/replace value",
+      "uiSchema": {
+        "labels": {
+          "replacement": "Replacement (can specify captures with %1, %2, ...)"
+        },
+        "ordering": [
+          "key",
+          "regex",
+          "matchCase",
+          "submax"
+        ]
+      }
+    },
+    "sampling": {
+      "description": "Sample random records in a time window (specified in seconds). This processing rule is still in preview and might not work for all cases.",
+      "jsonSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "percentage": {
+            "description": "Percentage of records to be flushed",
+            "maximum": 100,
+            "minimum": 1,
+            "type": "integer"
+          },
+          "seed": {
+            "description": "Optional seed for random number generator",
+            "type": "integer"
+          },
+          "window": {
+            "description": "Time window in seconds",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "window",
+          "percentage"
+        ],
+        "type": "object"
+      },
+      "label": "Random sampling (preview)",
+      "uiSchema": {
+        "labels": {
+          "percentage": "Sample %",
+          "window": "Time window"
+        },
+        "ordering": [
+          "window",
+          "percentage"
+        ]
+      }
+    },
+    "split": {
+      "description": "Split a record based on the contents of a nested array field. A new record will be created for each item in the array, copying all the original fields and moving the array item into the original array field",
+      "jsonSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "dest": {
+            "default": "",
+            "description": "Destination key to contain the array item. If empty, defaults to \"key\"",
+            "type": "string"
+          },
+          "keepOrig": {
+            "default": false,
+            "description": "Keep \"key\" when it is different than \"dest\"",
+            "type": "boolean"
+          },
+          "key": {
+            "description": "Key which contains the nested array.",
+            "type": "string"
+          },
+          "skipEmpty": {
+            "default": false,
+            "description": "If the specified key is an empty array, don't touch the record",
+            "type": "boolean"
+          },
+          "skipMissing": {
+            "default": false,
+            "description": "If the specified key is not an array, don't touch the record",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "key"
+        ],
+        "type": "object"
+      },
+      "label": "Split record",
+      "uiSchema": {
+        "labels": {
+          "dest": "Destination key",
+          "keepOrig": "Keep original array",
+          "skipEmpty": "Ignore if array is empty",
+          "skipMissing": "Ignore if missing"
+        }
+      }
+    }
+  },
+  "uiSchemaFallback": {
+    "errors": {
+      "should be integer": "Should be an integer"
+    },
+    "labels": {
+      "dst": "Destination key",
+      "gnu": "GNU",
+      "key": "Key",
+      "matchCase": "Match case",
+      "oniguruma": "Oniguruma",
+      "pcre2": "PCRE2",
+      "posix": "POSIX",
+      "regex": "Regex",
+      "regexMode": "Regex mode",
+      "src": "Source key",
+      "tre": "TRE"
+    },
+    "ordering": [
+      "src",
+      "dst",
+      "key",
+      "regex",
+      "matchCase",
+      "regexEngine",
+      "regexExtended"
+    ]
+  },
+  "version": "v0.1-dev"
+}
