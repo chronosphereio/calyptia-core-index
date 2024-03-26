@@ -23,5 +23,5 @@ jobs:
             #   Some extra info if required
               client-payload: |-
                 {
-                  "github": ${{ toJson(github) }},
+                  "github": ${{ toJson(github) }}
                 }
