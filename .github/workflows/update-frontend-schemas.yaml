@@ -1,0 +1,27 @@
+name: Update frontend schemas
+
+on:
+    push:
+        branches: [main]
+        paths: ["schemas/**"]
+    workflow_dispatch:
+
+jobs:
+    # We have to invoke via repo-dispatch to a private repo so this will not show pass/fail or results here
+    ci-trigger-notifications:
+        name: Trigger updates on private repos
+        runs-on: ubuntu-latest
+        permissions:
+          contents: none
+        steps:
+          - name: Repository Dispatch
+            uses: peter-evans/repository-dispatch@v3
+            with:
+              token: ${{ secrets.CI_PAT }}
+              repository: chronosphereio/calyptia-frontend
+              event-type: schema-update
+            #   Some extra info if required
+              client-payload: |-
+                {
+                  "github": ${{ toJson(github) }},
+                }
