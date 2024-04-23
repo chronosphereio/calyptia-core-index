@@ -65,4 +65,4 @@
                   run: gh pr merge --squash --auto "${{ steps.cpr.outputs.pull-request-number }}"
                   shell: bash
                   env:
-                    GH_TOKEN: ${{ secrets.CI_PAT }}
+                    GH_TOKEN: ${{ secrets.token }}
