@@ -3,6 +3,10 @@
     name: Reusable workflow to generate schemas for Calyptia Core Fluent Bit images
     on:
       workflow_call:
+        secrets:
+            token:
+              description: The Github token or similar to authenticate with.
+              required: true
     jobs:
         update-image-indexes:
             name: Raise PR with the updated indexes.
@@ -16,7 +20,7 @@
                 - name: Checkout core-images-index repo
                   uses: actions/checkout@v4
                   with:
-                    token: ${{ secrets.CI_PAT }}
+                    token: ${{ secrets.token }}
                     repository: chronosphereio/calyptia-core-index
 
                 - name: Generate indexes and schemas
@@ -25,7 +29,7 @@
                     scripts/create-core-fluent-bit-schemas.sh
                   shell: bash
                   env:
-                    GITHUB_TOKEN: ${{ secrets.CI_PAT }}
+                    GITHUB_TOKEN: ${{ secrets.token }}
 
                 - name: Push to PR on index repo
                   id: cpr
@@ -36,7 +40,7 @@
                     branch: ci_update_container_index
                     delete-branch: true
                     title: 'ci: update core container images index'
-                    token: ${{ secrets.CI_PAT }}
+                    token: ${{ secrets.token }}
                     labels: ci,automerge
                     add-paths: |
                         *index.json
