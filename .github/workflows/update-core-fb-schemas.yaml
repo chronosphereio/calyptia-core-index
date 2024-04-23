@@ -1,0 +1,7 @@
+---
+    name: Update Calyptia Core Fluent Bit schemas
+    on:
+        workflow_dispatch:
+    jobs:
+        update-image-indexes:
+            uses: ./.github/workflows/call-update-core-fluent-bit-schemas.yaml

@@ -37,6 +37,7 @@ for TAG in $TAGS; do
     fi
 
     "$CONTAINER_RUNTIME" rm --force "test" &> /dev/null
+    "$CONTAINER_RUNTIME" image rm --force "ghcr.io/${CONTAINER_PACKAGE}:${TAG}"
 done
 
 "$SCRIPT_DIR/create-operator-mappings.sh"
