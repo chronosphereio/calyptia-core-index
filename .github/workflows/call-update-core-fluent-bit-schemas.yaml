@@ -57,12 +57,3 @@
                     echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
                     echo "Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}"
                   shell: bash
-
-
-                - name: Enable Pull Request Auto merge
-                  continue-on-error: true
-                  if: ${{ steps.cpr.outputs.pull-request-number }}
-                  run: gh pr merge --squash --auto "${{ steps.cpr.outputs.pull-request-number }}"
-                  shell: bash
-                  env:
-                    GH_TOKEN: ${{ secrets.token }}
