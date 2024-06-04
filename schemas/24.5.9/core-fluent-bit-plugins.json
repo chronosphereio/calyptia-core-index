@@ -1,0 +1,58 @@
+{
+  "plugins": [
+    {
+      "name": "go-s3-replay-plugin",
+      "version": "v2.0.5",
+      "artefact_name": "calyptia-core-fluent-bit-s3-replay",
+      "repository": "chronosphereio/calyptia-core-fluent-bit-s3-replay"
+    },
+    {
+      "name": "calyptia-core-fluent-bit-dummy",
+      "version": "v3.0.3",
+      "artefact_name": "calyptia-core-fluent-bit-dummy",
+      "repository": "chronosphereio/calyptia-core-fluent-bit-dummy"
+    },
+    {
+      "name": "calyptia-core-fluent-bit-gsuite-reporter",
+      "version": "v2.0.5",
+      "artefact_name": "calyptia-core-fluent-bit-gsuite-reporter",
+      "repository": "chronosphereio/calyptia-core-fluent-bit-gsuite-reporter"
+    },
+    {
+      "name": "datagen",
+      "version": "v1.0.4",
+      "artefact_name": "calyptia-core-fluent-bit-plugin-datagen",
+      "repository": "chronosphereio/calyptia-core-fluent-bit-plugin-datagen"
+    },
+    {
+      "name": "http_scraper",
+      "version": "v0.0.4",
+      "artefact_name": "calyptia-core-fluent-bit-plugin-http-scraper",
+      "repository": "chronosphereio/calyptia-core-fluent-bit-plugin-http-scraper"
+    },
+    {
+      "name": "http_loader",
+      "version": "v0.8.3",
+      "artefact_name": "calyptia-core-fluent-bit-plugin-http-loader",
+      "repository": "chronosphereio/calyptia-core-fluent-bit-plugin-http-loader"
+    },
+    {
+      "name": "aws_kinesis_stream",
+      "version": "v0.0.5",
+      "artefact_name": "calyptia-core-fluent-bit-aws-kinesis-stream-input",
+      "repository": "chronosphereio/calyptia-core-fluent-bit-aws-kinesis-stream-input"
+    },
+    {
+      "name": "s3_sqs",
+      "version": "v1.0.6",
+      "artefact_name": "calyptia-core-fluent-bit-plugin-input-s3-sqs",
+      "repository": "chronosphereio/calyptia-core-fluent-bit-plugin-input-s3-sqs"
+    },
+    {
+      "name": "azeventgrid",
+      "version": "v0.1.3",
+      "artefact_name": "calyptia-core-fluent-bit-azure-event-grid",
+      "repository": "chronosphereio/calyptia-core-fluent-bit-azure-event-grid"
+    }
+  ]
+}
