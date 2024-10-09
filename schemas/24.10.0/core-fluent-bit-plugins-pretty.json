@@ -1,0 +1,34 @@
+{
+  "plugins": [
+    {
+      "name": "go-s3-replay-plugin"
+    },
+    {
+      "name": "calyptia-core-fluent-bit-dummy"
+    },
+    {
+      "name": "calyptia-core-fluent-bit-gsuite-reporter"
+    },
+    {
+      "name": "datagen"
+    },
+    {
+      "name": "http_scraper"
+    },
+    {
+      "name": "http_loader"
+    },
+    {
+      "name": "aws_kinesis_stream"
+    },
+    {
+      "name": "s3_sqs"
+    },
+    {
+      "name": "azeventgrid"
+    },
+    {
+      "name": "sqldb"
+    }
+  ]
+}
