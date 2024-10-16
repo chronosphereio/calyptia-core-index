@@ -29,5 +29,5 @@
 "v2.10.1": "ghcr.io/calyptia/core/calyptia-fluent-bit:24.5.2",
 "v2.10.0": "ghcr.io/calyptia/core/calyptia-fluent-bit:24.5.1",
 "v2.9.0": "ghcr.io/calyptia/core/calyptia-fluent-bit:24.4.4",
-"latest": "ghcr.io/calyptia/core/calyptia-fluent-bit:24.10.0",
+"latest": "ghcr.io/calyptia/core/calyptia-fluent-bit:24.10.0"
 }
