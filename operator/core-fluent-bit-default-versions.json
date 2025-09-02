@@ -1,4 +1,5 @@
 {
+"v3.68.0": "ghcr.io/calyptia/core/calyptia-fluent-bit:",
 "v3.67.0": "ghcr.io/calyptia/core/calyptia-fluent-bit:",
 "v3.66.0": "ghcr.io/calyptia/core/calyptia-fluent-bit:",
 "v3.64.0": "ghcr.io/calyptia/core/calyptia-fluent-bit:",
@@ -28,6 +29,5 @@
 "v3.26.0": "ghcr.io/calyptia/core/calyptia-fluent-bit:",
 "v3.24.0": "ghcr.io/calyptia/core/calyptia-fluent-bit:",
 "v3.23.0": "ghcr.io/calyptia/core/calyptia-fluent-bit:",
-"v3.22.0": "ghcr.io/calyptia/core/calyptia-fluent-bit:",
 "latest": "ghcr.io/calyptia/core/calyptia-fluent-bit:"
 }
