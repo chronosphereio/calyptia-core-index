@@ -18,7 +18,7 @@
                 pr-url: ${{ steps.cpr.outputs.pull-request-url }}
             steps:
                 - name: Checkout core-images-index repo
-                  uses: actions/checkout@v4
+                  uses: actions/checkout@v5
                   with:
                     token: ${{ secrets.token }}
                     repository: chronosphereio/calyptia-core-index
