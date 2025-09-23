@@ -17,7 +17,7 @@ jobs:
           - name: Repository Dispatch
             uses: peter-evans/repository-dispatch@v3
             with:
-              token: ${{ secrets.CI_PAT }}
+              token: ${{ secrets.CALYPTIA_CI_PAT }}
               repository: chronosphereio/calyptia-frontend
               event-type: schema-update
             #   Some extra info if required
