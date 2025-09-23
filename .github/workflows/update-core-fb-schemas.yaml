@@ -6,4 +6,4 @@
         update-image-indexes:
             uses: ./.github/workflows/call-update-core-fluent-bit-schemas.yaml
             secrets:
-                token: ${{ secrets.CI_PAT }}
+                token: ${{ secrets.CALYPTIA_CI_PAT }}

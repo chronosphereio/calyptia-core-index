@@ -17,7 +17,7 @@ jobs:
               with:
                   repository: chronosphereio/calyptia-go-fluentbit-config
                   path: go-fluentbit-config
-                  token: ${{ secrets.CI_PAT }}
+                  token: ${{ secrets.CALYPTIA_CI_PAT }}
 
             - name: Checkout to core-images-index repository.
               uses: actions/checkout@v4
@@ -34,7 +34,7 @@ jobs:
               id: cpr
               uses: peter-evans/create-pull-request@v7
               with:
-                  token: ${{ secrets.CI_PAT }}
+                  token: ${{ secrets.CALYPTIA_CI_PAT }}
                   title: "Update schema to latest"
                   branch: "update-latest-schema"
                   delete-branch: true
@@ -63,4 +63,4 @@ jobs:
               run: gh pr merge --squash --auto "${{ steps.cpr.outputs.pull-request-number }}"
               working-directory: go-fluentbit-config
               env:
-                GH_TOKEN: ${{ secrets.CI_PAT }}
+                GH_TOKEN: ${{ secrets.CALYPTIA_CI_PAT }}
