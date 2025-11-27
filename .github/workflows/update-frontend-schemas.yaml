@@ -21,4 +21,4 @@ jobs:
               pipeline: "chronosphere/ctp-update-schemas"      
               branch: master
               commit: HEAD
-              message:  ""
+              message:  "calyptia-core-index: run ctp-update-schemas"
