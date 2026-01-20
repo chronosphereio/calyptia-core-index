@@ -9,7 +9,7 @@ PROVISIONED_USER=${INSTALL_CALYPTIA_PROVISIONED_USER:-$(id -un)}
 # The group to install Calyptia Core as, it must pre-exist.
 PROVISIONED_GROUP=${INSTALL_CALYPTIA_PROVISIONED_GROUP:-$(id -gn)}
 # The version of Calyptia Core to install.
-RELEASE_VERSION=${INSTALL_CALYPTIA_RELEASE_VERSION:-3.85.0}
+RELEASE_VERSION=${INSTALL_CALYPTIA_RELEASE_VERSION:-3.86.0}
 # Optionally just run the checks and do not install by setting to 'yes'.
 DRY_RUN=${INSTALL_CALYPTIA_DRY_RUN:-no}
 # Equivalent to '--force' to ignore errors as warnings and continue after checks even if they fail.
