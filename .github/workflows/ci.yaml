@@ -20,6 +20,6 @@ jobs:
 
       - name: Unit tests
         run: |
-          go test -v -covermode=atomic -coverprofile=../coverage.out ./...
+          go test -v ./...
         working-directory: go-index
 
