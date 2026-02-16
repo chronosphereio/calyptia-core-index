@@ -32,7 +32,7 @@ jobs:
 
             - name: Create PR on go-fluentbit-config repository.
               id: cpr
-              uses: peter-evans/create-pull-request@v7
+              uses: peter-evans/create-pull-request@v8
               with:
                   token: ${{ secrets.CALYPTIA_CI_PAT }}
                   title: "Update schema to latest"
