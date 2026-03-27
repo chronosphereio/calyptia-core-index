@@ -17,7 +17,7 @@ jobs:
           - name: Trigger ctp-update-schemas Buildkite pipeline
             uses: buildkite/trigger-pipeline-action@v2.0.0
             with:
-              buildkite_api_access_token:  ${{ secrets.BUILDKITE_API_TOKEN }} 
+              buildkite_api_access_token:  ${{ secrets.TRIGGER_BUILDKITE_TOKEN }} 
               pipeline: "chronosphere/ctp-update-schemas"      
               branch: master
               commit: HEAD
