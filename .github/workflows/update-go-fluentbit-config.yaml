@@ -13,14 +13,14 @@ jobs:
             contents: read
         steps:
             - name: Checkout to go-fluentbit-config repository.
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
               with:
                   repository: chronosphereio/calyptia-go-fluentbit-config
                   path: go-fluentbit-config
                   token: ${{ secrets.CALYPTIA_CI_PAT }}
 
             - name: Checkout to core-images-index repository.
-              uses: actions/checkout@v4
+              uses: actions/checkout@v6
               with:
                   path: core-images-index
 
