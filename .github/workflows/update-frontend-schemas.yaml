@@ -15,10 +15,11 @@ jobs:
           contents: none
         steps:
           - name: Trigger ctp-update-schemas Buildkite pipeline
-            uses: buildkite/trigger-pipeline-action@v2.0.0
-            with:
-              buildkite_api_access_token:  ${{ secrets.TRIGGER_BUILDKITE_TOKEN }} 
-              pipeline: "chronosphere/ctp-update-schemas"      
-              branch: master
-              commit: HEAD
-              message:  "calyptia-core-index: run ctp-update-schemas"
+            env:
+              BUILDKITE_TRIGGER_WEBHOOK_CTP_UPDATE_SCHEMAS: ${{ secrets.BUILDKITE_TRIGGER_WEBHOOK_CTP_UPDATE_SCHEMAS }}
+            run: |
+              GH_RUN_URL="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+              curl -fsSL \
+                -X POST \
+                -d "{\"gh_action_run\":\"$GH_RUN_URL\"}" \
+                $BUILDKITE_TRIGGER_WEBHOOK_CTP_UPDATE_SCHEMAS
