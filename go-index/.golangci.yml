@@ -7,11 +7,9 @@ run:
 linters:
   default: none
   enable:
+    - bodyclose
+    - dupl
     - errcheck
-    - govet
-    - ineffassign
-    - staticcheck
-    - unused
     - forcetypeassert
     - funlen
     - gocognit
@@ -21,20 +19,25 @@ linters:
     - godot
     - goprintffuncname
     - gosec
+    - govet
+    - ineffassign
     - misspell
+    - mnd
     - noctx
     - nolintlint
+    - revive
     - rowserrcheck
     - sqlclosecheck
+    - staticcheck
     - tparallel
     - unconvert
     - unparam
+    - unused
     - whitespace
 
   settings:
     gocyclo:
       min-complexity: 15
-    govet: {}
     gocognit:
       min-complexity: 40
     goconst:
@@ -44,7 +47,23 @@ linters:
       statements: 50
     misspell:
       locale: US
+    mnd:
+      ignored-numbers:
+        - "2"
+        - "10"
+        - "32"
+        - "64"
     nolintlint:
       allow-unused: false
       require-explanation: true
       require-specific: false
+    revive:
+      rules:
+        - name: exported
+          disabled: true
+
+  exclusions:
+    rules:
+      - linters:
+          - bodyclose
+        text: "response body must be closed"
