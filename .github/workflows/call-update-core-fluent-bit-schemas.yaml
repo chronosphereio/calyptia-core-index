@@ -3,6 +3,12 @@
     name: Reusable workflow to generate schemas for Calyptia Core Fluent Bit images
     on:
       workflow_call:
+        inputs:
+            force_regenerate:
+              description: 'Rebuild every version (default: skip versions whose schema is already committed).'
+              type: boolean
+              required: false
+              default: false
         secrets:
             token:
               description: The Github token or similar to authenticate with.
@@ -30,6 +36,7 @@
                   shell: bash
                   env:
                     GITHUB_TOKEN: ${{ secrets.token }}
+                    FORCE_REGENERATE: ${{ inputs.force_regenerate }}
 
                 - name: Push to PR on index repo
                   id: cpr

@@ -2,8 +2,16 @@
     name: Update Calyptia Core Fluent Bit schemas
     on:
         workflow_dispatch:
+            inputs:
+                force_regenerate:
+                    description: 'Rebuild every version (default: skip versions whose schema is already committed).'
+                    type: boolean
+                    required: false
+                    default: false
     jobs:
         update-image-indexes:
             uses: ./.github/workflows/call-update-core-fluent-bit-schemas.yaml
+            with:
+                force_regenerate: ${{ inputs.force_regenerate }}
             secrets:
                 token: ${{ secrets.CALYPTIA_CI_PAT }}
