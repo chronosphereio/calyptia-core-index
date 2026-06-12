@@ -10,6 +10,13 @@ jobs:
     # We have to invoke via repo-dispatch to a private repo so this will not show pass/fail or results here
     ci-trigger-notifications:
         name: Trigger updates on private repos
+        # Skip when the triggering push is a calyptia release cascade: in that case the
+        # calyptia-core-fluent-bit production-release.yaml triggers chronosphere/ctp-update-schemas
+        # itself, then finds and approves the resulting monorepo PR with a reviewer-App token. The
+        # `[skip-schema-cascade]` sentinel is injected into that cascade's core-index merge commit.
+        # Non-release schema changes still trigger reactively here; on workflow_dispatch head_commit
+        # is null, so the guard is a no-op and manual runs proceed.
+        if: ${{ !contains(github.event.head_commit.message, '[skip-schema-cascade]') }}
         runs-on: ubuntu-latest
         permissions:
           contents: none
